@@ -26,7 +26,7 @@ export function PageHero({
 export function CTAGroup() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
-      <ExternalLink href={BYBIT_REGISTER}>透過 Bybit 註冊</ExternalLink>
+      <ExternalLink href={BYBIT_REGISTER} sponsored>透過 Bybit 註冊</ExternalLink>
       <ExternalLink href={REBATE_LOGIN} variant="secondary">
         返傭後台
       </ExternalLink>

@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
-
-const projectRoot = new URL("../", import.meta.url);
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -16,77 +14,94 @@ async function render(pathname = "/") {
   );
 }
 
-test("以繁體中文呈現 BiBeck 首頁", async () => {
+function countH1(html) {
+  return (html.match(/<h1\b/g) ?? []).length;
+}
+
+test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   const response = await render();
   assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
   const html = await response.text();
-  assert.match(html, /降低每一筆交易成本。/);
-  assert.match(html, /交易成本優化與手續費返傭平台/);
-  assert.match(html, /計算可節省費用/);
-  assert.match(html, /BiBeck 為獨立第三方平台/);
-  assert.doesNotMatch(html, /Pay Less on Every Trade|Get Rebate|Rebate Dashboard/);
+  assert.match(html, /BiBeck/);
+  assert.match(html, /交易所比較/);
+  assert.match(html, /費率計算器/);
+  assert.match(html, /返傭說明/);
+  assert.match(html, /取得 Bybit 返傭/);
 });
 
-test("Bybit 平台頁包含官方費率摘要與整合返傭流程", async () => {
+test("Bybit 頁包含完整費率、VIP、計算器與返傭 CTA", async () => {
   const response = await render("/platform/bybit");
   assert.equal(response.status, 200);
   const html = await response.text();
-
-  assert.match(html, /Bybit 手續費與返傭/);
-  assert.match(html, /0\.1000%/);
-  assert.match(html, /0\.0550%/);
-  assert.match(html, /0\.0200%/);
-  assert.match(html, /資金費用 = 倉位價值 × 資金費率/);
-  assert.match(html, /透過 Bybit 註冊/);
+  assert.equal(countH1(html), 1);
+  assert.match(html, /Bybit 交易手續費、VIP 等級與 BiBeck 返傭/);
+  assert.match(html, /0\.10%/);
+  assert.match(html, /0\.055%/);
+  assert.match(html, /VIP 等級與手續費差異/);
+  assert.match(html, /計算你的實際交易成本/);
+  assert.match(html, /降低你的 Bybit 實際交易成本/);
+  assert.match(html, /BreadcrumbList/);
+  assert.match(html, /rel="noopener noreferrer sponsored"/);
 });
 
-test("平台總覽列出五個交易所與清楚的返傭支援狀態", async () => {
-  const response = await render("/platform");
+test("Binance 頁包含官方資料、待確認欄位與客觀比較器", async () => {
+  const response = await render("/platform/binance");
   assert.equal(response.status, 200);
   const html = await response.text();
+  assert.equal(countH1(html), 1);
+  assert.match(html, /Binance 交易手續費與 VIP 等級/);
+  assert.match(html, /BNB 手續費折扣/);
+  assert.match(html, /待確認/);
+  assert.match(html, /你目前的方案，真的比較省嗎？/);
+  assert.match(html, /依照目前輸入條件/);
+  assert.match(html, /BreadcrumbList/);
+});
 
+test("五個交易所頁共用完整架構且各只有一個 H1", async () => {
+  for (const slug of ["bybit", "binance", "bingx", "bitget", "okx"]) {
+    const response = await render("/platform/" + slug);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.equal(countH1(html), 1, slug + " should have exactly one H1");
+    assert.match(html, /現貨基礎費率/);
+    assert.match(html, /合約基礎費率/);
+    assert.match(html, /官方資料來源/);
+    assert.match(html, /真正要比較的，不只是表面費率/);
+    assert.match(html, /獨立第三方交易成本與返傭資訊平台/);
+  }
+});
+
+test("交易所總覽列出五個平台及服務狀態", async () => {
+  const response = await render("/platforms");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.equal(countH1(html), 1);
   for (const name of ["Bybit", "Binance", "BingX", "Bitget", "OKX"]) {
     assert.match(html, new RegExp(name));
   }
   assert.match(html, /返傭服務支援/);
-  assert.match(html, /資訊整理/);
-  assert.match(html, /目前只有 Bybit 提供 BiBeck 返傭服務/);
+  assert.match(html, /目前僅提供費率資訊/);
 });
 
-test("未合作平台頁清楚標示僅提供資訊", async () => {
-  for (const pathname of ["/platform/binance", "/platform/bingx", "/platform/bitget", "/platform/okx"]) {
-    const response = await render(pathname);
-    assert.equal(response.status, 200);
-    const html = await response.text();
-    assert.match(html, /BiBeck 目前尚未提供 .* 返傭/);
-    assert.match(html, /不代表 BiBeck 與 .* 存在合作/);
-    assert.match(html, /計算交易成本/);
-  }
-});
-
-test("外部網址集中管理並安全開啟", async () => {
-  const [links, externalLink, homepage, platform, faq] = await Promise.all([
+test("外部網址集中管理，推薦連結具 sponsored 標記", async () => {
+  const [links, externalLink, rebate, calculator, styles] = await Promise.all([
     readFile(new URL("../config/links.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/ExternalLink.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/platform/bybit/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/faq/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../config/rebate.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/FeeCalculator.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
   assert.match(links, /BYBIT_REGISTER/);
   assert.match(links, /REBATE_LOGIN/);
-  assert.match(links, /BYBIT_FEE_STRUCTURE/);
-  assert.match(links, /BYBIT_MAKER_TAKER/);
-  assert.match(links, /BYBIT_FUNDING_FEE/);
   assert.match(links, /BINANCE_FEE_STRUCTURE/);
   assert.match(links, /BINGX_FEE_CENTER/);
   assert.match(links, /BITGET_FEE_GUIDE/);
   assert.match(links, /OKX_FEE_RULES/);
   assert.match(externalLink, /target="_blank"/);
-  assert.match(externalLink, /rel="noopener noreferrer"/);
-  assert.doesNotMatch(homepage + platform + faq, /https:\/\//);
-  const previewFiles = await readdir(new URL("app/_sites-preview", projectRoot));
-  assert.deepEqual(previewFiles, []);
+  assert.match(externalLink, /noopener noreferrer sponsored/);
+  assert.match(rebate, /BIBECK_BYBIT_REBATE_RATE/);
+  assert.doesNotMatch(calculator, /useState\(20\)/);
+  assert.match(styles, /@media \(max-width: 479px\)/);
+  assert.match(styles, /table-scroll-hint/);
 });

@@ -26,7 +26,7 @@ export default function FAQPage() {
             <h2 className="mt-4 text-3xl font-semibold text-white">準備好降低交易成本？</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ExternalLink href={BYBIT_REGISTER}>取得返傭</ExternalLink>
+            <ExternalLink href={BYBIT_REGISTER} sponsored>取得返傭</ExternalLink>
             <ExternalLink href={REBATE_LOGIN} variant="secondary">返傭後台</ExternalLink>
           </div>
         </div>

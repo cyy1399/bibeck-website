@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/platforms" },
 };
 
-export default function PlatformPage() {
+export default function PlatformsPage() {
   return <PlatformOverview />;
 }

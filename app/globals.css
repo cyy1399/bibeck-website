@@ -14,7 +14,7 @@
   --color-foreground: var(--foreground);
   --color-secondary: var(--secondary);
   --color-gold: var(--gold);
-  --font-sans: var(--font-inter), var(--font-noto-tc), sans-serif;
+  --font-sans: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-mono: "SFMono-Regular", "Consolas", monospace;
 }
 
@@ -31,7 +31,7 @@ body {
   margin: 0;
   background: linear-gradient(180deg, #0a0a0a 0%, #080808 100%);
   color: var(--foreground);
-  font-family: var(--font-inter), var(--font-noto-tc), sans-serif;
+  font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 }
 
 ::selection {
@@ -469,5 +469,88 @@ summary {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+.exchange-hero {
+  position: relative;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-position: center top;
+  background-size: 128px 128px;
+}
+
+.exchange-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #0a0a0a 0%, rgba(10, 10, 10, 0.97) 72%, rgba(10, 10, 10, 0.9) 100%);
+  pointer-events: none;
+}
+
+.exchange-hero > div {
+  position: relative;
+}
+
+.exchange-hero h1 {
+  overflow-wrap: anywhere;
+}
+
+.table-scroll-shell {
+  overscroll-behavior-x: contain;
+  scrollbar-color: rgba(212, 175, 55, 0.5) rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+}
+
+.table-scroll-hint {
+  position: sticky;
+  left: 0;
+  width: fit-content;
+  margin-bottom: 0.7rem;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.75rem;
+}
+
+.cost-equation strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cost-equation span {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.calculator-input {
+  min-width: 0;
+}
+
+.calculator-input option {
+  background: #101010;
+  color: #f5f5f5;
+}
+
+@media (min-width: 768px) {
+  .table-scroll-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 479px) {
+  .exchange-hero .button-primary,
+  .exchange-hero .button-secondary,
+  #rebate .button-primary,
+  #rebate .button-secondary,
+  #rebate a {
+    width: 100%;
+  }
+
+  .calculator-shell {
+    padding: 1.15rem;
+  }
+
+  .fee-table th,
+  .fee-table td {
+    padding: 0.95rem 0.8rem;
   }
 }

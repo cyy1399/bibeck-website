@@ -41,7 +41,7 @@ export default function Home() {
               BiBeck 透過清楚的手續費資訊、返傭服務與交易成本工具，幫助交易者減少長期交易支出。
             </p>
             <div className="reveal mt-9 flex flex-col gap-3 sm:flex-row">
-              <ExternalLink href={BYBIT_REGISTER}>取得返傭</ExternalLink>
+              <ExternalLink href={BYBIT_REGISTER} sponsored>取得返傭</ExternalLink>
               <Link href="/calculator" className="button-secondary">計算可節省費用</Link>
             </div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
@@ -95,7 +95,7 @@ export default function Home() {
               copy="返傭不是獲利承諾，而是一種交易成本管理方式。完成符合資格的註冊與綁定後，部分交易手續費可依合作規則回饋。"
             />
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <ExternalLink href={BYBIT_REGISTER}>透過 Bybit 註冊</ExternalLink>
+              <ExternalLink href={BYBIT_REGISTER} sponsored>透過 Bybit 註冊</ExternalLink>
               <ExternalLink href={REBATE_LOGIN} variant="secondary">返傭後台</ExternalLink>
             </div>
             <Link href="/platform/bybit" className="text-link mt-7">查看 Bybit 平台說明 <span aria-hidden="true">→</span></Link>

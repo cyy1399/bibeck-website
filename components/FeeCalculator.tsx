@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BIBECK_BYBIT_REBATE_RATE } from "@/config/rebate";
 
 type FeeCalculatorProps = {
   compact?: boolean;
@@ -21,7 +22,7 @@ export function FeeCalculator({ compact = false }: FeeCalculatorProps) {
   const [makerShare, setMakerShare] = useState(0);
   const [makerFeeRate, setMakerFeeRate] = useState(0.02);
   const [takerFeeRate, setTakerFeeRate] = useState(0.055);
-  const [rebatePercentage, setRebatePercentage] = useState(20);
+  const [rebatePercentage, setRebatePercentage] = useState((BIBECK_BYBIT_REBATE_RATE ?? 0) * 100);
   const [monthlyFundingCost, setMonthlyFundingCost] = useState(0);
 
   const volume = safeNumber(monthlyVolume);
@@ -54,7 +55,7 @@ export function FeeCalculator({ compact = false }: FeeCalculatorProps) {
           {!compact ? (
             <NumberField label="每月預估資金費用" hint="USD" value={monthlyFundingCost} min={0} step={10} onChange={setMonthlyFundingCost} />
           ) : null}
-          <p className="text-xs leading-6 text-white/40">預設返傭比例僅供試算，不代表實際方案。實際費率、返傭資格與可返還項目以 Bybit 帳戶、合作條款及返傭後台為準。</p>
+          <p className="text-xs leading-6 text-white/40">{BIBECK_BYBIT_REBATE_RATE === null ? "BiBeck 目前適用返傭比例尚未寫入設定，請輸入你實際確認的比例。" : "返傭比例由集中設定檔帶入；實際費率、資格與可返還項目仍以 Bybit 帳戶、合作條款及返傭後台為準。"}</p>
         </fieldset>
 
         <div className="calculator-results" aria-live="polite">

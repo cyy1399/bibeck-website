@@ -1,19 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const notoSansTC = Noto_Sans_TC({
-  variable: "--font-noto-tc",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://drayl-systems.cyy1399.chatgpt.site"),
@@ -77,7 +63,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-Hant-TW">
-      <body className={`${inter.variable} ${notoSansTC.variable} antialiased`}>
+      <body className="antialiased">
         {children}
       </body>
     </html>

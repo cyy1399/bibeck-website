@@ -6,6 +6,7 @@ type ExternalLinkProps = {
   children: ReactNode;
   className?: string;
   variant?: "primary" | "secondary" | "ghost";
+  sponsored?: boolean;
 };
 
 export function ExternalLink({
@@ -13,6 +14,7 @@ export function ExternalLink({
   children,
   className = "",
   variant = "primary",
+  sponsored = false,
 }: ExternalLinkProps) {
   const variants = {
     primary:
@@ -27,8 +29,8 @@ export function ExternalLink({
     <Link
       href={href}
       target="_blank"
-      rel="noopener noreferrer"
-      className={`inline-flex min-h-12 items-center justify-center rounded-sm border px-6 text-sm font-semibold tracking-[0.06em] transition duration-300 ${variants[variant]} ${className}`}
+      rel={sponsored ? "noopener noreferrer sponsored" : "noopener noreferrer"}
+      className={"inline-flex min-h-12 items-center justify-center rounded-sm border px-6 text-sm font-semibold tracking-[0.06em] transition duration-300 " + variants[variant] + " " + className}
     >
       {children}
     </Link>
