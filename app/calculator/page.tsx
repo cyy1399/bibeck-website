@@ -6,12 +6,13 @@ import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { BYBIT_REGISTER } from "@/config/links";
 import { bybitActionLabels } from "@/config/actions";
+import { createPageMetadata } from "@/config/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "交易成本計算器",
-  description: "比較交易所費率、VIP 等級與 BiBeck 返傭後的實際交易成本。",
-  alternates: { canonical: "/calculator" },
-};
+  description: "使用 BiBeck 交易成本計算器，比較交易所費率、VIP 等級與返傭後的實際交易成本。",
+  path: "/calculator",
+});
 
 export default function CalculatorPage() {
   return (

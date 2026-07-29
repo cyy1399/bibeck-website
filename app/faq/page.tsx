@@ -7,12 +7,13 @@ import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
 import { bybitActionLabels } from "@/config/actions";
+import { createPageMetadata } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: "返傭常見問題",
-  description: "BiBeck 返傭、帳戶綁定、資金安全與交易手續費的跨交易所通用問題。",
-  alternates: { canonical: "/faq" },
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "交易所返傭常見問題",
+  description: "了解 BiBeck 返傭、帳戶綁定、資金安全與交易手續費的跨交易所通用問題。",
+  path: "/faq",
+});
 
 export default function FAQPage() {
   const faqJsonLd = {

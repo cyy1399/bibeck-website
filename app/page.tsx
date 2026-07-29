@@ -6,12 +6,9 @@ import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
+import { createPageMetadata, siteDescription, siteTitle } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: "BiBeck｜計算真實的交易成本",
-  description: "BiBeck 透過手續費資訊、返傭服務與交易成本工具，幫助交易者減少長期交易支出。",
-  alternates: { canonical: "/" },
-};
+export const metadata: Metadata = createPageMetadata({ title: siteTitle, description: siteDescription, path: "/", absoluteTitle: true });
 
 const helpItems = [
   ["01", "了解交易成本", "了解 Maker、Taker、資金費用、滑價、提幣費與 VIP 費率如何形成總交易成本。"],

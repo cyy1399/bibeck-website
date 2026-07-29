@@ -5,7 +5,12 @@ const siteUrl = brandConfig.websiteUrl;
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/api/", "/search"],
+    },
+    host: siteUrl,
     sitemap: `${siteUrl}/sitemap.xml`,
   };
 }
