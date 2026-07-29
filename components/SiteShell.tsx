@@ -5,10 +5,11 @@ import { BYBIT_REGISTER } from "@/config/links";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { brandConfig, businessMailto, contactMailto, supportMailto } from "@/config/brand";
 import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
+import { actionLabels } from "@/config/actions";
 
 const mobileNavItems = [
   { href: "/", label: "首頁" },
-  { href: "/calculator", label: "交易成本計算器" },
+  { href: "/calculator", label: actionLabels.costCalculator },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
   { href: "/contact", label: "聯絡我們" },
@@ -16,7 +17,7 @@ const mobileNavItems = [
 
 const footerNavItems = [
   { href: "/platforms", label: "交易所" },
-  { href: "/calculator", label: "交易成本計算器" },
+  { href: "/calculator", label: actionLabels.costCalculator },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
 ];
@@ -35,13 +36,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
             <Link href="/" className="nav-link">首頁</Link>
             <DesktopExchangeMenu />
-            <Link href="/calculator" className="nav-link">交易成本計算器</Link>
+            <Link href="/calculator" className="nav-link">{actionLabels.costCalculator}</Link>
             <Link href="/platform/bybit#rebate" className="nav-link">返傭說明</Link>
             <Link href="/faq" className="nav-link">常見問題</Link>
           </nav>
 
           <ExternalLink href={BYBIT_REGISTER} sponsored className="ml-auto hidden !min-h-11 !px-5 !text-xs sm:inline-flex lg:ml-0">
-            取得 Bybit 返傭
+            {actionLabels.rebateSignup}
           </ExternalLink>
 
           <details className="mobile-nav relative ml-3 lg:hidden">
@@ -65,7 +66,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 </div>
               </div>
               {mobileNavItems.slice(1).map((item) => <Link key={item.href} href={item.href} className="mobile-nav-link">{item.label}</Link>)}
-              <ExternalLink href={BYBIT_REGISTER} sponsored className="mt-2 w-full sm:hidden">取得 Bybit 返傭</ExternalLink>
+              <ExternalLink href={BYBIT_REGISTER} sponsored className="mt-2 w-full sm:hidden">{actionLabels.rebateSignup}</ExternalLink>
             </nav>
           </details>
         </header>

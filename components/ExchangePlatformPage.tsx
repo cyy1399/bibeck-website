@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { ExchangeComparisonCalculator } from "@/components/ExchangeComparisonCalculator";
+import { ExchangeActionButtons } from "@/components/ExchangeActionButtons";
 import { ExternalLink } from "@/components/ExternalLink";
 import { PlatformFeeCalculator } from "@/components/PlatformFeeCalculator";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
+import { actionLabels } from "@/config/actions";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
@@ -64,11 +66,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
               <p className="eyebrow">交易所費率資料</p>
               <h1 className="mt-5 max-w-5xl text-balance text-4xl font-semibold leading-[1.12] text-white sm:text-5xl lg:text-6xl">{exchange.heroTitle}</h1>
               <p className="mt-6 max-w-3xl text-base leading-8 text-secondary sm:text-lg">{exchange.description}</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a href="#fees" className="button-primary">查看手續費</a>
-                <a href="#calculator" className="button-secondary">計算實際成本</a>
-                {!isBybit ? <a href="#comparison" className="button-secondary">與 Bybit + BiBeck 比較</a> : null}
-              </div>
+              <div className="mt-8"><ExchangeActionButtons exchangeSlug={exchange.slug} calculatorHref="#trading-cost-calculator" /></div>
             </div>
             <div className="border-y border-white/10 py-6">
               <p className="eyebrow">頁面重點</p>
@@ -103,7 +101,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className={"mt-10 grid gap-7 border-l-2 bg-[#111] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center " + (isBybit ? "border-gold" : "border-white/18")}>
             <p className="max-w-4xl text-base leading-8 text-white/78">{exchange.summary}</p>
             {isBybit ? (
-              <ExternalLink href={BYBIT_REGISTER} sponsored>取得 Bybit 返傭</ExternalLink>
+              <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
             ) : (
               <a href="#comparison" className="button-secondary">比較 Bybit + BiBeck</a>
             )}
@@ -182,7 +180,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
         </div>
       </section>
 
-      <section id="calculator" className="scroll-mt-24 px-5 py-20 sm:px-8">
+      <section id="trading-cost-calculator" className="scroll-mt-24 px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionTitle label="交易成本計算器" title="計算你的實際交易成本" copy={isBybit ? "輸入最近 30 日交易量，自動比較無優惠、Bybit VIP 與 BiBeck 返傭後的交易成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
           <div className="mt-10">{isBybit ? <BybitCostCalculator /> : <PlatformFeeCalculator exchange={exchange} />}</div>
@@ -222,16 +220,15 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
             <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">
               <SectionTitle label="BiBeck 返傭" title="降低你的 Bybit 實際交易成本" copy="透過 BiBeck 專屬推薦連結註冊 Bybit，並依合作方案條件取得交易手續費返傭。" />
               <div className="flex flex-col gap-3 sm:flex-row">
-                <ExternalLink href={BYBIT_REGISTER} sponsored>透過 BiBeck 註冊 Bybit</ExternalLink>
-                <ExternalLink href={REBATE_LOGIN} variant="secondary">登入 Bybit 返傭後台</ExternalLink>
+                <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                <ExternalLink href={REBATE_LOGIN} variant="secondary">{actionLabels.rebateDashboard}</ExternalLink>
               </div>
             </div>
           ) : (
             <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">
               <SectionTitle label="下一步" title="比較返傭後的實際交易成本" copy="BiBeck 目前主要提供 Bybit 返傭服務。你可以使用成本比較工具，確認 Bybit + BiBeck 是否符合你的交易需求。" />
               <div className="flex flex-col gap-3 sm:flex-row">
-                <a href="#comparison" className="button-primary">比較 Bybit + BiBeck</a>
-                <Link href="/platform/bybit#rebate" className="button-secondary">查看 Bybit 返傭</Link>
+                <Link href="#trading-cost-calculator" className="button-secondary">{actionLabels.costCalculator}</Link>
               </div>
             </div>
           )}

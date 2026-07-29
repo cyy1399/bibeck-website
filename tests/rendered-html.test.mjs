@@ -30,10 +30,50 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.match(html, /一般狀況/);
   assert.match(html, /VIP \+ BiBeck 返傭/);
   assert.match(html, /返傭說明/);
-  assert.match(html, /取得 Bybit 返傭/);
+  assert.match(html, /取得返傭帳號/);
+  assert.match(html, /登入返傭後台/);
   assert.match(html, /aria-haspopup="menu"/);
   assert.match(html, /aria-expanded="false"/);
   assert.doesNotMatch(html, /Hyperliquid|標準會員|官方 VIP|比較真正的交易成本/);
+});
+
+test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
+  for (const pathname of ["/", "/platform/bybit"]) {
+    const response = await render(pathname);
+    const html = await response.text();
+    assert.match(html, /取得返傭帳號/);
+    assert.match(html, /登入返傭後台/);
+    assert.match(html, /交易成本計算器/);
+    assert.match(html, /https:\/\/partner\.bybit\.com\/b\/t00000016/);
+    assert.match(html, /https:\/\/bybackoffice\.com\/user-login/);
+    assert.match(html, /#trading-cost-calculator/);
+  }
+});
+
+test("未支援返傭的交易所 Hero 不會導向 Bybit", async () => {
+  for (const slug of ["binance", "bingx", "bitget", "okx"]) {
+    const response = await render("/platform/" + slug);
+    const html = await response.text();
+    const hero = html.split('<section class="exchange-hero')[1].split("</section>")[0];
+    assert.match(hero, /取得返傭帳號/);
+    assert.match(hero, /登入返傭後台/);
+    assert.match(hero, /交易成本計算器/);
+    assert.match(hero, /disabled/);
+    assert.doesNotMatch(hero, /partner\.bybit\.com|bybackoffice\.com/);
+  }
+});
+
+test("核心按鈕文案與交易所連結集中管理", async () => {
+  const [actions, shell, exchangePage] = await Promise.all([
+    readFile(new URL("../config/actions.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/SiteShell.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/ExchangePlatformPage.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(actions, /rebateSignup: "取得返傭帳號"/);
+  assert.match(actions, /rebateDashboard: "登入返傭後台"/);
+  assert.match(actions, /costCalculator: "交易成本計算器"/);
+  assert.match(shell, /actionLabels/);
+  assert.match(exchangePage, /ExchangeActionButtons/);
 });
 
 test("桌面交易所選單沒有 hover 事件並具備外部點擊與 Escape 清理", async () => {

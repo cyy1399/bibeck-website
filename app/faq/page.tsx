@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ExternalLink } from "@/components/ExternalLink";
 import { FAQList } from "@/components/FAQList";
 import { PageHero } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
+import { actionLabels } from "@/config/actions";
 
 export const metadata: Metadata = {
   title: "返傭常見問題",
@@ -26,8 +28,9 @@ export default function FAQPage() {
             <h2 className="mt-4 text-3xl font-semibold text-white">準備好降低交易成本？</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ExternalLink href={BYBIT_REGISTER} sponsored>取得 Bybit 返傭</ExternalLink>
-            <ExternalLink href={REBATE_LOGIN} variant="secondary">返傭後台</ExternalLink>
+            <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+            <ExternalLink href={REBATE_LOGIN} variant="secondary">{actionLabels.rebateDashboard}</ExternalLink>
+            <Link href="/calculator" className="button-secondary">{actionLabels.costCalculator}</Link>
           </div>
         </div>
       </section>
