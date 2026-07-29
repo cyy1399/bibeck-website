@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -6,23 +8,24 @@ import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
 import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 import { bybitActionLabels } from "@/config/actions";
-
-const mobileNavItems = [
-  { href: "/", label: "首頁" },
-  { href: "/calculator", label: bybitActionLabels.costCalculator },
-  { href: "/platform/bybit#rebate", label: "返傭說明" },
-  { href: "/faq", label: "常見問題" },
-  { href: "/contact", label: "聯絡我們" },
-];
-
-const footerNavItems = [
-  { href: "/platforms", label: "交易所" },
-  { href: "/calculator", label: bybitActionLabels.costCalculator },
-  { href: "/platform/bybit#rebate", label: "返傭說明" },
-  { href: "/faq", label: "常見問題" },
-];
+import { SettingsMenu } from "@/components/SettingsMenu";
+import { usePreferences } from "@/components/PreferencesProvider";
 
 export function SiteShell({ children }: { children: ReactNode }) {
+  const { t } = usePreferences();
+  const localizedMobileNavItems = [
+    { href: "/", label: t("nav.home") },
+    { href: "/calculator", label: t("nav.calculator") },
+    { href: "/platform/bybit#rebate", label: t("nav.rebate") },
+    { href: "/faq", label: t("nav.faq") },
+    { href: "/contact", label: t("nav.contact") },
+  ];
+  const localizedFooterNavItems = [
+    { href: "/platforms", label: t("nav.exchanges") },
+    { href: "/calculator", label: t("nav.calculator") },
+    { href: "/platform/bybit#rebate", label: t("nav.rebate") },
+    { href: "/faq", label: t("nav.faq") },
+  ];
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <a href="#main-content" className="skip-link">跳至主要內容</a>
@@ -34,11 +37,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
 
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
-            <Link href="/" className="nav-link">首頁</Link>
+            <Link href="/" className="nav-link">{t("nav.home")}</Link>
             <DesktopExchangeMenu />
-            <Link href="/calculator" className="nav-link">{bybitActionLabels.costCalculator}</Link>
-            <Link href="/platform/bybit#rebate" className="nav-link">返傭說明</Link>
-            <Link href="/faq" className="nav-link">常見問題</Link>
+            <Link href="/calculator" className="nav-link">{t("nav.calculator")}</Link>
+            <Link href="/platform/bybit#rebate" className="nav-link">{t("nav.rebate")}</Link>
+            <Link href="/faq" className="nav-link">{t("nav.faq")}</Link>
+            <SettingsMenu />
           </nav>
 
           <ExternalLink href={BYBIT_REGISTER} sponsored className="ml-auto hidden !min-h-11 !px-5 !text-xs sm:inline-flex lg:ml-0">
@@ -50,9 +54,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="menu-icon" aria-hidden="true"><i /><i /><i /></span>
             </summary>
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-2 shadow-2xl">
-              <Link href="/" className="mobile-nav-link">首頁</Link>
+              <Link href="/" className="mobile-nav-link">{t("nav.home")}</Link>
               <div className="border-b border-white/8 px-4 py-3">
-                <Link href="/platforms" className="block text-xs font-medium text-white/58 hover:text-gold">交易所總覽</Link>
+                <Link href="/platforms" className="block text-xs font-medium text-white/58 hover:text-gold">{t("nav.exchanges")}</Link>
                 <div className="mt-3 grid gap-3">
                   {PLATFORM_DIRECTORY.map((platform) => (
                     <Link key={platform.href} href={platform.href} className={"border-l pl-3 text-sm font-medium text-white hover:text-gold " + (platform.supported ? "border-gold" : "border-white/15")}>
@@ -65,7 +69,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   ))}
                 </div>
               </div>
-              {mobileNavItems.slice(1).map((item) => <Link key={item.href} href={item.href} className="mobile-nav-link">{item.label}</Link>)}
+              {localizedMobileNavItems.slice(1).map((item) => <Link key={item.href} href={item.href} className="mobile-nav-link">{item.label}</Link>)}
+              <SettingsMenu mobile />
               <ExternalLink href={BYBIT_REGISTER} sponsored className="mt-2 w-full sm:hidden">{bybitActionLabels.rebateSignup}</ExternalLink>
             </nav>
           </details>
@@ -81,13 +86,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <BrandMark size="large" />
               <div className="brand-wordmark text-xl font-semibold text-white">BiBeck</div>
             </div>
-            <p className="mt-4 max-w-sm text-sm leading-7 text-white/48">交易成本優化與手續費返傭平台</p>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/48">{t("footer.tagline")}</p>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm text-white/54">
-              {footerNavItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-gold">{item.label}</Link>)}
+              {localizedFooterNavItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-gold">{item.label}</Link>)}
             </div>
             <address className="mt-7 grid gap-2 not-italic text-sm text-white/54">
-              <a href={contactMailto} className="break-all hover:text-gold">一般聯絡：{brandConfig.publicEmails.contact}</a>
-              <a href={supportMailto} className="break-all hover:text-gold">客服支援：{brandConfig.publicEmails.support}</a>
+              <a href={contactMailto} className="break-all hover:text-gold">{t("footer.contact")}：{brandConfig.publicEmails.contact}</a>
+              <a href={supportMailto} className="break-all hover:text-gold">{t("footer.support")}：{brandConfig.publicEmails.support}</a>
             </address>
           </div>
           <div className="max-w-3xl text-sm leading-7 text-white/48">
