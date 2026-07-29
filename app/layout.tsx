@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { brandConfig } from "@/config/brand";
 import { siteDescription, siteTitle, socialImage } from "@/config/seo";
 import "./globals.css";
+import { PreferencesProvider } from "@/components/PreferencesProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brandConfig.websiteUrl),
@@ -102,7 +103,7 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant-TW">
       <body className="antialiased">
-        {children}
+        <PreferencesProvider>{children}</PreferencesProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}

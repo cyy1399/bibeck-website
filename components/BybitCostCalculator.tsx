@@ -7,12 +7,14 @@ import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
 import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
 import { professionalPartnershipMailto } from "@/config/brand";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "@/lib/bybit-tiers";
+import { useCurrency, usePreferences } from "@/components/PreferencesProvider";
+import { convertCurrency, formatConvertedCurrency } from "@/lib/currency";
+import { exchangeRatePolicy } from "@/config/currencies";
 
 type ProductId = "spot" | "usdtPerpetual" | "usdcContract";
 type OrderRole = "maker" | "taker";
 type Mode = "auto" | "manual";
 
-const money = new Intl.NumberFormat("zh-TW", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 const volumeNumber = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 });
 
 function rateFor(tier: BybitVipTier, product: ProductId, role: OrderRole): number {
@@ -24,6 +26,8 @@ function percent(rate: number): string {
 }
 
 export function BybitCostCalculator() {
+  const { currency } = useCurrency();
+  const { t } = usePreferences();
   const [product, setProduct] = useState<ProductId>("usdtPerpetual");
   const [role, setRole] = useState<OrderRole>("taker");
   const [volume, setVolume] = useState(1_000_000);
@@ -57,9 +61,12 @@ export function BybitCostCalculator() {
     ["有 VIP、有 BiBeck 返傭", result.actualCost],
   ] as const;
   const maxCost = Math.max(1, result.baselineFee, result.vipFee, result.actualCost);
+  const displayMoney = (amount: number) => formatConvertedCurrency(amount, currency);
+  const displayVolume = convertCurrency(volume, "USDT", currency);
 
   return (
     <div className="bybit-calculator">
+      {currency !== "USDT" ? <p className="mb-6 border border-gold/25 bg-gold/[0.04] px-4 py-3 text-xs leading-5 text-white/58"><strong className="text-gold">{t("settings.rateNotice")}</strong> · {exchangeRatePolicy.updatedAt} · 計算基準仍為 USDT，顯示結果已換算為 {currency}。</p> : null}
       <div className="mb-8 grid gap-4 border-b border-white/10 pb-7 sm:grid-cols-[minmax(0,22rem)_1fr] sm:items-end">
         <Select label="交易所" value="bybit" onChange={() => undefined}>
           <option value="bybit">Bybit</option>
@@ -83,8 +90,8 @@ export function BybitCostCalculator() {
               </Select>
             </div>
             <label className="block">
-              <span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">最近 30 日交易量 <span className="text-xs font-normal text-white/42">USDT</span></span>
-              <FormattedNumberInput ariaLabel="最近 30 日交易量" placeholder="例如：1,000,000" value={volume} onChange={setVolume} />
+              <span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">最近 30 日交易量 <span className="text-xs font-normal text-white/42">{currency}</span></span>
+              <FormattedNumberInput key={currency} ariaLabel="最近 30 日交易量" placeholder="例如：1,000,000" value={displayVolume} onChange={(value) => setVolume(convertCurrency(value, currency, "USDT"))} />
               <span className="mt-2 block text-xs leading-6 text-white/44">請輸入 Bybit 顯示的最近 30 日成交交易量。系統將依此推估可能適用的 VIP 等級與 BiBeck 返傭方案。</span>
             </label>
 
@@ -116,21 +123,21 @@ export function BybitCostCalculator() {
         <section className="comparison-results" aria-live="polite">
           <p className="eyebrow">你的交易成本比較</p>
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            <ScenarioCard code="方案 A" title="一般狀況" badge="無 VIP、無返傭" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
-            <ScenarioCard code="方案 B" title="VIP" badge="有 VIP、無 BiBeck 返傭" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
-            <ScenarioCard featured code="方案 C" title="VIP + BiBeck 返傭" badge="套用 VIP 費率與 BiBeck 返傭" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
+            <ScenarioCard code="方案 A" title="一般狀況" badge="無 VIP、無返傭" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", formatConvertedCurrency(Math.max(0, volume), currency)], ["30 日原始手續費", displayMoney(result.baselineFee)], ["年度預估成本", displayMoney(result.annualBaselineCost)]]} />
+            <ScenarioCard code="方案 B" title="VIP" badge="有 VIP、無 BiBeck 返傭" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", displayMoney(result.vipFee)], ["VIP 省下金額", displayMoney(result.vipSavings)], ["年度預估成本", displayMoney(result.annualVipCost)]]} />
+            <ScenarioCard featured code="方案 C" title="VIP + BiBeck 返傭" badge="套用 VIP 費率與 BiBeck 返傭" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", displayMoney(result.rebate)], ["30 日實際成本", displayMoney(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", displayMoney(result.annualActualCost)]]} />
           </div>
 
           <div className="savings-summary">
             <p className="text-sm text-secondary">30 日共省下</p>
-            <p className="mt-2 break-words text-4xl font-semibold text-gold sm:text-5xl">{money.format(result.totalSavings)}</p>
-            <p className="mt-5 text-sm text-white/68">其中 BiBeck 預估返傭回饋 <strong className="text-white">{money.format(result.rebate)}</strong></p>
-            <p className="mt-2 text-sm text-white/68">若維持目前交易量，年度預估共省下 <strong className="text-white">{money.format(result.annualTotalSavings)}</strong></p>
-            <p className="mt-5 text-xs leading-6 text-white/42">依目前輸入條件，30 日預估共省下 {money.format(result.totalSavings)}，其中包含 {money.format(result.rebate)} 的 BiBeck 返傭回饋。</p>
+            <p className="mt-2 break-words text-4xl font-semibold text-gold sm:text-5xl">{displayMoney(result.totalSavings)}</p>
+            <p className="mt-5 text-sm text-white/68">其中 BiBeck 預估返傭回饋 <strong className="text-white">{displayMoney(result.rebate)}</strong></p>
+            <p className="mt-2 text-sm text-white/68">若維持目前交易量，年度預估共省下 <strong className="text-white">{displayMoney(result.annualTotalSavings)}</strong></p>
+            <p className="mt-5 text-xs leading-6 text-white/42">依目前輸入條件，30 日預估共省下 {displayMoney(result.totalSavings)}，其中包含 {displayMoney(result.rebate)} 的 BiBeck 返傭回饋。</p>
           </div>
 
           <div className="mt-7 grid gap-5" aria-label="交易成本水平比較圖">
-            {bars.map(([label, value], index) => <div key={label}><div className="mb-2 flex flex-wrap items-baseline justify-between gap-2 text-sm"><span className="text-white/72">{label}</span><strong className="font-mono text-white">{money.format(value)}</strong></div><div className="h-2 overflow-hidden bg-white/8"><div className={index === 2 ? "h-full bg-gold" : "h-full bg-white/35"} style={{ width: `${Math.max(value > 0 ? 3 : 0, (value / maxCost) * 100)}%` }} /></div></div>)}
+            {bars.map(([label, value], index) => <div key={label}><div className="mb-2 flex flex-wrap items-baseline justify-between gap-2 text-sm"><span className="text-white/72">{label}</span><strong className="font-mono text-white">{displayMoney(value)}</strong></div><div className="h-2 overflow-hidden bg-white/8"><div className={index === 2 ? "h-full bg-gold" : "h-full bg-white/35"} style={{ width: `${Math.max(value > 0 ? 3 : 0, (value / maxCost) * 100)}%` }} /></div></div>)}
           </div>
         </section>
       </div>

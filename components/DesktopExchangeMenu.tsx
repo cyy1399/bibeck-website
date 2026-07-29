@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useReducer, useRef } from "react";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { navigationMenuReducer } from "@/lib/navigation-menu";
+import { usePreferences } from "@/components/PreferencesProvider";
 
 export function DesktopExchangeMenu() {
+  const { t } = usePreferences();
   const [isOpen, dispatch] = useReducer(navigationMenuReducer, false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,7 +56,7 @@ export function DesktopExchangeMenu() {
         aria-controls="exchange-comparison-menu"
         onClick={() => dispatch("toggle")}
       >
-        交易所
+        {t("nav.exchanges")}
         <span className={`platform-chevron ${isOpen ? "platform-chevron-open" : ""}`} aria-hidden="true" />
       </button>
       {isOpen ? (

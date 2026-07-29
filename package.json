@@ -10,7 +10,7 @@
                     "build":  "next build",
                     "start":  "next start",
                     "build:sites":  "vinext build",
-                    "test":  "npm run build \u0026\u0026 node --experimental-strip-types --test tests/*.test.mjs",
+                    "test":  "pnpm build \u0026\u0026 node --experimental-strip-types --test tests/*.test.mjs",
                     "lint":  "eslint app components config lib --max-warnings=0",
                     "db:generate":  "drizzle-kit generate",
                     "typecheck":  "tsc --noEmit"
