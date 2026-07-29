@@ -129,7 +129,17 @@ summary {
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
   transition: 220ms ease;
+}
+
+.cta-button {
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .button-primary {
@@ -565,6 +575,14 @@ summary {
 @media (min-width: 768px) {
   .table-scroll-hint {
     display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .cta-button {
+    width: 100%;
+    min-height: 3.25rem;
+    padding-inline: 1rem;
   }
 }
 

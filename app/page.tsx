@@ -42,7 +42,7 @@ export default function Home() {
 
       <section className="scroll-mt-24 border-y border-white/10 px-5 py-20 sm:px-8" id="trading-cost-calculator">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="Bybit 交易成本計算器" title="計算真實的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
+          <SectionTitle label="交易成本計算器" title="計算真實的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
           <div className="mt-10"><BybitCostCalculator /></div>
           <p className="mt-6 border-l border-gold/55 pl-4 text-sm leading-7 text-secondary">交易頻率與交易量越高，手續費對長期績效的影響越明顯。</p>
         </div>

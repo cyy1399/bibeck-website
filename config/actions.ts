@@ -13,7 +13,7 @@ export function getExchangeActionLabels(exchange: Pick<ExchangeActionConfig, "na
   return {
     rebateSignup: `取得 ${exchange.name} 返傭帳號`,
     rebateDashboard: `登入 ${exchange.name} 返傭後台`,
-    costCalculator: `${exchange.name} 交易成本計算器`,
+    costCalculator: "交易成本計算器",
   } as const;
 }
 

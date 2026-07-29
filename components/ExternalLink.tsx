@@ -30,7 +30,7 @@ export function ExternalLink({
       href={href}
       target="_blank"
       rel={sponsored ? "noopener noreferrer sponsored" : "noopener noreferrer"}
-      className={"inline-flex min-h-12 items-center justify-center rounded-sm border px-6 text-sm font-semibold tracking-[0.06em] transition duration-300 " + variants[variant] + " " + className}
+      className={"cta-button inline-flex min-h-12 items-center justify-center rounded-sm border px-6 text-sm font-semibold tracking-[0.06em] transition duration-300 " + variants[variant] + " " + className}
     >
       {children}
     </Link>

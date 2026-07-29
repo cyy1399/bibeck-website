@@ -24,7 +24,8 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   const html = await response.text();
   assert.match(html, /BiBeck/);
   assert.match(html, /交易所/);
-  assert.match(html, /Bybit 交易成本計算器/);
+  assert.match(html, /交易成本計算器/);
+  assert.doesNotMatch(html, /Bybit 交易成本計算器/);
   assert.match(html, /即將開放/);
   assert.match(html, /計算真實的交易成本/);
   assert.match(html, /一般狀況/);
@@ -46,7 +47,7 @@ test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
     const html = await response.text();
     assert.match(html, /取得 Bybit 返傭帳號/);
     assert.match(html, /登入 Bybit 返傭後台/);
-    assert.match(html, /Bybit 交易成本計算器/);
+    assert.match(html, /交易成本計算器/);
     assert.match(html, /https:\/\/partner\.bybit\.com\/b\/t00000016/);
     assert.match(html, /https:\/\/bybackoffice\.com\/user-login/);
     assert.match(html, /#trading-cost-calculator/);
@@ -60,7 +61,8 @@ test("未支援返傭的交易所 Hero 不會導向 Bybit", async () => {
     const hero = html.split('<section class="exchange-hero')[1].split("</section>")[0];
     assert.match(hero, new RegExp("取得 " + name + " 返傭帳號"));
     assert.match(hero, new RegExp("登入 " + name + " 返傭後台"));
-    assert.match(hero, new RegExp(name + " 交易成本計算器"));
+    assert.match(hero, /交易成本計算器/);
+    assert.doesNotMatch(hero, new RegExp(name + " 交易成本計算器"));
     assert.match(hero, /disabled/);
     assert.doesNotMatch(hero, /partner\.bybit\.com|bybackoffice\.com/);
   }
@@ -74,7 +76,7 @@ test("核心按鈕文案與交易所連結集中管理", async () => {
   ]);
   assert.match(actions, /取得 \$\{exchange\.name\} 返傭帳號/);
   assert.match(actions, /登入 \$\{exchange\.name\} 返傭後台/);
-  assert.match(actions, /\$\{exchange\.name\} 交易成本計算器/);
+  assert.match(actions, /costCalculator: "交易成本計算器"/);
   assert.match(shell, /bybitActionLabels/);
   assert.match(exchangePage, /ExchangeActionButtons/);
 });
@@ -108,14 +110,20 @@ test("Bybit 頁包含完整費率、VIP、計算器與返傭 CTA", async () => {
   assert.match(html, /rel="noopener noreferrer sponsored"/);
 });
 
-test("完整 FAQ 分為通用問題與 Bybit 專屬問題", async () => {
+test("完整 FAQ 只保留跨交易所通用問題", async () => {
   const response = await render("/faq");
   const html = await response.text();
   assert.match(html, /通用問題/);
-  assert.match(html, /Bybit 專屬問題/);
   assert.match(html, /BiBeck 是交易所的官方網站嗎？/);
-  assert.match(html, /Bybit 身分驗證可以轉移嗎？/);
-  assert.match(html, /Bybit 身分轉移說明/);
+  assert.doesNotMatch(html, /Bybit 專屬問題|已有 Bybit 帳戶，如何使用 BiBeck 返傭？|如何確認 Bybit 返傭帳戶是否成功綁定？|Bybit 身分驗證可以轉移嗎？|在哪裡登入 Bybit 返傭後台？/);
+});
+
+test("共用 CTA 樣式避免中文逐字斷行並涵蓋手機寬度", async () => {
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.cta-button/);
+  assert.match(styles, /white-space:\s*nowrap/);
+  assert.match(styles, /word-break:\s*keep-all/);
+  assert.match(styles, /@media \(max-width: 639px\)/);
 });
 
 test("Binance 頁包含官方資料、待確認欄位與客觀比較器", async () => {
