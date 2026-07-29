@@ -1,0 +1,1 @@
+export const BIBECK_BYBIT_REBATE_RATE: number | null = null;
