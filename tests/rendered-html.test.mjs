@@ -147,6 +147,13 @@ test("高交易量快速審核頁提供人工審核、觀察期與安全提醒",
   assert.match(html, /30 日觀察期/);
   assert.match(html, /API Secret/);
   assert.match(html, /不保證核准/);
+  assert.match(html, /提交高交易量審核/);
+  assert.match(html, /上傳交易量證明/);
+  assert.match(html, /accept="image\/jpeg,image\/png,image\/webp,application\/pdf"/);
+  assert.match(html, /請選擇目前 VIP 等級/);
+  assert.match(html, /請選擇期望返傭比例/);
+  assert.doesNotMatch(html, />20%｜/);
+  assert.match(html, /sm:grid-cols-2/);
 });
 
 test("公開頁面只顯示 contact 與 support 信箱", async () => {
