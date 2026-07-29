@@ -102,7 +102,7 @@ test("Bybit 頁包含完整費率、VIP、計算器與返傭 CTA", async () => {
   assert.match(html, /0\.055%/);
   assert.match(html, /VIP 等級與手續費差異/);
   assert.match(html, /計算你的實際交易成本/);
-  assert.match(html, /降低你的 Bybit 實際交易成本/);
+  assert.match(html, /返傭級距的生效流程/);
   assert.match(html, /已有 Bybit 帳戶，如何使用 BiBeck 返傭？/);
   assert.match(html, /如何確認 Bybit 返傭帳戶是否成功綁定？/);
   assert.match(html, /接收身分驗證的目標帳戶必須保持未認證狀態/);
@@ -119,10 +119,34 @@ test("完整 FAQ 只保留跨交易所通用問題", async () => {
   assert.match(html, /為什麼 BiBeck 可以提供返傭？/);
   assert.match(html, /BiBeck 會提供投資建議嗎？/);
   assert.match(html, /為什麼有些帳戶需要重新註冊？/);
-  assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 10);
+  assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 12);
   assert.match(html, /"@type":"FAQPage"/);
   assert.match(html, /href="\/calculator"/);
   assert.doesNotMatch(html, /Bybit 專屬問題|已有 Bybit 帳戶，如何使用 BiBeck 返傭？|如何確認 Bybit 返傭帳戶是否成功綁定？|Bybit 身分驗證可以轉移嗎？|在哪裡登入 Bybit 返傭後台？/);
+});
+
+test("Bybit 返傭級距說明初始 20% 與每月完整月份審核", async () => {
+  const response = await render("/platform/bybit");
+  const html = await response.text();
+  assert.match(html, /返傭級距如何生效？/);
+  assert.match(html, /初始皆歸類為「標準交易者」/);
+  assert.match(html, /每月 1 日統計前一個完整曆月/);
+  assert.match(html, /升等、降等或維持原級距/);
+  assert.match(html, /一般申請初始級距/);
+  assert.match(html, /每月依實際交易量審核/);
+  assert.match(html, /不因交易量達標而自動取得 40% 或以上/);
+  assert.match(html, /申請較高初始返傭/);
+});
+
+test("高交易量快速審核頁提供人工審核、觀察期與安全提醒", async () => {
+  const response = await render("/high-volume-application");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /高交易量快速審核/);
+  assert.match(html, /最近 90 日平均月交易量/);
+  assert.match(html, /30 日觀察期/);
+  assert.match(html, /API Secret/);
+  assert.match(html, /不保證核准/);
 });
 
 test("公開頁面只顯示 contact 與 support 信箱", async () => {

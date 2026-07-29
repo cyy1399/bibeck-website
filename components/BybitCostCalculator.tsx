@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FormattedNumberInput } from "@/components/FormattedNumberInput";
-import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, rebateReviewLabels } from "@/config/bibeck-rebate-tiers";
 import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
 import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
 import { professionalPartnershipMailto } from "@/config/brand";
@@ -93,11 +93,11 @@ export function BybitCostCalculator() {
               <p className="text-xs leading-6 text-white/42">實際 VIP 等級仍可能受到資產條件、平台政策與每日系統更新影響，請以 Bybit 帳戶顯示為準。</p>
             </ModeField>
 
-            <ModeField title="BiBeck 返傭" mode={rebateMode} setMode={setRebateMode} autoLabel="自動建議" manualLabel="手動調整">
-              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量，建議方案為：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p>}
+            <ModeField title="BiBeck 返傭" mode={rebateMode} setMode={setRebateMode} autoLabel={rebateReviewLabels.estimatedTier} manualLabel="情境試算">
+              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量推估：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p>}
               <p className="text-xs leading-6 text-white/52">適用交易量：{formatRebateVolumeRange(selectedRebate)}</p>
               {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={professionalPartnershipMailto} className="button-secondary w-full">洽談專業合作方案</a><p className="text-xs leading-6 text-white/42">40% 或以上方案僅提供給符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與專業協商。</p></div> : null}
-              <p className="text-xs leading-6 text-white/42">目前級距為參考方案，實際返傭比例仍以 BiBeck 審核與合作條件為準。</p>
+              <p className="text-xs leading-6 text-white/42">{rebateMode === "manual" ? "此功能僅供比較不同返傭比例下的交易成本，不代表帳戶實際核准比例。" : "一般申請帳戶初始仍為標準交易者 20%，實際級距會在每月 1 日依前一完整月份交易量審核後生效。"}</p>
             </ModeField>
 
             <ModeField title="手續費率" mode={customFeeEnabled ? "manual" : "auto"} setMode={(mode) => setCustomFeeEnabled(mode === "manual")} autoLabel="自動套用 VIP 費率" manualLabel="自訂費率">
@@ -108,7 +108,7 @@ export function BybitCostCalculator() {
           <div className="tier-analysis">
             <p className="eyebrow">等級分析</p>
             <Progress label="Bybit VIP" current={`依目前交易量推估：${estimatedVip.label}`} next={nextVip ? `距離 ${nextVip.label} 還差：${volumeNumber.format(vipProgress.remaining)} USDT` : "目前已達可推估的最高 VIP 等級"} percentage={vipProgress.percentage} />
-            <Progress label="BiBeck 返傭" current={`建議方案：${recommendedRebate.name} ${Math.round(recommendedRebate.rebateRate * 100)}%${recommendedRebate.isNegotiated ? "+" : ""}`} next={nextRebate ? nextRebate.isNegotiated ? "下一級為專業合作方案，須人工協商與確認。" : `距離下一個參考級距還差：${volumeNumber.format(rebateProgress.remaining)} USDT` : "目前已達最高參考方案；正式比例須人工確認。"} percentage={rebateProgress.percentage} reference />
+            <Progress label="BiBeck 返傭" current={`依交易量推估級距：${recommendedRebate.name} ${Math.round(recommendedRebate.rebateRate * 100)}%${recommendedRebate.isNegotiated ? "+" : ""}`} next={nextRebate ? nextRebate.isNegotiated ? "下一級為專業合作方案，須人工協商與確認。" : `距離下一個參考級距還差：${volumeNumber.format(rebateProgress.remaining)} USDT` : "最高級距仍須人工評估，不會自動取得 40% 或以上。"} percentage={rebateProgress.percentage} reference />
           </div>
           <p className="text-xs leading-6 text-white/42">不同商品、掛單與吃單可能適用不同費率。若交易同時包含多種商品或下單方式，建議分開試算後加總。</p>
         </div>

@@ -9,8 +9,8 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
 import { getExchangeActionLabels } from "@/config/actions";
-import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
-import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
+import { BYBIT_REGISTER } from "@/config/links";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, getRebateTierStatus, rebateReviewLabels } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
 
 const costFactors = [
@@ -192,12 +192,25 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       {isBybit ? (
         <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionTitle label="BiBeck 返傭方案" title="依交易需求選擇合適的參考方案" copy="一般方案級距仍須以 BiBeck 審核與合作條件為準；40% 或以上僅提供專業協商與人工評估。" />
+            <SectionTitle label="BiBeck 返傭方案" title="依交易需求選擇合適的參考方案" copy="一般申請者初始皆為標準交易者 20%，後續於每月 1 日依前一完整月份交易量重新分級；特殊合作方案則採人工評估與協商。" />
+            <div className="mt-10 border-l-2 border-gold bg-[#101010] p-6 sm:p-8">
+              <h3 className="text-2xl font-semibold text-white">返傭級距如何生效？</h3>
+              <div className="mt-5 grid gap-3 text-sm leading-7 text-secondary">
+                <p>一般透過 BiBeck 申請返傭帳號的使用者，初始皆歸類為「標準交易者」，返傭比例為 20%。</p>
+                <p>BiBeck 會在每月 1 日統計前一個完整曆月的實際交易量，並依交易量級距調整下一期返傭方案；結果可能為升等、降等或維持原級距。</p>
+                <p>若帳戶啟用尚未滿一個完整月份，將在完成第一個完整月份後的下一個月 1 日首次分級。</p>
+                <p>特殊合作夥伴或已有穩定且可驗證交易紀錄者，可先申請人工審核；較高初始比例不會只憑自行填寫的交易量核准。</p>
+              </div>
+              <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
+                <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                <Link href="/high-volume-application" className="cta-button button-secondary">已有交易量？申請較高初始返傭</Link>
+              </div>
+            </div>
             <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
               {BIBECK_REBATE_TIERS.map((tier) => (
                 <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isNegotiated ? "ring-1 ring-inset ring-gold/45" : "")}>
-                  {tier.isNegotiated ? <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">人工評估</p> : null}
-                  <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? " 或以上" : " 返傭回饋"}</p><p className="mt-5 text-xs text-white/42">最近 30 日交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{formatRebateVolumeRange(tier)}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>{tier.isNegotiated ? <p className="mt-3 text-xs leading-6 text-white/42">實際比例需經人工評估與專業協商。</p> : null}
+                  <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{getRebateTierStatus(tier)}</p>
+                  <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? " 或以上" : " 返傭回饋"}</p><p className="mt-5 text-xs text-white/42">最近 30 日交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{formatRebateVolumeRange(tier)}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>{tier.isNegotiated ? <><p className="mt-3 text-xs leading-6 text-gold">可依合作條件議定初始比例</p><p className="mt-3 text-xs leading-6 text-white/42">特殊合作夥伴可經人工評估與協商適用較高暫定比例；實際比例、門檻與生效方式以個別合作結果為準，不因交易量達標而自動取得 40% 或以上。</p></> : <p className="mt-3 text-xs leading-6 text-white/42">{tier.id === "standard" ? rebateReviewLabels.initialTier : rebateReviewLabels.monthlyReview}</p>}
                 </article>
               ))}
             </div>
@@ -233,12 +246,18 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       <section id="rebate" className="px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           {isBybit ? (
-            <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">
-              <SectionTitle label="BiBeck 返傭" title="降低你的 Bybit 實際交易成本" copy="透過 BiBeck 專屬推薦連結註冊 Bybit，並依合作方案條件取得交易手續費返傭。" />
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                <ExternalLink href={REBATE_LOGIN} variant="secondary">{actionLabels.rebateDashboard}</ExternalLink>
+            <div className="border-y border-white/10 py-12">
+              <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+                <SectionTitle label="BiBeck 返傭" title="返傭級距的生效流程" copy="一般申請從標準交易者 20% 開始；累積完整月份交易量後，於次月 1 日重新審核。" />
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                  <Link href="/high-volume-application" className="cta-button button-secondary">申請較高初始返傭</Link>
+                </div>
               </div>
+              <ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
+                {["透過指定連結建立返傭帳號", "一般申請者初始適用 20%", "累積一個完整月份的實際交易量", "每月 1 日重新審核級距", "依結果升等、降等或維持"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
+              </ol>
+              <p className="mt-6 text-sm leading-7 text-secondary">特殊合作夥伴可在建立返傭帳戶前提出可驗證資料，經人工評估與協商後議定暫定初始比例。初步核准不代表返傭已生效，仍需完成指定帳戶註冊、UID 歸戶及必要驗證。</p>
             </div>
           ) : (
             <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">

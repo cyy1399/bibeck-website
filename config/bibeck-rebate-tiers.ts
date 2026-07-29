@@ -17,6 +17,31 @@ export const BIBECK_REBATE_TIERS: BiBeckRebateTier[] = [
   { id: "partner", name: "專業合作方案", rebateRate: 0.4, minThirtyDayVolume: 100_000_000, maxThirtyDayVolume: null, description: "高額交易量個體戶、專業交易者、代理或合作夥伴可專業協商", isNegotiated: true, isProvisional: true },
 ];
 
+export const rebateReviewPolicy = {
+  defaultTierId: "standard",
+  defaultRate: 20,
+  reviewDayOfMonth: 1,
+  reviewBasis: "previous_full_calendar_month",
+  partialMonthEligible: false,
+  outcomes: ["upgrade", "downgrade", "maintain"],
+  specialPartnerManualReview: true,
+  highVolumeObservationDays: 30,
+} as const;
+
+export const rebateReviewLabels = {
+  initialTier: "一般申請初始級距",
+  monthlyReview: "每月依實際交易量審核",
+  estimatedTier: "依交易量推估級距",
+  effectiveTier: "實際生效級距",
+  manualReview: "人工評估",
+} as const;
+
+export function getRebateTierStatus(tier: BiBeckRebateTier): string {
+  if (tier.id === rebateReviewPolicy.defaultTierId) return rebateReviewLabels.initialTier;
+  if (tier.isNegotiated) return rebateReviewLabels.manualReview;
+  return rebateReviewLabels.monthlyReview;
+}
+
 const volumeFormatter = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 });
 
 export function formatRebateVolumeRange(tier: BiBeckRebateTier): string {

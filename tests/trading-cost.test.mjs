@@ -3,7 +3,7 @@ import test from "node:test";
 import { calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
-import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "../config/bibeck-rebate-tiers.ts";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, rebateReviewLabels, rebateReviewPolicy } from "../config/bibeck-rebate-tiers.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
 import { navigationMenuReducer } from "../lib/navigation-menu.ts";
 
@@ -83,6 +83,17 @@ test("返傭級距顯示千分位交易量標準", () => {
     "25,000,000–99,999,999 USDT",
     "100,000,000 USDT 以上",
   ]);
+});
+
+test("返傭審核制度集中設定一般初始級距與完整月份規則", () => {
+  assert.equal(rebateReviewPolicy.defaultTierId, "standard");
+  assert.equal(rebateReviewPolicy.defaultRate, 20);
+  assert.equal(rebateReviewPolicy.reviewDayOfMonth, 1);
+  assert.equal(rebateReviewPolicy.reviewBasis, "previous_full_calendar_month");
+  assert.equal(rebateReviewPolicy.partialMonthEligible, false);
+  assert.deepEqual(rebateReviewPolicy.outcomes, ["upgrade", "downgrade", "maintain"]);
+  assert.equal(rebateReviewPolicy.specialPartnerManualReview, true);
+  assert.equal(rebateReviewLabels.estimatedTier, "依交易量推估級距");
 });
 
 test("零交易量不產生 NaN 或 Infinity", () => {
