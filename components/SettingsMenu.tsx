@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { currencies, type CurrencyCode } from "@/config/currencies";
 import { locales, type LocaleCode } from "@/config/locales";
+import { localizePath } from "@/config/locales";
 import { usePreferences } from "@/components/PreferencesProvider";
+import { usePathname, useRouter } from "next/navigation";
 
 export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +13,8 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { currency, locale, setCurrency, setLocale, t } = usePreferences();
-  const localeDefinition = locales.find((item) => item.code === locale) ?? locales[0];
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -47,7 +50,6 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
         onClick={() => setIsOpen((value) => !value)}
       >
         <span>{t("settings.title")}</span>
-        <span className="text-xs text-gold">{currency} · {localeDefinition.shortLabel}</span>
       </button>
       {isOpen ? (
         <div
@@ -67,7 +69,7 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
             </div>
           ) : (
             <div className="mt-3 grid gap-1" role="radiogroup" aria-label={t("settings.language")}>
-              {locales.map((item) => <Choice key={item.code} active={locale === item.code} label={item.label} detail={item.code} onClick={() => setLocale(item.code as LocaleCode)} />)}
+              {locales.map((item) => <Choice key={item.code} active={locale === item.code} label={item.label} detail={item.code} onClick={() => { const nextLocale = item.code as LocaleCode; setLocale(nextLocale); setIsOpen(false); router.push(localizePath(pathname, nextLocale)); }} />)}
             </div>
           )}
         </div>

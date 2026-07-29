@@ -7,6 +7,7 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { createPageMetadata, siteDescription, siteTitle } from "@/config/seo";
+import { TranslatedText } from "@/components/TranslatedText";
 
 export const metadata: Metadata = createPageMetadata({ title: siteTitle, description: siteDescription, path: "/", absoluteTitle: true });
 
@@ -22,16 +23,16 @@ export default function Home() {
       <section className="home-hero relative px-5 pb-20 pt-36 sm:px-8 lg:pb-24 lg:pt-44">
         <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center">
           <div className="relative z-10 max-w-4xl">
-            <p className="reveal eyebrow">交易成本優化與手續費返傭平台</p>
+            <p className="reveal eyebrow"><TranslatedText message="home.eyebrow" /></p>
             <h1 className="reveal mt-7 max-w-4xl text-balance text-5xl font-semibold leading-[1.06] text-white sm:text-7xl lg:text-[5.2rem]">
-              降低每一筆交易成本。
+              <TranslatedText message="home.title" />
             </h1>
             <p className="reveal mt-7 max-w-2xl text-lg leading-9 text-secondary">
-              BiBeck 透過清楚的手續費資訊、返傭服務與交易成本工具，幫助交易者減少長期交易支出。
+              <TranslatedText message="home.description" />
             </p>
             <div className="reveal mt-9"><ExchangeActionButtons exchangeSlug="bybit" calculatorHref="#trading-cost-calculator" /></div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
-              BiBeck 為獨立第三方平台，並非 Bybit 官方網站或代表。
+              <TranslatedText message="home.disclosure" />
             </p>
           </div>
         </div>
@@ -39,7 +40,7 @@ export default function Home() {
 
       <section className="scroll-mt-24 border-y border-white/10 px-5 py-20 sm:px-8" id="trading-cost-calculator">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="交易成本計算器" title="計算真實的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
+          <LocalizedHomeCalculatorTitle />
           <div className="mt-10"><BybitCostCalculator /></div>
           <p className="mt-6 border-l border-gold/55 pl-4 text-sm leading-7 text-secondary">交易頻率與交易量越高，手續費對長期績效的影響越明顯。</p>
         </div>
@@ -73,4 +74,8 @@ export default function Home() {
       <section className="px-5 pb-24 sm:px-8"><div className="mx-auto max-w-7xl"><TrustNotice /></div></section>
     </SiteShell>
   );
+}
+
+function LocalizedHomeCalculatorTitle() {
+  return <div className="max-w-3xl"><p className="reveal eyebrow"><TranslatedText message="calculator.title" /></p><h2 className="reveal mt-5 text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl"><TranslatedText message="calculator.heading" /></h2><p className="reveal mt-5 text-lg leading-8 text-secondary"><TranslatedText message="calculator.description" /></p></div>;
 }

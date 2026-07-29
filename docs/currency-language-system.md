@@ -1,18 +1,16 @@
 # Currency and language preferences
 
-## Current rollout
+## Current rollout (v2)
 
-- The canonical site remains `https://bibeck.com` and the server-rendered default is Traditional Chinese (`zh-TW`).
-- Currency and language preferences are client-side enhancements saved under `bibeck.currency` and `bibeck.locale` in local storage.
+- The canonical default remains `https://bibeck.com` in Traditional Chinese (`zh-TW`). English, Japanese, Korean and Simplified Chinese are published under `/en`, `/ja`, `/ko` and `/zh-cn`.
+- Currency and language preferences are saved under `bibeck.currency` and `bibeck.locale`; locale is also stored in a first-party cookie so routing can retain the language across navigation.
 - The first client render uses `USDT` and `zh-TW`, then restores saved preferences after hydration. This prevents server/client markup mismatches.
 - Currency conversion is based on bundled fallback estimates and is always labelled as an estimate, not a live market quote. Trading calculations continue to use USDT as their base unit.
-- Header navigation, footer labels, settings UI, currency units and calculator monetary results react to preferences in this release. The message catalogue is intentionally centralized so remaining page copy can migrate without another state-management change.
+- Shared navigation, footer, settings, primary page heroes, calculator fields and calculator monetary results use JSON dictionaries. Locale routes are statically generated through the App Router.
 
 ## SEO strategy
 
-This release does not publish `/zh-TW`, `/zh-CN`, `/en`, `/ja` or `/ko` routes. Adding hreflang entries for URLs that do not yet contain complete server-rendered translations would be misleading and could create duplicate canonical pages. Existing metadata, canonical URLs, Open Graph, JSON-LD, robots and sitemap therefore remain unchanged.
-
-The next localization phase should move page content into the message catalogue, add locale route segments with translated server metadata, and only then publish `hreflang`, `x-default` and locale sitemap entries.
+Every published locale route receives a locale-specific canonical, Open Graph locale, Twitter title/description and `hreflang` set including `x-default`. The sitemap includes each language URL and its language alternates. The default language intentionally remains unprefixed.
 
 ## Exchange-rate provider boundary
 

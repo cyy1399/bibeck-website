@@ -1,5 +1,5 @@
 export const currencyCodes = [
-  "USDT", "USDC", "BTC", "ETH", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD",
+  "USDT", "USDC", "BTC", "ETH", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD", "AUD", "CAD",
 ] as const;
 
 export type CurrencyCode = (typeof currencyCodes)[number];
@@ -32,6 +32,8 @@ export const currencies: readonly CurrencyDefinition[] = [
   { code: "EUR", label: "EUR", symbol: "€", type: "fiat", decimals: 2, locale: "de-DE", displayName: "Euro", unitsPerUsdt: 0.92 },
   { code: "GBP", label: "GBP", symbol: "£", type: "fiat", decimals: 2, locale: "en-GB", displayName: "Pound Sterling", unitsPerUsdt: 0.78 },
   { code: "SGD", label: "SGD", symbol: "S$", type: "fiat", decimals: 2, locale: "en-SG", displayName: "Singapore Dollar", unitsPerUsdt: 1.35 },
+  { code: "AUD", label: "AUD", symbol: "A$", type: "fiat", decimals: 2, locale: "en-AU", displayName: "Australian Dollar", unitsPerUsdt: 1.52 },
+  { code: "CAD", label: "CAD", symbol: "C$", type: "fiat", decimals: 2, locale: "en-CA", displayName: "Canadian Dollar", unitsPerUsdt: 1.38 },
 ] as const;
 
 export const currencyByCode = Object.fromEntries(currencies.map((currency) => [currency.code, currency])) as Record<CurrencyCode, CurrencyDefinition>;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHero, SectionTitle } from "@/components/Sections";
+import { SectionTitle } from "@/components/Sections";
+import { LocalizedPageHero } from "@/components/TranslatedText";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { ExchangeActionButtons } from "@/components/ExchangeActionButtons";
@@ -22,7 +23,7 @@ const steps = [
 export default function RebatePage() {
   return (
     <SiteShell>
-      <PageHero eyebrow="BiBeck 返傭" title="返傭的目的，是降低符合條件的交易成本。" copy="返傭不改變交易盈虧，也不代表投資獲利；實際資格、比例與生效方式以方案及審核結果為準。" />
+      <LocalizedPageHero eyebrow="nav.rebate" title="page.rebateTitle" description="page.rebateDescription" />
       <section className="px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl">
         <SectionTitle label="運作方式" title="從建立帳戶到每月審核" copy="一般申請與高交易量快速審核採不同的初始級距流程，但後續皆依實際交易紀錄與合作條件評估。" />
         <div className="mt-12 grid gap-px border border-white/10 bg-white/10 md:grid-cols-2">{steps.map(([number, title, copy]) => <article key={number} className="bg-[#121212] p-7"><p className="font-mono text-sm text-gold">{number}</p><h2 className="mt-5 text-xl font-semibold text-white">{title}</h2><p className="mt-3 text-sm leading-7 text-secondary">{copy}</p></article>)}</div>

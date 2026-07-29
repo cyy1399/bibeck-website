@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink } from "@/components/ExternalLink";
 import { FAQList, generalFaqs } from "@/components/FAQList";
-import { PageHero } from "@/components/Sections";
+import { LocalizedPageHero } from "@/components/TranslatedText";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
@@ -29,7 +29,7 @@ export default function FAQPage() {
   return (
     <SiteShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
-      <PageHero eyebrow="常見問題" title="註冊前，先把重要問題說清楚。" copy="先了解 BiBeck 的第三方身分、返傭資格、後台流程與資金界線，再決定是否使用服務。" />
+      <LocalizedPageHero eyebrow="nav.faq" title="page.faqTitle" description="page.faqDescription" />
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow">通用問題</p>
