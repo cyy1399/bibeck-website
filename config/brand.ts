@@ -2,10 +2,12 @@ export const brandConfig = {
   name: "BiBeck",
   domain: "bibeck.com",
   websiteUrl: "https://bibeck.com",
-  emails: {
-    primary: "hello@bibeck.com",
+  publicEmails: {
     contact: "contact@bibeck.com",
     support: "support@bibeck.com",
+  },
+  internalEmails: {
+    primary: "hello@bibeck.com",
     business: "business@bibeck.com",
     admin: "admin@bibeck.com",
   },
@@ -19,10 +21,10 @@ export function mailto(email: string, subject?: string, body?: string): string {
   return `mailto:${email}${suffix ? `?${suffix}` : ""}`;
 }
 
-export const contactMailto = mailto(brandConfig.emails.contact, "BiBeck 官網聯絡");
-export const supportMailto = mailto(brandConfig.emails.support, "Bybit 返傭問題");
-export const businessMailto = mailto(
-  brandConfig.emails.business,
+export const contactMailto = mailto(brandConfig.publicEmails.contact, "BiBeck 官網聯絡");
+export const supportMailto = mailto(brandConfig.publicEmails.support, "BiBeck 返傭支援");
+export const professionalPartnershipMailto = mailto(
+  brandConfig.publicEmails.contact,
   "申請 Bybit 40%+ 專業合作方案",
   `您好，我想申請 BiBeck Bybit 40%+ 專業合作方案。
 

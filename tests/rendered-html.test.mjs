@@ -38,7 +38,8 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.doesNotMatch(html, /Hyperliquid|標準會員|官方 VIP|比較真正的交易成本/);
   assert.doesNotMatch(html, /比較真實的交易成本|手續費累積得比想像更快|取回部分交易手續費|已有 Bybit 帳戶還能綁定嗎？|返傭多久發放？|在哪裡查看返傭？/);
   assert.match(html, /BiBeck 是交易所的官方網站嗎？/);
-  assert.match(html, /如何確認返傭帳戶是否成功綁定？/);
+  assert.match(html, /使用 BiBeck 需要額外付費嗎？/);
+  assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 5);
 });
 
 test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
@@ -115,7 +116,23 @@ test("完整 FAQ 只保留跨交易所通用問題", async () => {
   const html = await response.text();
   assert.match(html, /通用問題/);
   assert.match(html, /BiBeck 是交易所的官方網站嗎？/);
+  assert.match(html, /為什麼 BiBeck 可以提供返傭？/);
+  assert.match(html, /BiBeck 會提供投資建議嗎？/);
+  assert.match(html, /為什麼有些帳戶需要重新註冊？/);
+  assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 10);
+  assert.match(html, /"@type":"FAQPage"/);
+  assert.match(html, /href="\/calculator"/);
   assert.doesNotMatch(html, /Bybit 專屬問題|已有 Bybit 帳戶，如何使用 BiBeck 返傭？|如何確認 Bybit 返傭帳戶是否成功綁定？|Bybit 身分驗證可以轉移嗎？|在哪裡登入 Bybit 返傭後台？/);
+});
+
+test("公開頁面只顯示 contact 與 support 信箱", async () => {
+  for (const pathname of ["/", "/contact", "/faq", "/platform/bybit"]) {
+    const response = await render(pathname);
+    const html = await response.text();
+    assert.match(html, /contact@bibeck\.com/);
+    assert.match(html, /support@bibeck\.com/);
+    assert.doesNotMatch(html, /business@bibeck\.com|admin@bibeck\.com|hello@bibeck\.com/);
+  }
 });
 
 test("共用 CTA 樣式避免中文逐字斷行並涵蓋手機寬度", async () => {

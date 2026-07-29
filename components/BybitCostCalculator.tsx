@@ -5,7 +5,7 @@ import { FormattedNumberInput } from "@/components/FormattedNumberInput";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
 import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
 import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
-import { businessMailto } from "@/config/brand";
+import { professionalPartnershipMailto } from "@/config/brand";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "@/lib/bybit-tiers";
 
 type ProductId = "spot" | "usdtPerpetual" | "usdcContract";
@@ -96,7 +96,7 @@ export function BybitCostCalculator() {
             <ModeField title="BiBeck 返傭" mode={rebateMode} setMode={setRebateMode} autoLabel="自動建議" manualLabel="手動調整">
               {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量，建議方案為：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p>}
               <p className="text-xs leading-6 text-white/52">適用交易量：{formatRebateVolumeRange(selectedRebate)}</p>
-              {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={businessMailto} className="button-secondary w-full">洽談專業合作方案</a><p className="text-xs leading-6 text-white/42">40% 或以上方案僅提供給符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與專業協商。</p></div> : null}
+              {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={professionalPartnershipMailto} className="button-secondary w-full">洽談專業合作方案</a><p className="text-xs leading-6 text-white/42">40% 或以上方案僅提供給符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與專業協商。</p></div> : null}
               <p className="text-xs leading-6 text-white/42">目前級距為參考方案，實際返傭比例仍以 BiBeck 審核與合作條件為準。</p>
             </ModeField>
 

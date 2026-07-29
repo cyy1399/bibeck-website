@@ -15,8 +15,19 @@ export const metadata: Metadata = {
 };
 
 export default function FAQPage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: generalFaqs.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+
   return (
     <SiteShell>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <PageHero eyebrow="常見問題" title="註冊前，先把重要問題說清楚。" copy="先了解 BiBeck 的第三方身分、返傭資格、後台流程與資金界線，再決定是否使用服務。" />
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-4xl">

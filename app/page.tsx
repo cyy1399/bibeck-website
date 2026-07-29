@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExchangeActionButtons } from "@/components/ExchangeActionButtons";
-import { FAQList } from "@/components/FAQList";
+import { FAQList, homeFaqs } from "@/components/FAQList";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
@@ -67,7 +67,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr]">
           <SectionTitle label="常見問題" title="先把重要問題說清楚。" copy="透明的身分、資格與風險界線，是返傭服務建立信任的第一步。" />
           <div>
-            <FAQList limit={4} />
+            <FAQList items={homeFaqs} />
             <Link href="/faq" className="text-link mt-8">查看所有問題 <span aria-hidden="true">→</span></Link>
           </div>
         </div>

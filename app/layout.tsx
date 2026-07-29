@@ -73,7 +73,7 @@ export default function RootLayout({
       "@type": "Organization",
       name: "BiBeck",
       url: brandConfig.websiteUrl,
-      email: brandConfig.emails.contact,
+      email: brandConfig.publicEmails.contact,
     },
   };
 

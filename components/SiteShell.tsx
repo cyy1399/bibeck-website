@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BYBIT_REGISTER } from "@/config/links";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
-import { brandConfig, businessMailto, contactMailto, supportMailto } from "@/config/brand";
+import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
 import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 import { bybitActionLabels } from "@/config/actions";
 
@@ -86,9 +86,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
               {footerNavItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-gold">{item.label}</Link>)}
             </div>
             <address className="mt-7 grid gap-2 not-italic text-sm text-white/54">
-              <a href={contactMailto} className="break-all hover:text-gold">一般聯絡：{brandConfig.emails.contact}</a>
-              <a href={supportMailto} className="break-all hover:text-gold">返傭客服：{brandConfig.emails.support}</a>
-              <a href={businessMailto} className="break-all hover:text-gold">商務合作：{brandConfig.emails.business}</a>
+              <a href={contactMailto} className="break-all hover:text-gold">一般聯絡：{brandConfig.publicEmails.contact}</a>
+              <a href={supportMailto} className="break-all hover:text-gold">客服支援：{brandConfig.publicEmails.support}</a>
             </address>
           </div>
           <div className="max-w-3xl text-sm leading-7 text-white/48">
