@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 import { HighVolumeApplicationForm } from "@/components/HighVolumeApplicationForm";
 import { PageHero, SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
+import { createPageMetadata } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: "高交易量快速審核",
-  description: "提交可驗證的近期交易紀錄，申請 BiBeck 較高的暫定初始返傭比例。",
-  alternates: { canonical: "/high-volume-application" },
-};
+export const metadata: Metadata = createPageMetadata({ title: "高交易量快速審核", description: "提交可驗證的近期交易紀錄，申請 BiBeck 較高的暫定初始返傭比例。", path: "/high-volume-application" });
 
 const reviewFactors = ["可驗證的歷史交易量", "最近 30 日與 90 日月均中的較低者", "交易量穩定度", "實際手續費貢獻", "未來交易量可信度", "合作價值、帳戶狀態與合規風險"];
 const decisions = [

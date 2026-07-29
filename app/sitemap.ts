@@ -5,7 +5,7 @@ import { brandConfig } from "@/config/brand";
 const siteUrl = brandConfig.websiteUrl;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/platforms", "/calculator", "/rebate", "/fees", "/faq", "/philosophy", "/contact"];
+  const staticRoutes = ["", "/platforms", "/calculator", "/rebate", "/faq", "/contact", "/high-volume-application"];
   const routes = [...staticRoutes, ...EXCHANGE_ORDER.map((exchange) => `/platform/${exchange}`)];
 
   return routes.map((route, index) => ({

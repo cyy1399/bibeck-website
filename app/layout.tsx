@@ -1,60 +1,66 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { brandConfig } from "@/config/brand";
+import { siteDescription, siteTitle, socialImage } from "@/config/seo";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brandConfig.websiteUrl),
   title: {
-    default: "BiBeck｜交易成本優化與手續費返傭平台",
-    template: "%s | BiBeck",
+    default: siteTitle,
+    template: "%s｜BiBeck",
   },
-  description:
-    "BiBeck 透過透明的手續費資訊、返傭服務與交易成本工具，幫助交易者降低長期交易支出。",
+  description: siteDescription,
   keywords: [
     "BiBeck",
-    "trading fees",
-    "Bybit rebate",
-    "fee calculator",
-    "maker fee",
-    "taker fee",
-    "funding fee",
-    "Binance 手續費",
-    "BingX 手續費",
-    "Bitget 手續費",
-    "OKX 手續費",
-    "交易所費率比較",
-    "返傭",
-    "交易手續費",
-    "手續費計算器",
+    "交易成本",
+    "交易成本計算器",
+    "Bybit",
+    "Bybit返傭",
+    "Bybit手續費",
+    "Binance",
+    "OKX",
+    "Bitget",
+    "Crypto Rebate",
+    "Trading Fee Calculator",
   ],
   authors: [{ name: "BiBeck" }],
   creator: "BiBeck",
   publisher: "BiBeck",
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "BiBeck｜降低每一筆交易成本",
-    description: "交易成本優化與手續費返傭平台",
+    description: "比較交易所手續費、取得返傭、降低交易成本。",
+    url: brandConfig.websiteUrl,
     siteName: "BiBeck",
     locale: "zh_TW",
     type: "website",
-    images: [
-      {
-        url: "/og.png",
-        width: 1731,
-        height: 909,
-        alt: "BiBeck 交易成本優化與手續費返傭平台",
-      },
-    ],
+    images: [socialImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BiBeck｜降低每一筆交易成本",
-    description: "交易成本優化與手續費返傭平台",
-    images: ["/og.png"],
+    title: "BiBeck",
+    description: "交易成本計算器與返傭平台",
+    images: [socialImage.url],
   },
   icons: {
-    icon: "/bibeck-icon.jpg",
-    shortcut: "/bibeck-icon.jpg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#090909",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -64,17 +70,33 @@ export default function RootLayout({
 }>) {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "BiBeck",
-    url: brandConfig.websiteUrl,
-    inLanguage: "zh-Hant-TW",
-    description: "交易成本優化與手續費返傭平台",
-    publisher: {
-      "@type": "Organization",
-      name: "BiBeck",
-      url: brandConfig.websiteUrl,
-      email: brandConfig.publicEmails.contact,
-    },
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${brandConfig.websiteUrl}/#organization`,
+        name: brandConfig.name,
+        url: brandConfig.websiteUrl,
+        logo: `${brandConfig.websiteUrl}/logo.png`,
+        email: brandConfig.publicEmails.contact,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${brandConfig.websiteUrl}/#website`,
+        name: brandConfig.name,
+        url: brandConfig.websiteUrl,
+        description: siteDescription,
+        inLanguage: "zh-Hant-TW",
+        publisher: { "@id": `${brandConfig.websiteUrl}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${brandConfig.websiteUrl}/search?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
   };
 
   return (

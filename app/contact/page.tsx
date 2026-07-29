@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/SiteShell";
 import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
+import { createPageMetadata } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: "聯絡我們",
-  description: "聯絡 BiBeck 一般服務或返傭客服支援窗口。",
-  alternates: { canonical: "/contact" },
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "聯絡 BiBeck",
+  description: "聯絡 BiBeck 一般服務、網站內容與返傭客服支援窗口。",
+  path: "/contact",
+});
 
 const contacts = [
   { label: "一般聯絡", description: "網站內容、品牌合作、媒體與其他一般問題", email: brandConfig.publicEmails.contact, href: contactMailto, action: "寄送一般詢問" },
