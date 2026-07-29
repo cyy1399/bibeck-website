@@ -27,6 +27,18 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.match(html, /費率計算器/);
   assert.match(html, /返傭說明/);
   assert.match(html, /取得 Bybit 返傭/);
+  assert.match(html, /aria-haspopup="menu"/);
+  assert.match(html, /aria-expanded="false"/);
+});
+
+test("桌面交易所選單沒有 hover 事件並具備外部點擊與 Escape 清理", async () => {
+  const source = await readFile(new URL("../components/DesktopExchangeMenu.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /onMouseEnter|onMouseLeave|group-hover|peer-hover/);
+  assert.match(source, /pointerdown/);
+  assert.match(source, /Escape/);
+  assert.match(source, /removeEventListener/);
+  assert.match(source, /onClick=\{closeMenu\}/);
+  assert.match(source, /aria-controls="exchange-comparison-menu"/);
 });
 
 test("Bybit 頁包含完整費率、VIP、計算器與返傭 CTA", async () => {

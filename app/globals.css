@@ -209,12 +209,10 @@ summary {
   transition: color 180ms ease;
 }
 
-.nav-link:hover,
-.platform-menu[open] > summary {
+.nav-link:hover {
   color: var(--gold);
 }
 
-.platform-menu summary::-webkit-details-marker,
 .mobile-nav summary::-webkit-details-marker {
   display: none;
 }
@@ -228,7 +226,7 @@ summary {
   transition: transform 180ms ease;
 }
 
-.platform-menu[open] .platform-chevron {
+.platform-chevron-open {
   transform: translateY(1px) rotate(225deg);
 }
 

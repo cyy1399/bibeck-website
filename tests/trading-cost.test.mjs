@@ -5,6 +5,7 @@ import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolv
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
 import { BIBECK_REBATE_TIERS } from "../config/bibeck-rebate-tiers.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
+import { navigationMenuReducer } from "../lib/navigation-menu.ts";
 
 test("0.055% 會正確換算為 0.00055", () => {
   const result = calculateTradingCost({
@@ -91,4 +92,11 @@ test("交易量輸入支援空格、貼上與不四捨五入的小數", () => {
   assert.equal(parseNumberInput(""), 0);
   assert.equal(parseNumberInput("-1,000"), 1000);
   assert.equal(Number.isNaN(parseNumberInput("abc")), false);
+});
+
+test("交易所選單狀態只由點擊切換並可統一關閉", () => {
+  assert.equal(navigationMenuReducer(false, "toggle"), true);
+  assert.equal(navigationMenuReducer(true, "toggle"), false);
+  assert.equal(navigationMenuReducer(true, "close"), false);
+  assert.equal(navigationMenuReducer(false, "close"), false);
 });

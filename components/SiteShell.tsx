@@ -4,6 +4,7 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { BYBIT_REGISTER } from "@/config/links";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { brandConfig, businessMailto, contactMailto, supportMailto } from "@/config/brand";
+import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 
 const mobileNavItems = [
   { href: "/", label: "首頁" },
@@ -33,31 +34,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
             <Link href="/" className="nav-link">首頁</Link>
-            <details className="platform-menu relative">
-              <summary className="nav-link flex cursor-pointer list-none items-center gap-2">
-                交易所比較
-                <span className="platform-chevron" aria-hidden="true" />
-              </summary>
-              <div className="platform-menu-panel absolute left-1/2 top-9 w-80 -translate-x-1/2 border border-white/12 bg-[#101010] p-2 shadow-2xl">
-                <Link href="/platforms" className="block border-b border-white/10 px-4 py-3 text-xs font-semibold text-white/70 transition hover:text-gold">
-                  查看交易所比較總覽
-                </Link>
-                {PLATFORM_DIRECTORY.map((platform) => (
-                  <Link
-                    key={platform.href}
-                    href={platform.href}
-                    className={"block border-l-2 px-4 py-3 transition hover:bg-white/[0.035] " + (platform.supported ? "border-gold" : "border-white/10")}
-                  >
-                    <span className="flex items-center justify-between gap-4 text-sm font-semibold text-white">
-                      {platform.name}
-                      <span className={"text-[0.68rem] font-medium " + (platform.supported ? "text-gold" : "text-white/46")}>{platform.status}</span>
-                    </span>
-                    <span className="mt-1 block text-xs leading-5 text-white/46">{platform.summary}</span>
-                    {!platform.supported ? <span className="mt-1 block text-[0.68rem] text-white/30">暫無 BiBeck 返傭</span> : null}
-                  </Link>
-                ))}
-              </div>
-            </details>
+            <DesktopExchangeMenu />
             <Link href="/calculator" className="nav-link">費率計算器</Link>
             <Link href="/platform/bybit#rebate" className="nav-link">返傭說明</Link>
             <Link href="/faq" className="nav-link">常見問題</Link>
