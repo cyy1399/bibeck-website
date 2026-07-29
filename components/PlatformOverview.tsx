@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { actionLabels } from "@/config/actions";
+import { bybitActionLabels } from "@/config/actions";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, EXCHANGE_ORDER, formatFeeRate } from "@/config/exchanges";
@@ -53,7 +53,7 @@ export function PlatformOverview() {
       <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
           <SectionTitle label="交易成本計算器" title="把你的交易量與費率放進同一個模型。" copy="使用計算器估算每月原始手續費、返傭與年度實際成本，再決定哪個方案更符合你的需求。" />
-          <Link href="/calculator" className="button-primary">{actionLabels.costCalculator}</Link>
+          <Link href="/calculator" className="button-primary">{bybitActionLabels.costCalculator}</Link>
         </div>
       </section>
     </SiteShell>

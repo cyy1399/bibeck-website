@@ -270,37 +270,6 @@ summary {
   color: var(--gold);
 }
 
-.cost-formula {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
-  align-items: end;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 1.5rem 0;
-}
-
-.cost-formula div {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.cost-formula span {
-  color: var(--secondary);
-  font-size: 0.75rem;
-}
-
-.cost-formula strong {
-  font-family: "SFMono-Regular", "Consolas", monospace;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-  font-weight: 500;
-}
-
-.cost-formula b {
-  margin: 0 1.1rem 0.25rem;
-  color: rgba(255, 255, 255, 0.26);
-  font-weight: 400;
-}
-
 .calculator-shell {
   border: 1px solid rgba(255, 255, 255, 0.11);
   background: var(--card);
@@ -511,27 +480,6 @@ summary {
 @media (max-width: 767px) {
   .home-hero::after {
     display: none;
-  }
-
-  .cost-formula {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .cost-formula b {
-    display: none;
-  }
-
-  .cost-formula div {
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 1rem;
-  }
-
-  .cost-formula div:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
   }
 
   .calculator-results {

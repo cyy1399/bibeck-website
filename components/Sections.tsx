@@ -1,6 +1,6 @@
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
 import { ExternalLink } from "./ExternalLink";
-import { actionLabels } from "@/config/actions";
+import { bybitActionLabels } from "@/config/actions";
 
 export function PageHero({
   eyebrow,
@@ -27,9 +27,9 @@ export function PageHero({
 export function CTAGroup() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
-      <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+      <ExternalLink href={BYBIT_REGISTER} sponsored>{bybitActionLabels.rebateSignup}</ExternalLink>
       <ExternalLink href={REBATE_LOGIN} variant="secondary">
-        {actionLabels.rebateDashboard}
+        {bybitActionLabels.rebateDashboard}
       </ExternalLink>
     </div>
   );

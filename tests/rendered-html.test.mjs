@@ -24,26 +24,29 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   const html = await response.text();
   assert.match(html, /BiBeck/);
   assert.match(html, /交易所/);
-  assert.match(html, /交易成本計算器/);
+  assert.match(html, /Bybit 交易成本計算器/);
   assert.match(html, /即將開放/);
-  assert.match(html, /比較真實的交易成本/);
+  assert.match(html, /計算真實的交易成本/);
   assert.match(html, /一般狀況/);
   assert.match(html, /VIP \+ BiBeck 返傭/);
   assert.match(html, /返傭說明/);
-  assert.match(html, /取得返傭帳號/);
-  assert.match(html, /登入返傭後台/);
+  assert.match(html, /取得 Bybit 返傭帳號/);
+  assert.match(html, /登入 Bybit 返傭後台/);
   assert.match(html, /aria-haspopup="menu"/);
   assert.match(html, /aria-expanded="false"/);
   assert.doesNotMatch(html, /Hyperliquid|標準會員|官方 VIP|比較真正的交易成本/);
+  assert.doesNotMatch(html, /比較真實的交易成本|手續費累積得比想像更快|取回部分交易手續費|已有 Bybit 帳戶還能綁定嗎？|返傭多久發放？|在哪裡查看返傭？/);
+  assert.match(html, /BiBeck 是交易所的官方網站嗎？/);
+  assert.match(html, /如何確認返傭帳戶是否成功綁定？/);
 });
 
 test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
   for (const pathname of ["/", "/platform/bybit"]) {
     const response = await render(pathname);
     const html = await response.text();
-    assert.match(html, /取得返傭帳號/);
-    assert.match(html, /登入返傭後台/);
-    assert.match(html, /交易成本計算器/);
+    assert.match(html, /取得 Bybit 返傭帳號/);
+    assert.match(html, /登入 Bybit 返傭後台/);
+    assert.match(html, /Bybit 交易成本計算器/);
     assert.match(html, /https:\/\/partner\.bybit\.com\/b\/t00000016/);
     assert.match(html, /https:\/\/bybackoffice\.com\/user-login/);
     assert.match(html, /#trading-cost-calculator/);
@@ -51,13 +54,13 @@ test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
 });
 
 test("未支援返傭的交易所 Hero 不會導向 Bybit", async () => {
-  for (const slug of ["binance", "bingx", "bitget", "okx"]) {
+  for (const [slug, name] of [["binance", "Binance"], ["bingx", "BingX"], ["bitget", "Bitget"], ["okx", "OKX"]]) {
     const response = await render("/platform/" + slug);
     const html = await response.text();
     const hero = html.split('<section class="exchange-hero')[1].split("</section>")[0];
-    assert.match(hero, /取得返傭帳號/);
-    assert.match(hero, /登入返傭後台/);
-    assert.match(hero, /交易成本計算器/);
+    assert.match(hero, new RegExp("取得 " + name + " 返傭帳號"));
+    assert.match(hero, new RegExp("登入 " + name + " 返傭後台"));
+    assert.match(hero, new RegExp(name + " 交易成本計算器"));
     assert.match(hero, /disabled/);
     assert.doesNotMatch(hero, /partner\.bybit\.com|bybackoffice\.com/);
   }
@@ -69,10 +72,10 @@ test("核心按鈕文案與交易所連結集中管理", async () => {
     readFile(new URL("../components/SiteShell.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/ExchangePlatformPage.tsx", import.meta.url), "utf8"),
   ]);
-  assert.match(actions, /rebateSignup: "取得返傭帳號"/);
-  assert.match(actions, /rebateDashboard: "登入返傭後台"/);
-  assert.match(actions, /costCalculator: "交易成本計算器"/);
-  assert.match(shell, /actionLabels/);
+  assert.match(actions, /取得 \$\{exchange\.name\} 返傭帳號/);
+  assert.match(actions, /登入 \$\{exchange\.name\} 返傭後台/);
+  assert.match(actions, /\$\{exchange\.name\} 交易成本計算器/);
+  assert.match(shell, /bybitActionLabels/);
   assert.match(exchangePage, /ExchangeActionButtons/);
 });
 
@@ -97,8 +100,22 @@ test("Bybit 頁包含完整費率、VIP、計算器與返傭 CTA", async () => {
   assert.match(html, /VIP 等級與手續費差異/);
   assert.match(html, /計算你的實際交易成本/);
   assert.match(html, /降低你的 Bybit 實際交易成本/);
+  assert.match(html, /已有 Bybit 帳戶，如何使用 BiBeck 返傭？/);
+  assert.match(html, /如何確認 Bybit 返傭帳戶是否成功綁定？/);
+  assert.match(html, /接收身分驗證的目標帳戶必須保持未認證狀態/);
+  assert.match(html, /How-to-Transfer-Your-Identity-to-Another-Account/);
   assert.match(html, /BreadcrumbList/);
   assert.match(html, /rel="noopener noreferrer sponsored"/);
+});
+
+test("完整 FAQ 分為通用問題與 Bybit 專屬問題", async () => {
+  const response = await render("/faq");
+  const html = await response.text();
+  assert.match(html, /通用問題/);
+  assert.match(html, /Bybit 專屬問題/);
+  assert.match(html, /BiBeck 是交易所的官方網站嗎？/);
+  assert.match(html, /Bybit 身分驗證可以轉移嗎？/);
+  assert.match(html, /Bybit 身分轉移說明/);
 });
 
 test("Binance 頁包含官方資料、待確認欄位與客觀比較器", async () => {

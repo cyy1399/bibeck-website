@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { ExchangeComparisonCalculator } from "@/components/ExchangeComparisonCalculator";
 import { ExchangeActionButtons } from "@/components/ExchangeActionButtons";
+import { bybitFaqs, FAQList } from "@/components/FAQList";
 import { ExternalLink } from "@/components/ExternalLink";
 import { PlatformFeeCalculator } from "@/components/PlatformFeeCalculator";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
-import { actionLabels } from "@/config/actions";
+import { getExchangeActionLabels } from "@/config/actions";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
@@ -37,6 +38,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
   const bybitFutures = bybit.products.find((product) => product.id === bybit.futuresSummaryProductId);
   const currentDefaultRate = futures?.fee.taker ?? spot?.fee.taker ?? null;
   const bybitDefaultRate = bybitFutures?.fee.taker ?? 0.00055;
+  const actionLabels = getExchangeActionLabels({ name: exchange.name });
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -198,6 +200,20 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                   <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? " 或以上" : " 返傭回饋"}</p><p className="mt-5 text-xs text-white/42">最近 30 日交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{formatRebateVolumeRange(tier)}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>{tier.isNegotiated ? <p className="mt-3 text-xs leading-6 text-white/42">實際比例需經人工評估與專業協商。</p> : null}
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {isBybit ? (
+        <section className="px-5 py-20 sm:px-8">
+          <div className="mx-auto max-w-5xl">
+            <SectionTitle label="Bybit 專屬 FAQ" title="舊帳戶、返傭綁定與身分轉移" copy="返傭資格與身分轉移皆受 Bybit 規則及帳戶狀態限制，不保證所有帳戶都適用。" />
+            <div className="mt-10"><FAQList items={bybitFaqs.slice(0, 3)} /></div>
+            <div className="mt-7 border-l-2 border-gold/60 bg-[#101010] p-6 text-sm leading-7 text-secondary">
+              <p className="font-semibold text-white">重要提醒</p>
+              <p className="mt-2">接收身分驗證的目標帳戶必須保持未認證狀態。身分轉移只轉移身分驗證資訊，不會轉移推薦碼、代理關係、資產、電子郵件或手機號碼。轉移前後亦可能存在提現、法幣服務及帳戶狀態限制。</p>
+              <ExternalLink href="https://www.bybit.com/zh-TW/help-center/article/How-to-Transfer-Your-Identity-to-Another-Account" variant="ghost" className="mt-4 !min-h-0 !justify-start !px-0 !tracking-normal">Bybit 身分轉移說明</ExternalLink>
             </div>
           </div>
         </section>

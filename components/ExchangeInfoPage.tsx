@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { actionLabels } from "@/config/actions";
+import { bybitActionLabels } from "@/config/actions";
 import { ExternalLink } from "@/components/ExternalLink";
 import { PageHero, SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
@@ -154,7 +154,7 @@ export function ExchangeInfoPage({
               </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/calculator" className="button-primary">{actionLabels.costCalculator}</Link>
+              <Link href="/calculator" className="button-primary">{bybitActionLabels.costCalculator}</Link>
             </div>
           </div>
         </div>
