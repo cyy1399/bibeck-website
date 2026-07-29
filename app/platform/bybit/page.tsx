@@ -3,8 +3,8 @@ import { ExchangePlatformPage } from "@/components/ExchangePlatformPage";
 import { getExchange } from "@/config/exchanges";
 
 export const metadata: Metadata = {
-  title: "Bybit 手續費、VIP 與返傭計算",
-  description: "查看 Bybit 現貨與合約手續費、VIP 等級及 BiBeck 返傭後的預估實際交易成本。",
+  title: "Bybit 手續費、VIP 與返傭計算器｜BiBeck",
+  description: "輸入最近 30 日交易量，自動推估 Bybit VIP 等級與 BiBeck 返傭方案，比較無 VIP、VIP 優惠與返傭後的實際交易成本。",
   alternates: { canonical: "/platform/bybit" },
 };
 

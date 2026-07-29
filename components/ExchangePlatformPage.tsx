@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ExchangeComparisonCalculator } from "@/components/ExchangeComparisonCalculator";
 import { ExternalLink } from "@/components/ExternalLink";
 import { PlatformFeeCalculator } from "@/components/PlatformFeeCalculator";
+import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
@@ -181,10 +182,32 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
 
       <section id="calculator" className="scroll-mt-24 px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="費率計算器" title="計算你的實際交易成本" copy="選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。" />
-          <div className="mt-10"><PlatformFeeCalculator exchange={exchange} /></div>
+          <SectionTitle label="費率計算器" title="計算你的實際交易成本" copy={isBybit ? "輸入最近 30 日交易量，自動比較無優惠、Bybit VIP 與 BiBeck 返傭後的交易成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
+          <div className="mt-10">{isBybit ? <BybitCostCalculator /> : <PlatformFeeCalculator exchange={exchange} />}</div>
         </div>
       </section>
+
+      {isBybit ? (
+        <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle label="BiBeck 返傭方案" title="依交易需求選擇合適的參考方案" copy="一般方案級距仍須以 BiBeck 審核與合作條件為準；40% 或以上僅提供專業協商與人工評估。" />
+            <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
+              {[
+                ["標準會員", "20% 返傭回饋", "適合一般交易用戶"],
+                ["活躍交易者", "25% 返傭回饋", "適合穩定交易用戶"],
+                ["專業交易者", "30% 返傭回饋", "適合高頻或高交易量用戶"],
+                ["菁英交易者", "35% 返傭回饋", "適合高額交易量用戶"],
+                ["專業合作方案", "40% 或以上", "高額交易量個體戶、專業交易者、代理或合作夥伴可專業協商"],
+              ].map(([name, rate, description], index) => (
+                <article key={name} className={"bg-[#141414] p-6 " + (index === 4 ? "ring-1 ring-inset ring-gold/45" : "")}>
+                  {index === 4 ? <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">人工評估</p> : null}
+                  <h3 className="text-lg font-semibold text-white">{name}</h3><p className="mt-5 font-mono text-xl text-gold">{rate}</p><p className="mt-3 text-sm leading-6 text-secondary">{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {!isBybit ? (
         <section id="comparison" className="section-muted scroll-mt-24 border-y border-white/10 px-5 py-20 sm:px-8">

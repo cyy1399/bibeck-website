@@ -333,6 +333,64 @@ summary {
   padding: clamp(1.35rem, 3vw, 2rem);
 }
 
+.bybit-calculator {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card);
+  padding: clamp(1.1rem, 3vw, 2rem);
+}
+
+.mode-field,
+.tier-analysis {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #101010;
+  padding: 1rem;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mode-toggle button {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+  transition: 160ms ease;
+}
+
+.mode-toggle button[aria-pressed="true"] {
+  background: var(--gold);
+  color: #0a0a0a;
+}
+
+.comparison-results {
+  min-width: 0;
+  border-left: 1px solid rgba(212, 175, 55, 0.28);
+  background: #101010;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.scenario-card {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #141414;
+  padding: 1rem;
+}
+
+.scenario-card-featured {
+  border-color: rgba(212, 175, 55, 0.62);
+  background: #16140e;
+}
+
+.savings-summary {
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 1.5rem 0;
+}
+
 .trust-notice {
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-left: 2px solid var(--gold);
@@ -482,6 +540,11 @@ summary {
     border-top: 1px solid rgba(212, 175, 55, 0.28);
     border-left: 0;
   }
+
+  .comparison-results {
+    border-top: 1px solid rgba(212, 175, 55, 0.28);
+    border-left: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -570,6 +633,19 @@ summary {
 
   .calculator-shell {
     padding: 1.15rem;
+  }
+
+  .bybit-calculator {
+    padding: 1rem;
+  }
+
+  .mode-toggle {
+    width: 100%;
+  }
+
+  .bybit-calculator .button-primary,
+  .bybit-calculator .button-secondary {
+    width: 100%;
   }
 
   .fee-table th,

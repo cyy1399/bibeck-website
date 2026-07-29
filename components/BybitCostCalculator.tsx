@@ -1,0 +1,152 @@
+"use client";
+
+import { useState } from "react";
+import { BIBECK_REBATE_TIERS } from "@/config/bibeck-rebate-tiers";
+import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
+import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
+import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "@/lib/bybit-tiers";
+
+type ProductId = "spot" | "usdtPerpetual" | "usdcContract";
+type OrderRole = "maker" | "taker";
+type Mode = "auto" | "manual";
+
+const money = new Intl.NumberFormat("zh-TW", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+const volumeNumber = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 });
+
+function rateFor(tier: BybitVipTier, product: ProductId, role: OrderRole): number {
+  return tier.fees[product][role] ?? 0;
+}
+
+function percent(rate: number): string {
+  return (rate * 100).toFixed(4).replace(/0+$/, "").replace(/\.$/, "") + "%";
+}
+
+export function BybitCostCalculator() {
+  const [product, setProduct] = useState<ProductId>("usdtPerpetual");
+  const [role, setRole] = useState<OrderRole>("taker");
+  const [volume, setVolume] = useState(1_000_000);
+  const [vipMode, setVipMode] = useState<Mode>("auto");
+  const [manualVipId, setManualVipId] = useState("vip-0");
+  const [rebateMode, setRebateMode] = useState<Mode>("auto");
+  const [manualRebateId, setManualRebateId] = useState("standard");
+  const [negotiatedPercent, setNegotiatedPercent] = useState(40);
+  const [customFeeEnabled, setCustomFeeEnabled] = useState(false);
+  const [customFeePercent, setCustomFeePercent] = useState(0.055);
+
+  const estimatedVip = estimateBybitVipTier(volume);
+  const selectedVip = resolveBybitVipTier(vipMode, volume, manualVipId);
+  const recommendedRebate = recommendBiBeckTier(volume);
+  const selectedRebate = rebateMode === "auto" ? recommendedRebate : BIBECK_REBATE_TIERS.find((tier) => tier.id === manualRebateId) ?? BIBECK_REBATE_TIERS[0];
+  const baselineRate = rateFor(BYBIT_VIP_TIERS[0], product, role);
+  const vipRate = customFeeEnabled ? Math.max(0, customFeePercent) / 100 : rateFor(selectedVip, product, role);
+  const rebateRate = selectedRebate.isNegotiated ? negotiatedRebateRate(negotiatedPercent, true) : selectedRebate.rebateRate;
+  const result = calculateTradingCostComparison({ thirtyDayVolume: volume, baselineFeeRate: baselineRate, vipFeeRate: vipRate, rebateRate });
+
+  const vipIndex = BYBIT_VIP_TIERS.findIndex((tier) => tier.id === estimatedVip.id);
+  const nextVip = BYBIT_VIP_TIERS[vipIndex + 1] ?? null;
+  const vipProgress = calculateTierProgress(volume, estimatedVip.minThirtyDayVolume, nextVip?.minThirtyDayVolume ?? null);
+  const rebateIndex = BIBECK_REBATE_TIERS.findIndex((tier) => tier.id === recommendedRebate.id);
+  const nextRebate = BIBECK_REBATE_TIERS[rebateIndex + 1] ?? null;
+  const rebateProgress = calculateTierProgress(volume, recommendedRebate.minThirtyDayVolume, nextRebate?.minThirtyDayVolume ?? null);
+
+  const bars = [
+    ["無 VIP、無返傭", result.baselineFee],
+    ["有 VIP、無返傭", result.vipFee],
+    ["有 VIP、有 BiBeck 返傭", result.actualCost],
+  ] as const;
+  const maxCost = Math.max(1, result.baselineFee, result.vipFee, result.actualCost);
+
+  return (
+    <div className="bybit-calculator">
+      <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid content-start gap-6">
+          <fieldset className="grid gap-5">
+            <legend className="sr-only">Bybit 手續費與返傭計算器輸入欄位</legend>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Select label="交易商品" value={product} onChange={(value) => setProduct(value as ProductId)}>
+                <option value="spot">現貨</option><option value="usdtPerpetual">USDT 永續與交割合約</option><option value="usdcContract">USDC 永續與交割合約</option>
+              </Select>
+              <Select label="下單方式" value={role} onChange={(value) => setRole(value as OrderRole)}>
+                <option value="maker">掛單 Maker</option><option value="taker">吃單 Taker</option>
+              </Select>
+            </div>
+            <label className="block">
+              <span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">最近 30 日交易量 <span className="text-xs font-normal text-white/42">USDT</span></span>
+              <input aria-label="最近 30 日交易量" type="number" inputMode="decimal" min={0} step={1000} placeholder="例如：1,000,000" value={volume} onChange={(event) => setVolume(Number(event.target.value))} className="calculator-input mt-2 w-full" />
+              <span className="mt-2 block text-xs leading-6 text-white/44">請輸入 Bybit 顯示的最近 30 日成交交易量。系統將依此推估可能適用的 VIP 等級與 BiBeck 返傭方案。</span>
+            </label>
+
+            <ModeField title="Bybit VIP" mode={vipMode} setMode={setVipMode} autoLabel="自動推估" manualLabel="手動調整">
+              {vipMode === "manual" ? <Select label="選擇 VIP 等級" value={manualVipId} onChange={setManualVipId}>{BYBIT_VIP_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.label}</option>)}</Select> : <p className="text-sm text-white/72">依 30 日交易量推估：<strong className="text-gold">{estimatedVip.label}</strong></p>}
+              <p className="text-xs leading-6 text-white/42">實際 VIP 等級仍可能受到資產條件、平台政策與每日系統更新影響，請以 Bybit 帳戶顯示為準。</p>
+            </ModeField>
+
+            <ModeField title="BiBeck 返傭" mode={rebateMode} setMode={setRebateMode} autoLabel="自動建議" manualLabel="手動調整">
+              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量，建議方案為：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? "+" : ""}</strong></p>}
+              {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href="#rebate" className="button-secondary w-full">申請 40%+ 專業合作方案</a><p className="text-xs leading-6 text-white/42">適用於可創造高額交易量的個體戶、專業交易者、代理或合作夥伴，實際比例依交易量與合作方式人工評估。</p></div> : null}
+              <p className="text-xs leading-6 text-white/42">目前級距為參考方案，實際返傭比例仍以 BiBeck 審核與合作條件為準。</p>
+            </ModeField>
+
+            <ModeField title="手續費率" mode={customFeeEnabled ? "manual" : "auto"} setMode={(mode) => setCustomFeeEnabled(mode === "manual")} autoLabel="自動套用 VIP 費率" manualLabel="自訂費率">
+              {customFeeEnabled ? <><NumberInput label="自訂 VIP 費率" value={customFeePercent} setValue={setCustomFeePercent} min={0} step={0.0001} suffix="%" /><p className="text-xs leading-6 text-white/42">自訂費率僅供試算，不會改變實際 Bybit 帳戶費率。</p></> : <p className="text-sm text-white/72">目前套用費率：<strong className="font-mono text-gold">{percent(vipRate)}</strong></p>}
+            </ModeField>
+          </fieldset>
+
+          <div className="tier-analysis">
+            <p className="eyebrow">等級分析</p>
+            <Progress label="Bybit VIP" current={`依目前交易量推估：${estimatedVip.label}`} next={nextVip ? `距離 ${nextVip.label} 還差：${volumeNumber.format(vipProgress.remaining)} USDT` : "目前已達可推估的最高 VIP 等級"} percentage={vipProgress.percentage} />
+            <Progress label="BiBeck 返傭" current={`建議方案：${recommendedRebate.name} ${Math.round(recommendedRebate.rebateRate * 100)}%${recommendedRebate.isNegotiated ? "+" : ""}`} next={nextRebate ? nextRebate.isNegotiated ? "下一級為專業合作方案，須人工協商與確認。" : `距離下一個參考級距還差：${volumeNumber.format(rebateProgress.remaining)} USDT` : "目前已達最高參考方案；正式比例須人工確認。"} percentage={rebateProgress.percentage} reference />
+          </div>
+          <p className="text-xs leading-6 text-white/42">不同商品、掛單與吃單可能適用不同費率。若交易同時包含多種商品或下單方式，建議分開試算後加總。</p>
+        </div>
+
+        <section className="comparison-results" aria-live="polite">
+          <p className="eyebrow">你的交易成本比較</p>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            <ScenarioCard code="方案 A" title="無 VIP、無返傭" badge="基準成本" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
+            <ScenarioCard code="方案 B" title="有 VIP、無返傭" badge="VIP 優惠後" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
+            <ScenarioCard featured code="方案 C" title="有 VIP、有 BiBeck 返傭" badge="返傭後實際成本" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
+          </div>
+
+          <div className="savings-summary">
+            <p className="text-sm text-secondary">30 日共省下</p>
+            <p className="mt-2 break-words text-4xl font-semibold text-gold sm:text-5xl">{money.format(result.totalSavings)}</p>
+            <p className="mt-5 text-sm text-white/68">其中 BiBeck 預估返傭回饋 <strong className="text-white">{money.format(result.rebate)}</strong></p>
+            <p className="mt-2 text-sm text-white/68">若維持目前交易量，年度預估共省下 <strong className="text-white">{money.format(result.annualTotalSavings)}</strong></p>
+            <p className="mt-5 text-xs leading-6 text-white/42">依目前輸入條件，30 日預估共省下 {money.format(result.totalSavings)}，其中包含 {money.format(result.rebate)} 的 BiBeck 返傭回饋。</p>
+          </div>
+
+          <div className="mt-7 grid gap-5" aria-label="交易成本水平比較圖">
+            {bars.map(([label, value], index) => <div key={label}><div className="mb-2 flex flex-wrap items-baseline justify-between gap-2 text-sm"><span className="text-white/72">{label}</span><strong className="font-mono text-white">{money.format(value)}</strong></div><div className="h-2 overflow-hidden bg-white/8"><div className={index === 2 ? "h-full bg-gold" : "h-full bg-white/35"} style={{ width: `${Math.max(value > 0 ? 3 : 0, (value / maxCost) * 100)}%` }} /></div></div>)}
+          </div>
+        </section>
+      </div>
+
+      <div className="mt-8 border-t border-white/10 pt-7 text-xs leading-6 text-white/44">
+        <p>以上結果僅依使用者輸入的交易量、商品、下單方式、VIP 等級與返傭比例進行估算。實際手續費、VIP 資格、返傭比例與發放金額，以 Bybit 帳戶、合作方案及返傭系統紀錄為準。</p>
+        <p className="mt-2">返傭是部分交易手續費的回饋，不代表交易獲利，也不會降低交易本身的市場風險。依 30 日交易量顯示的 VIP 與 BiBeck 方案僅為推估或建議，實際資格可能受到資產條件、平台政策、帳戶狀態與人工審核影響。</p>
+        <p className="mt-2">40% 或以上返傭方案僅適用於符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與確認。BiBeck 為獨立第三方平台，並非由 Bybit 擁有、營運或官方背書；不保管使用者資產、不代替使用者下單，也不保證任何投資收益。</p>
+      </div>
+    </div>
+  );
+}
+
+function ModeField({ title, mode, setMode, autoLabel, manualLabel, children }: { title: string; mode: Mode; setMode: (mode: Mode) => void; autoLabel: string; manualLabel: string; children: React.ReactNode }) {
+  return <div className="mode-field"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-semibold text-white">{title}</p><div className="mode-toggle" role="group" aria-label={`${title}模式`}><button type="button" aria-pressed={mode === "auto"} onClick={() => setMode("auto")}>{autoLabel}</button><button type="button" aria-pressed={mode === "manual"} onClick={() => setMode("manual")}>{manualLabel}</button></div></div><div className="mt-4 grid gap-3">{children}</div></div>;
+}
+
+function Select({ label, value, onChange, children }: { label: string; value: string; onChange: (value: string) => void; children: React.ReactNode }) {
+  return <label className="block"><span className="text-sm font-medium text-white">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="calculator-input mt-2 w-full">{children}</select></label>;
+}
+
+function NumberInput({ label, value, setValue, min, max, step, suffix }: { label: string; value: number; setValue: (value: number) => void; min: number; max?: number; step: number; suffix: string }) {
+  return <label><span className="flex items-baseline justify-between gap-3 text-sm text-white">{label}<span className="text-xs text-white/42">{suffix}</span></span><input type="number" inputMode="decimal" value={value} min={min} max={max} step={step} onChange={(event) => setValue(Number(event.target.value))} className="calculator-input mt-2 w-full" /></label>;
+}
+
+function Progress({ label, current, next, percentage, reference = false }: { label: string; current: string; next: string; percentage: number; reference?: boolean }) {
+  return <div className="border-t border-white/10 py-5"><div className="flex flex-wrap justify-between gap-2"><strong className="text-sm text-white">{label}</strong>{reference ? <span className="text-xs text-gold">參考</span> : null}</div><p className="mt-2 text-sm text-white/72">{current}</p><p className="mt-1 text-xs leading-5 text-white/44">{next}</p><div className="mt-3 h-1.5 overflow-hidden bg-white/8"><div className="h-full bg-gold" style={{ width: `${percentage}%` }} /></div><p className="mt-2 text-right font-mono text-xs text-white/42">目前進度：{Math.round(percentage)}%</p></div>;
+}
+
+function ScenarioCard({ code, title, badge, rows, featured = false }: { code: string; title: string; badge: string; rows: [string, string][]; featured?: boolean }) {
+  return <article className={`scenario-card ${featured ? "scenario-card-featured" : ""}`}><p className="font-mono text-xs text-gold">{code}</p><h3 className="mt-3 text-lg font-semibold leading-7 text-white">{title}</h3><p className="mt-2 text-xs text-white/42">{badge}</p><dl className="mt-5 divide-y divide-white/8">{rows.map(([label, value]) => <div key={label} className="grid gap-1 py-3"><dt className="text-xs text-secondary">{label}</dt><dd className="break-words font-mono text-sm text-white">{value}</dd></div>)}</dl></article>;
+}
