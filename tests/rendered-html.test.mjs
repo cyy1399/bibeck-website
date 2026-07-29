@@ -24,7 +24,9 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   const html = await response.text();
   assert.match(html, /BiBeck/);
   assert.match(html, /交易所比較/);
-  assert.match(html, /費率計算器/);
+  assert.match(html, /交易成本計算器/);
+  assert.match(html, /Coming Soon/);
+  assert.match(html, /BiBeck VIP/);
   assert.match(html, /返傭說明/);
   assert.match(html, /取得 Bybit 返傭/);
   assert.match(html, /aria-haspopup="menu"/);

@@ -51,8 +51,8 @@ export function PlatformOverview() {
 
       <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-          <SectionTitle label="費率計算器" title="把你的交易量與費率放進同一個模型。" copy="使用計算器估算每月原始手續費、返傭與年度實際成本，再決定哪個方案更符合你的需求。" />
-          <Link href="/calculator" className="button-primary">開啟費率計算器</Link>
+          <SectionTitle label="交易成本計算器" title="把你的交易量與費率放進同一個模型。" copy="使用計算器估算每月原始手續費、返傭與年度實際成本，再決定哪個方案更符合你的需求。" />
+          <Link href="/calculator" className="button-primary">開啟交易成本計算器</Link>
         </div>
       </section>
     </SiteShell>

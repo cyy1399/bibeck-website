@@ -8,7 +8,7 @@ import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 
 const mobileNavItems = [
   { href: "/", label: "首頁" },
-  { href: "/calculator", label: "費率計算器" },
+  { href: "/calculator", label: "交易成本計算器" },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
   { href: "/contact", label: "聯絡我們" },
@@ -16,7 +16,7 @@ const mobileNavItems = [
 
 const footerNavItems = [
   { href: "/platforms", label: "交易所比較" },
-  { href: "/calculator", label: "費率計算器" },
+  { href: "/calculator", label: "交易成本計算器" },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
 ];
@@ -35,7 +35,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
             <Link href="/" className="nav-link">首頁</Link>
             <DesktopExchangeMenu />
-            <Link href="/calculator" className="nav-link">費率計算器</Link>
+            <Link href="/calculator" className="nav-link">交易成本計算器</Link>
             <Link href="/platform/bybit#rebate" className="nav-link">返傭說明</Link>
             <Link href="/faq" className="nav-link">常見問題</Link>
           </nav>

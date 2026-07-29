@@ -60,6 +60,17 @@ export function BybitCostCalculator() {
 
   return (
     <div className="bybit-calculator">
+      <div className="mb-8 grid gap-4 border-b border-white/10 pb-7 sm:grid-cols-[minmax(0,22rem)_1fr] sm:items-end">
+        <Select label="交易所" value="bybit" onChange={() => undefined}>
+          <option value="bybit">Bybit</option>
+          <option value="binance" disabled>Binance — Coming Soon</option>
+          <option value="bitget" disabled>Bitget — Coming Soon</option>
+          <option value="bingx" disabled>BingX — Coming Soon</option>
+          <option value="okx" disabled>OKX — Coming Soon</option>
+          <option value="hyperliquid" disabled>Hyperliquid — Coming Soon</option>
+        </Select>
+        <div className="border-l-2 border-gold bg-black/20 px-4 py-3"><p className="text-sm font-semibold text-white">Bybit</p><p className="mt-1 text-xs leading-5 text-white/48">完整費率、VIP 與 BiBeck 返傭計算 · <span className="text-gold">返傭支援</span></p></div>
+      </div>
       <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="grid content-start gap-6">
           <fieldset className="grid gap-5">
@@ -105,9 +116,9 @@ export function BybitCostCalculator() {
         <section className="comparison-results" aria-live="polite">
           <p className="eyebrow">你的交易成本比較</p>
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            <ScenarioCard code="方案 A" title="無 VIP、無返傭" badge="基準成本" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
-            <ScenarioCard code="方案 B" title="有 VIP、無返傭" badge="VIP 優惠後" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
-            <ScenarioCard featured code="方案 C" title="有 VIP、有 BiBeck 返傭" badge="返傭後實際成本" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
+            <ScenarioCard code="A" title="官方" badge="沒有 VIP、沒有返傭" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
+            <ScenarioCard code="B" title="官方 VIP" badge="有 VIP、沒有返傭" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
+            <ScenarioCard featured code="C" title="BiBeck VIP" badge="VIP + BiBeck 返傭" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
           </div>
 
           <div className="savings-summary">
@@ -150,5 +161,5 @@ function Progress({ label, current, next, percentage, reference = false }: { lab
 }
 
 function ScenarioCard({ code, title, badge, rows, featured = false }: { code: string; title: string; badge: string; rows: [string, string][]; featured?: boolean }) {
-  return <article className={`scenario-card ${featured ? "scenario-card-featured" : ""}`}><p className="font-mono text-xs text-gold">{code}</p><h3 className="mt-3 text-lg font-semibold leading-7 text-white">{title}</h3><p className="mt-2 text-xs text-white/42">{badge}</p><dl className="mt-5 divide-y divide-white/8">{rows.map(([label, value]) => <div key={label} className="grid gap-1 py-3"><dt className="text-xs text-secondary">{label}</dt><dd className="break-words font-mono text-sm text-white">{value}</dd></div>)}</dl></article>;
+  return <article className={`scenario-card ${featured ? "scenario-card-featured" : ""}`}><div className="flex items-center justify-between gap-3"><p className="font-mono text-xs text-gold">{code}</p>{featured ? <span className="border border-gold/40 px-2 py-1 text-[0.68rem] font-semibold text-gold">推薦</span> : null}</div><h3 className="mt-3 text-lg font-semibold leading-7 text-white">{title}</h3><p className="mt-2 text-xs text-white/42">{badge}</p><dl className="mt-5 divide-y divide-white/8">{rows.map(([label, value]) => <div key={label} className="grid gap-1 py-3"><dt className="text-xs text-secondary">{label}</dt><dd className="break-words font-mono text-sm text-white">{value}</dd></div>)}</dl></article>;
 }

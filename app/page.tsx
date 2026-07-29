@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink } from "@/components/ExternalLink";
 import { FAQList } from "@/components/FAQList";
-import { FeeCalculator } from "@/components/FeeCalculator";
+import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
@@ -42,7 +42,7 @@ export default function Home() {
             </p>
             <div className="reveal mt-9 flex flex-col gap-3 sm:flex-row">
               <ExternalLink href={BYBIT_REGISTER} sponsored>取得 Bybit 返傭</ExternalLink>
-              <Link href="/calculator" className="button-secondary">計算可節省費用</Link>
+              <Link href="#calculator" className="button-secondary">立即計算</Link>
             </div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
               BiBeck 為獨立第三方平台，並非 Bybit 官方網站或代表。
@@ -51,7 +51,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 px-5 py-24 sm:px-8">
+      <section className="border-y border-white/10 px-5 py-20 sm:px-8" id="calculator">
+        <div className="mx-auto max-w-7xl">
+          <SectionTitle label="交易成本計算器" title="比較真正的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
+          <div className="mt-10"><BybitCostCalculator /></div>
+        </div>
+      </section>
+
+      <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <SectionTitle
             label="交易成本"
@@ -108,20 +115,6 @@ export default function Home() {
               </li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      <section className="px-5 py-24 sm:px-8" id="calculator-preview">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-            <SectionTitle
-              label="交易成本計算器"
-              title="估算你可以節省多少費用"
-              copy="輸入每月交易量、手續費率與適用返傭比例，快速估算每月費用與年度可能節省的成本。"
-            />
-            <Link href="/calculator" className="text-link">開啟完整計算器 <span aria-hidden="true">→</span></Link>
-          </div>
-          <div className="mt-12"><FeeCalculator compact /></div>
         </div>
       </section>
 

@@ -183,7 +183,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
 
       <section id="calculator" className="scroll-mt-24 px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="費率計算器" title="計算你的實際交易成本" copy={isBybit ? "輸入最近 30 日交易量，自動比較無優惠、Bybit VIP 與 BiBeck 返傭後的交易成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
+          <SectionTitle label="交易成本計算器" title="計算你的實際交易成本" copy={isBybit ? "輸入最近 30 日交易量，自動比較無優惠、Bybit VIP 與 BiBeck 返傭後的交易成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
           <div className="mt-10">{isBybit ? <BybitCostCalculator /> : <PlatformFeeCalculator exchange={exchange} />}</div>
         </div>
       </section>
