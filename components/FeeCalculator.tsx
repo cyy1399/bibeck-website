@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FormattedNumberInput } from "@/components/FormattedNumberInput";
 import { BIBECK_BYBIT_REBATE_RATE } from "@/config/rebate";
 
 type FeeCalculatorProps = {
@@ -41,7 +42,7 @@ export function FeeCalculator({ compact = false }: FeeCalculatorProps) {
       <div className={`grid gap-8 ${compact ? "lg:grid-cols-[1fr_0.9fr]" : "lg:grid-cols-[1.05fr_0.95fr]"}`}>
         <fieldset className="grid content-start gap-5">
           <legend className="sr-only">交易成本計算器輸入欄位</legend>
-          <NumberField label="每月交易量" hint="USD" value={monthlyVolume} min={0} step={1000} onChange={setMonthlyVolume} />
+          <label className="block"><span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">每月交易量<span className="text-xs font-normal text-white/38">USD</span></span><FormattedNumberInput ariaLabel="每月交易量" value={monthlyVolume} onChange={setMonthlyVolume} /></label>
           {!compact ? (
             <div className="grid gap-5 sm:grid-cols-2">
               <NumberField label="Maker 成交占比" hint="%" value={makerShare} min={0} max={100} step={1} onChange={setMakerShare} />

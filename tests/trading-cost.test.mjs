@@ -4,6 +4,7 @@ import { calculateTradingCost, calculateTradingCostComparison, calculateTierProg
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
 import { BIBECK_REBATE_TIERS } from "../config/bibeck-rebate-tiers.ts";
+import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
 
 test("0.055% 會正確換算為 0.00055", () => {
   const result = calculateTradingCost({
@@ -73,4 +74,21 @@ test("專業協商試算限制在 40% 至 100%", () => {
 test("級距進度正確處理一般與最高級距", () => {
   assert.deepEqual(calculateTierProgress(15, 10, 20), { percentage: 50, remaining: 5, isHighest: false });
   assert.deepEqual(calculateTierProgress(500, 100, null), { percentage: 100, remaining: 0, isHighest: true });
+});
+
+test("交易量輸入顯示千分位且保留純數值", () => {
+  assert.equal(formatNumberInput("1000"), "1,000");
+  assert.equal(parseNumberInput("1,000"), 1000);
+  assert.equal(formatNumberInput("1000000"), "1,000,000");
+  assert.equal(parseNumberInput("1,000,000"), 1_000_000);
+});
+
+test("交易量輸入支援空格、貼上與不四捨五入的小數", () => {
+  assert.equal(formatNumberInput("1 000 000"), "1,000,000");
+  assert.equal(formatNumberInput("1000000.5"), "1,000,000.5");
+  assert.equal(parseNumberInput("1,000,000.5"), 1_000_000.5);
+  assert.equal(formatNumberInput(""), "");
+  assert.equal(parseNumberInput(""), 0);
+  assert.equal(parseNumberInput("-1,000"), 1000);
+  assert.equal(Number.isNaN(parseNumberInput("abc")), false);
 });

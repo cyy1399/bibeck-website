@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { FormattedNumberInput } from "@/components/FormattedNumberInput";
 import type { ExchangeData, ExchangeProductFee, VipTier } from "@/config/exchanges";
 import { calculateTradingCost } from "@/lib/trading-cost";
 
@@ -80,7 +81,7 @@ export function PlatformFeeCalculator({ exchange }: { exchange: ExchangeData }) 
             </SelectField>
           </div>
 
-          <NumberField label="每月交易量" hint="USD" value={monthlyVolume} min={0} step={1000} onChange={setMonthlyVolume} />
+          <label className="block"><span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">每月交易量<span className="text-xs font-normal text-white/42">USD</span></span><FormattedNumberInput ariaLabel="每月交易量" value={monthlyVolume} onChange={setMonthlyVolume} /></label>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <NumberField label="手續費率" hint="%" value={feePercent} min={0} step={0.001} onChange={setFeePercent} />

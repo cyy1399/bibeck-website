@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FormattedNumberInput } from "@/components/FormattedNumberInput";
 import { BIBECK_REBATE_TIERS } from "@/config/bibeck-rebate-tiers";
 import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
 import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
@@ -72,7 +73,7 @@ export function BybitCostCalculator() {
             </div>
             <label className="block">
               <span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">最近 30 日交易量 <span className="text-xs font-normal text-white/42">USDT</span></span>
-              <input aria-label="最近 30 日交易量" type="number" inputMode="decimal" min={0} step={1000} placeholder="例如：1,000,000" value={volume} onChange={(event) => setVolume(Number(event.target.value))} className="calculator-input mt-2 w-full" />
+              <FormattedNumberInput ariaLabel="最近 30 日交易量" placeholder="例如：1,000,000" value={volume} onChange={setVolume} />
               <span className="mt-2 block text-xs leading-6 text-white/44">請輸入 Bybit 顯示的最近 30 日成交交易量。系統將依此推估可能適用的 VIP 等級與 BiBeck 返傭方案。</span>
             </label>
 

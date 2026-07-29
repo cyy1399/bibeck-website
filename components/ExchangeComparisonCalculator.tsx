@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { FormattedNumberInput } from "@/components/FormattedNumberInput";
 import { calculateTradingCost, compareAnnualCosts } from "@/lib/trading-cost";
 
 const usd = new Intl.NumberFormat("zh-TW", {
@@ -58,7 +59,7 @@ export function ExchangeComparisonCalculator({
             <span className="text-sm font-medium text-white">目前交易所</span>
             <input value={currentExchangeName} readOnly className="calculator-input mt-2 w-full text-white/72" />
           </label>
-          <NumberField label="每月交易量" value={monthlyVolume} min={0} step={1000} onChange={setMonthlyVolume} suffix="USD" />
+          <label className="block"><span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">每月交易量<span className="text-xs font-normal text-white/42">USD</span></span><FormattedNumberInput ariaLabel="每月交易量" value={monthlyVolume} onChange={setMonthlyVolume} /></label>
           <NumberField label="目前手續費率" value={currentFeePercent} min={0} step={0.001} onChange={setCurrentFeePercent} suffix="%" />
           <NumberField label="目前返傭比例" value={currentRebatePercent} min={0} max={100} step={1} onChange={setCurrentRebatePercent} suffix="%" />
           <NumberField label="Bybit 手續費率" value={bybitFeePercent} min={0} step={0.001} onChange={setBybitFeePercent} suffix="%" />
