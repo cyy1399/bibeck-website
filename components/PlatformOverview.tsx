@@ -3,17 +3,12 @@ import { bybitActionLabels } from "@/config/actions";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, EXCHANGE_ORDER, formatFeeRate } from "@/config/exchanges";
+import { LocalizedPageHero } from "@/components/TranslatedText";
 
 export function PlatformOverview() {
   return (
     <SiteShell>
-      <section className="page-hero border-b border-white/8 px-5 pb-16 pt-32 sm:px-8 lg:pt-36">
-        <div className="mx-auto max-w-7xl">
-          <p className="eyebrow">交易所</p>
-          <h1 className="mt-5 max-w-4xl text-balance text-4xl font-semibold leading-[1.12] text-white sm:text-6xl">先比較費率，再計算真實的交易成本。</h1>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-secondary sm:text-lg">快速查看五個常見交易所的基礎費率、VIP 資料狀態與 BiBeck 服務範圍。費率並不等於全部成本，進入詳情頁後可依自己的條件計算。</p>
-        </div>
-      </section>
+      <LocalizedPageHero eyebrow="nav.exchanges" title="page.platformsTitle" description="page.platformsDescription" />
 
       <section className="px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
-import { PageHero, SectionTitle } from "@/components/Sections";
+import { SectionTitle } from "@/components/Sections";
+import { LocalizedPageHero } from "@/components/TranslatedText";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { BYBIT_REGISTER } from "@/config/links";
@@ -17,7 +18,7 @@ export const metadata: Metadata = createPageMetadata({
 export default function CalculatorPage() {
   return (
     <SiteShell>
-      <PageHero eyebrow="交易成本計算器" title="比較真實的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整資料。" />
+      <LocalizedPageHero eyebrow="calculator.title" title="calculator.heading" description="calculator.description" />
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-7xl"><BybitCostCalculator /></div>
       </section>

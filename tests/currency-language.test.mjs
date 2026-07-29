@@ -8,10 +8,20 @@ import { convertCurrency, formatCurrency } from "../lib/currency.ts";
 test("currency and locale defaults match the public site", () => {
   assert.equal(DEFAULT_CURRENCY, "USDT");
   assert.equal(DEFAULT_LOCALE, "zh-TW");
-  assert.deepEqual(currencyCodes, ["USDT", "USDC", "BTC", "ETH", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD"]);
+  assert.deepEqual(currencyCodes, ["USDT", "USDC", "BTC", "ETH", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD", "AUD", "CAD"]);
   assert.deepEqual(localeCodes, ["zh-TW", "zh-CN", "en", "ja", "ko"]);
-  assert.equal(currencies.length, 13);
+  assert.equal(currencies.length, 15);
   assert.equal(locales.length, 5);
+});
+
+test("localized App Router pages and SEO language alternates exist", async () => {
+  const localeLayout = await readFile(new URL("../app/[locale]/layout.tsx", import.meta.url), "utf8");
+  const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
+  const settings = await readFile(new URL("../components/SettingsMenu.tsx", import.meta.url), "utf8");
+  assert.match(localeLayout, /generateStaticParams/);
+  assert.match(sitemap, /localizedAlternates/);
+  assert.doesNotMatch(settings, /shortLabel/);
+  assert.match(settings, /router\.push\(localizePath/);
 });
 
 test("currency conversion is reversible and formatting is unambiguous", () => {

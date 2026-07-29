@@ -10,38 +10,39 @@ import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 import { bybitActionLabels } from "@/config/actions";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { usePreferences } from "@/components/PreferencesProvider";
+import { localizePath } from "@/config/locales";
 
 export function SiteShell({ children }: { children: ReactNode }) {
-  const { t } = usePreferences();
+  const { t, locale } = usePreferences();
   const localizedMobileNavItems = [
-    { href: "/", label: t("nav.home") },
-    { href: "/calculator", label: t("nav.calculator") },
-    { href: "/platform/bybit#rebate", label: t("nav.rebate") },
-    { href: "/faq", label: t("nav.faq") },
-    { href: "/contact", label: t("nav.contact") },
+    { href: localizePath("/", locale), label: t("nav.home") },
+    { href: localizePath("/calculator", locale), label: t("nav.calculator") },
+    { href: `${localizePath("/platform/bybit", locale)}#rebate`, label: t("nav.rebate") },
+    { href: localizePath("/faq", locale), label: t("nav.faq") },
+    { href: localizePath("/contact", locale), label: t("nav.contact") },
   ];
   const localizedFooterNavItems = [
-    { href: "/platforms", label: t("nav.exchanges") },
-    { href: "/calculator", label: t("nav.calculator") },
-    { href: "/platform/bybit#rebate", label: t("nav.rebate") },
-    { href: "/faq", label: t("nav.faq") },
+    { href: localizePath("/platforms", locale), label: t("nav.exchanges") },
+    { href: localizePath("/calculator", locale), label: t("nav.calculator") },
+    { href: `${localizePath("/platform/bybit", locale)}#rebate`, label: t("nav.rebate") },
+    { href: localizePath("/faq", locale), label: t("nav.faq") },
   ];
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <a href="#main-content" className="skip-link">跳至主要內容</a>
       <div className="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-[#0A0A0A]/92 backdrop-blur-2xl">
         <header className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link href="/" className="group flex items-center gap-3" aria-label="BiBeck 首頁">
+          <Link href={localizePath("/", locale)} className="group flex items-center gap-3" aria-label="BiBeck">
             <BrandMark />
             <span className="brand-wordmark text-lg font-semibold text-white">BiBeck</span>
           </Link>
 
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
-            <Link href="/" className="nav-link">{t("nav.home")}</Link>
+            <Link href={localizePath("/", locale)} className="nav-link">{t("nav.home")}</Link>
             <DesktopExchangeMenu />
-            <Link href="/calculator" className="nav-link">{t("nav.calculator")}</Link>
-            <Link href="/platform/bybit#rebate" className="nav-link">{t("nav.rebate")}</Link>
-            <Link href="/faq" className="nav-link">{t("nav.faq")}</Link>
+            <Link href={localizePath("/calculator", locale)} className="nav-link">{t("nav.calculator")}</Link>
+            <Link href={`${localizePath("/platform/bybit", locale)}#rebate`} className="nav-link">{t("nav.rebate")}</Link>
+            <Link href={localizePath("/faq", locale)} className="nav-link">{t("nav.faq")}</Link>
             <SettingsMenu />
           </nav>
 
@@ -56,10 +57,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-2 shadow-2xl">
               <Link href="/" className="mobile-nav-link">{t("nav.home")}</Link>
               <div className="border-b border-white/8 px-4 py-3">
-                <Link href="/platforms" className="block text-xs font-medium text-white/58 hover:text-gold">{t("nav.exchanges")}</Link>
+                <Link href={localizePath("/platforms", locale)} className="block text-xs font-medium text-white/58 hover:text-gold">{t("nav.exchanges")}</Link>
                 <div className="mt-3 grid gap-3">
                   {PLATFORM_DIRECTORY.map((platform) => (
-                    <Link key={platform.href} href={platform.href} className={"border-l pl-3 text-sm font-medium text-white hover:text-gold " + (platform.supported ? "border-gold" : "border-white/15")}>
+                    <Link key={platform.href} href={localizePath(platform.href, locale)} className={"border-l pl-3 text-sm font-medium text-white hover:text-gold " + (platform.supported ? "border-gold" : "border-white/15")}>
                       <span className="flex items-center justify-between gap-3">
                         {platform.name}
                         <span className={"text-[0.68rem] font-normal " + (platform.supported ? "text-gold" : "text-white/38")}>{platform.status}</span>
