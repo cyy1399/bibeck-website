@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { brandConfig } from "@/config/brand";
 
-const siteUrl = "https://drayl-systems.cyy1399.chatgpt.site";
+const siteUrl = brandConfig.websiteUrl;
 
 export default function robots(): MetadataRoute.Robots {
   return {

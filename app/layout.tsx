@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { brandConfig } from "@/config/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://drayl-systems.cyy1399.chatgpt.site"),
+  metadataBase: new URL(brandConfig.websiteUrl),
   title: {
     default: "BiBeck｜交易成本優化與手續費返傭平台",
     template: "%s | BiBeck",
@@ -65,13 +66,14 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "BiBeck",
-    url: "https://drayl-systems.cyy1399.chatgpt.site",
+    url: brandConfig.websiteUrl,
     inLanguage: "zh-Hant-TW",
     description: "交易成本優化與手續費返傭平台",
     publisher: {
       "@type": "Organization",
       name: "BiBeck",
-      url: "https://drayl-systems.cyy1399.chatgpt.site",
+      url: brandConfig.websiteUrl,
+      email: brandConfig.emails.contact,
     },
   };
 

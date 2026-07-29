@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { EXCHANGE_ORDER } from "@/config/exchanges";
+import { brandConfig } from "@/config/brand";
 
-const siteUrl = "https://drayl-systems.cyy1399.chatgpt.site";
+const siteUrl = brandConfig.websiteUrl;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = ["", "/platforms", "/calculator", "/rebate", "/fees", "/faq", "/philosophy", "/contact"];

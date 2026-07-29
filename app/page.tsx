@@ -24,7 +24,7 @@ const rebateSteps = [
   "使用 BiBeck 專屬推薦連結註冊 Bybit",
   "完成帳戶設定並確認適用資格",
   "開始交易，符合條件的手續費進入返傭計算",
-  "登入返傭後台查看紀錄與發放狀態",
+  "登入 Bybit 返傭後台查看紀錄與發放狀態",
 ];
 
 export default function Home() {
@@ -41,7 +41,7 @@ export default function Home() {
               BiBeck 透過清楚的手續費資訊、返傭服務與交易成本工具，幫助交易者減少長期交易支出。
             </p>
             <div className="reveal mt-9 flex flex-col gap-3 sm:flex-row">
-              <ExternalLink href={BYBIT_REGISTER} sponsored>取得返傭</ExternalLink>
+              <ExternalLink href={BYBIT_REGISTER} sponsored>取得 Bybit 返傭</ExternalLink>
               <Link href="/calculator" className="button-secondary">計算可節省費用</Link>
             </div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
@@ -96,7 +96,7 @@ export default function Home() {
             />
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ExternalLink href={BYBIT_REGISTER} sponsored>透過 Bybit 註冊</ExternalLink>
-              <ExternalLink href={REBATE_LOGIN} variant="secondary">返傭後台</ExternalLink>
+              <ExternalLink href={REBATE_LOGIN} variant="secondary">登入 Bybit 返傭後台</ExternalLink>
             </div>
             <Link href="/platform/bybit" className="text-link mt-7">查看 Bybit 平台說明 <span aria-hidden="true">→</span></Link>
           </div>

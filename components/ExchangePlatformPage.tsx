@@ -7,6 +7,7 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
+import { brandConfig } from "@/config/brand";
 
 const costFactors = [
   ["01", "基礎手續費", "交易所公開的掛單與吃單費率，是計算交易成本的起點。"],
@@ -38,9 +39,9 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "首頁", item: "https://drayl-systems.cyy1399.chatgpt.site/" },
-      { "@type": "ListItem", position: 2, name: "交易所比較", item: "https://drayl-systems.cyy1399.chatgpt.site/platforms" },
-      { "@type": "ListItem", position: 3, name: exchange.name, item: "https://drayl-systems.cyy1399.chatgpt.site/platform/" + exchange.slug },
+      { "@type": "ListItem", position: 1, name: "首頁", item: brandConfig.websiteUrl + "/" },
+      { "@type": "ListItem", position: 2, name: "交易所比較", item: brandConfig.websiteUrl + "/platforms" },
+      { "@type": "ListItem", position: 3, name: exchange.name, item: brandConfig.websiteUrl + "/platform/" + exchange.slug },
     ],
   };
 
@@ -227,7 +228,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
               <SectionTitle label="BiBeck 返傭" title="降低你的 Bybit 實際交易成本" copy="透過 BiBeck 專屬推薦連結註冊 Bybit，並依合作方案條件取得交易手續費返傭。" />
               <div className="flex flex-col gap-3 sm:flex-row">
                 <ExternalLink href={BYBIT_REGISTER} sponsored>透過 BiBeck 註冊 Bybit</ExternalLink>
-                <ExternalLink href={REBATE_LOGIN} variant="secondary">登入返傭後台</ExternalLink>
+                <ExternalLink href={REBATE_LOGIN} variant="secondary">登入 Bybit 返傭後台</ExternalLink>
               </div>
             </div>
           ) : (

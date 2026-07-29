@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BYBIT_REGISTER } from "@/config/links";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
+import { brandConfig, businessMailto, contactMailto, supportMailto } from "@/config/brand";
 
 const mobileNavItems = [
   { href: "/", label: "首頁" },
   { href: "/calculator", label: "費率計算器" },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
+  { href: "/contact", label: "聯絡我們" },
 ];
 
 const footerNavItems = [
@@ -105,6 +107,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm text-white/54">
               {footerNavItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-gold">{item.label}</Link>)}
             </div>
+            <address className="mt-7 grid gap-2 not-italic text-sm text-white/54">
+              <a href={contactMailto} className="break-all hover:text-gold">一般聯絡：{brandConfig.emails.contact}</a>
+              <a href={supportMailto} className="break-all hover:text-gold">返傭客服：{brandConfig.emails.support}</a>
+              <a href={businessMailto} className="break-all hover:text-gold">商務合作：{brandConfig.emails.business}</a>
+            </address>
           </div>
           <div className="max-w-3xl text-sm leading-7 text-white/48">
             <p className="text-white/72">BiBeck 為獨立第三方交易成本與返傭資訊平台，並非由任何交易所擁有、營運或官方背書。</p>
