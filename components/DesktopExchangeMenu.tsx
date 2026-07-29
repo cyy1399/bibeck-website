@@ -54,13 +54,13 @@ export function DesktopExchangeMenu() {
         aria-controls="exchange-comparison-menu"
         onClick={() => dispatch("toggle")}
       >
-        交易所比較
+        交易所
         <span className={`platform-chevron ${isOpen ? "platform-chevron-open" : ""}`} aria-hidden="true" />
       </button>
       {isOpen ? (
         <div ref={dropdownRef} id="exchange-comparison-menu" role="menu" className="platform-menu-panel absolute left-1/2 top-[calc(100%+12px)] z-50 w-80 -translate-x-1/2 border border-white/12 bg-[#101010] p-2 shadow-2xl">
           <Link role="menuitem" href="/platforms" onClick={closeMenu} className="block border-b border-white/10 px-4 py-3 text-xs font-semibold text-white/70 transition hover:text-gold">
-            查看交易所比較總覽
+            查看交易所總覽
           </Link>
           {PLATFORM_DIRECTORY.map((platform) => (
             <Link key={platform.href} role="menuitem" href={platform.href} onClick={closeMenu} className={`block border-l-2 px-4 py-3 transition hover:bg-white/[0.035] ${platform.supported ? "border-gold" : "border-white/10"}`}>

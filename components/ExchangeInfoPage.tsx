@@ -100,7 +100,7 @@ export function ExchangeInfoPage({
           <SectionTitle
             label="成本重點"
             title="不要只看一個手續費百分比。"
-            copy="真正的交易成本還會受到成交方式、交易頻率、資金費用、滑價與提領網路影響。"
+            copy="真實的交易成本還會受到成交方式、交易頻率、資金費用、滑價與提領網路影響。"
           />
           <div className="mt-14 grid border-y border-white/10 md:grid-cols-3">
             {costPoints.map((point) => (

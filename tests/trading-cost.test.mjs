@@ -3,7 +3,7 @@ import test from "node:test";
 import { calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
-import { BIBECK_REBATE_TIERS } from "../config/bibeck-rebate-tiers.ts";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "../config/bibeck-rebate-tiers.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
 import { navigationMenuReducer } from "../lib/navigation-menu.ts";
 
@@ -56,8 +56,33 @@ test("手動 VIP 不會因交易量變更而被覆蓋", () => {
   assert.equal(resolveBybitVipTier("manual", 900_000_000, "vip-3").id, "vip-3");
 });
 
-test("返傭自動建議涵蓋每個參考級距邊界", () => {
-  for (const tier of BIBECK_REBATE_TIERS) assert.equal(recommendBiBeckTier(tier.minThirtyDayVolume).id, tier.id);
+test("返傭自動建議使用明確且不重疊的交易量邊界", () => {
+  const cases = [
+    [999_999, "standard", 0.2],
+    [1_000_000, "active", 0.25],
+    [4_999_999, "active", 0.25],
+    [5_000_000, "professional", 0.3],
+    [24_999_999, "professional", 0.3],
+    [25_000_000, "elite", 0.35],
+    [99_999_999, "elite", 0.35],
+    [100_000_000, "partner", 0.4],
+  ];
+
+  for (const [volume, id, rebateRate] of cases) {
+    const tier = recommendBiBeckTier(volume);
+    assert.equal(tier.id, id);
+    assert.equal(tier.rebateRate, rebateRate);
+  }
+});
+
+test("返傭級距顯示千分位交易量標準", () => {
+  assert.deepEqual(BIBECK_REBATE_TIERS.map(formatRebateVolumeRange), [
+    "低於 1,000,000 USDT",
+    "1,000,000–4,999,999 USDT",
+    "5,000,000–24,999,999 USDT",
+    "25,000,000–99,999,999 USDT",
+    "100,000,000 USDT 以上",
+  ]);
 });
 
 test("零交易量不產生 NaN 或 Infinity", () => {

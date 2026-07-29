@@ -15,7 +15,7 @@ const mobileNavItems = [
 ];
 
 const footerNavItems = [
-  { href: "/platforms", label: "交易所比較" },
+  { href: "/platforms", label: "交易所" },
   { href: "/calculator", label: "交易成本計算器" },
   { href: "/platform/bybit#rebate", label: "返傭說明" },
   { href: "/faq", label: "常見問題" },
@@ -51,7 +51,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-2 shadow-2xl">
               <Link href="/" className="mobile-nav-link">首頁</Link>
               <div className="border-b border-white/8 px-4 py-3">
-                <Link href="/platforms" className="block text-xs font-medium text-white/58 hover:text-gold">交易所比較總覽</Link>
+                <Link href="/platforms" className="block text-xs font-medium text-white/58 hover:text-gold">交易所總覽</Link>
                 <div className="mt-3 grid gap-3">
                   {PLATFORM_DIRECTORY.map((platform) => (
                     <Link key={platform.href} href={platform.href} className={"border-l pl-3 text-sm font-medium text-white hover:text-gold " + (platform.supported ? "border-gold" : "border-white/15")}>

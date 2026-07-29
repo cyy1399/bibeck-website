@@ -7,6 +7,7 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
 import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
 
 const costFactors = [
@@ -40,7 +41,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "首頁", item: brandConfig.websiteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "交易所比較", item: brandConfig.websiteUrl + "/platforms" },
+      { "@type": "ListItem", position: 2, name: "交易所", item: brandConfig.websiteUrl + "/platforms" },
       { "@type": "ListItem", position: 3, name: exchange.name, item: brandConfig.websiteUrl + "/platform/" + exchange.slug },
     ],
   };
@@ -54,7 +55,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <nav aria-label="麵包屑" className="flex flex-wrap items-center gap-2 text-xs text-white/42">
             <Link href="/" className="hover:text-gold">首頁</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/platforms" className="hover:text-gold">交易所比較</Link>
+            <Link href="/platforms" className="hover:text-gold">交易所</Link>
             <span aria-hidden="true">/</span>
             <span className="text-white/68">{exchange.name}</span>
           </nav>
@@ -193,16 +194,10 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className="mx-auto max-w-7xl">
             <SectionTitle label="BiBeck 返傭方案" title="依交易需求選擇合適的參考方案" copy="一般方案級距仍須以 BiBeck 審核與合作條件為準；40% 或以上僅提供專業協商與人工評估。" />
             <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
-              {[
-                ["標準會員", "20% 返傭回饋", "適合一般交易用戶"],
-                ["活躍交易者", "25% 返傭回饋", "適合穩定交易用戶"],
-                ["專業交易者", "30% 返傭回饋", "適合高頻或高交易量用戶"],
-                ["菁英交易者", "35% 返傭回饋", "適合高額交易量用戶"],
-                ["專業合作方案", "40% 或以上", "高額交易量個體戶、專業交易者、代理或合作夥伴可專業協商"],
-              ].map(([name, rate, description], index) => (
-                <article key={name} className={"bg-[#141414] p-6 " + (index === 4 ? "ring-1 ring-inset ring-gold/45" : "")}>
-                  {index === 4 ? <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">人工評估</p> : null}
-                  <h3 className="text-lg font-semibold text-white">{name}</h3><p className="mt-5 font-mono text-xl text-gold">{rate}</p><p className="mt-3 text-sm leading-6 text-secondary">{description}</p>
+              {BIBECK_REBATE_TIERS.map((tier) => (
+                <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isNegotiated ? "ring-1 ring-inset ring-gold/45" : "")}>
+                  {tier.isNegotiated ? <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">人工評估</p> : null}
+                  <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? " 或以上" : " 返傭回饋"}</p><p className="mt-5 text-xs text-white/42">最近 30 日交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{formatRebateVolumeRange(tier)}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>{tier.isNegotiated ? <p className="mt-3 text-xs leading-6 text-white/42">實際比例需經人工評估與專業協商。</p> : null}
                 </article>
               ))}
             </div>

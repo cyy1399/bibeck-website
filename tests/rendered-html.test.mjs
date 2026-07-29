@@ -23,14 +23,17 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /BiBeck/);
-  assert.match(html, /交易所比較/);
+  assert.match(html, /交易所/);
   assert.match(html, /交易成本計算器/);
-  assert.match(html, /Coming Soon/);
-  assert.match(html, /BiBeck VIP/);
+  assert.match(html, /即將開放/);
+  assert.match(html, /比較真實的交易成本/);
+  assert.match(html, /一般狀況/);
+  assert.match(html, /VIP \+ BiBeck 返傭/);
   assert.match(html, /返傭說明/);
   assert.match(html, /取得 Bybit 返傭/);
   assert.match(html, /aria-haspopup="menu"/);
   assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /Hyperliquid|標準會員|官方 VIP|比較真正的交易成本/);
 });
 
 test("桌面交易所選單沒有 hover 事件並具備外部點擊與 Escape 清理", async () => {

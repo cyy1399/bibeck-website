@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FormattedNumberInput } from "@/components/FormattedNumberInput";
-import { BIBECK_REBATE_TIERS } from "@/config/bibeck-rebate-tiers";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange } from "@/config/bibeck-rebate-tiers";
 import { BYBIT_VIP_TIERS, type BybitVipTier } from "@/config/bybit-vip-tiers";
 import { calculateTierProgress, calculateTradingCostComparison } from "@/lib/trading-cost";
 import { businessMailto } from "@/config/brand";
@@ -63,11 +63,10 @@ export function BybitCostCalculator() {
       <div className="mb-8 grid gap-4 border-b border-white/10 pb-7 sm:grid-cols-[minmax(0,22rem)_1fr] sm:items-end">
         <Select label="交易所" value="bybit" onChange={() => undefined}>
           <option value="bybit">Bybit</option>
-          <option value="binance" disabled>Binance — Coming Soon</option>
-          <option value="bitget" disabled>Bitget — Coming Soon</option>
-          <option value="bingx" disabled>BingX — Coming Soon</option>
-          <option value="okx" disabled>OKX — Coming Soon</option>
-          <option value="hyperliquid" disabled>Hyperliquid — Coming Soon</option>
+          <option value="binance" disabled>Binance — 即將開放</option>
+          <option value="bitget" disabled>Bitget — 即將開放</option>
+          <option value="bingx" disabled>BingX — 即將開放</option>
+          <option value="okx" disabled>OKX — 即將開放</option>
         </Select>
         <div className="border-l-2 border-gold bg-black/20 px-4 py-3"><p className="text-sm font-semibold text-white">Bybit</p><p className="mt-1 text-xs leading-5 text-white/48">完整費率、VIP 與 BiBeck 返傭計算 · <span className="text-gold">返傭支援</span></p></div>
       </div>
@@ -95,8 +94,9 @@ export function BybitCostCalculator() {
             </ModeField>
 
             <ModeField title="BiBeck 返傭" mode={rebateMode} setMode={setRebateMode} autoLabel="自動建議" manualLabel="手動調整">
-              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量，建議方案為：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? "+" : ""}</strong></p>}
-              {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={businessMailto} className="button-secondary w-full">申請 Bybit 40%+ 專業合作方案</a><p className="text-xs leading-6 text-white/42">適用於可創造高額交易量的個體戶、專業交易者、代理或合作夥伴，實際比例依交易量與合作方式人工評估。</p></div> : null}
+              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量，建議方案為：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p>}
+              <p className="text-xs leading-6 text-white/52">適用交易量：{formatRebateVolumeRange(selectedRebate)}</p>
+              {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={businessMailto} className="button-secondary w-full">洽談專業合作方案</a><p className="text-xs leading-6 text-white/42">40% 或以上方案僅提供給符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與專業協商。</p></div> : null}
               <p className="text-xs leading-6 text-white/42">目前級距為參考方案，實際返傭比例仍以 BiBeck 審核與合作條件為準。</p>
             </ModeField>
 
@@ -116,9 +116,9 @@ export function BybitCostCalculator() {
         <section className="comparison-results" aria-live="polite">
           <p className="eyebrow">你的交易成本比較</p>
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            <ScenarioCard code="A" title="官方" badge="沒有 VIP、沒有返傭" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
-            <ScenarioCard code="B" title="官方 VIP" badge="有 VIP、沒有返傭" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
-            <ScenarioCard featured code="C" title="BiBeck VIP" badge="VIP + BiBeck 返傭" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
+            <ScenarioCard code="方案 A" title="一般狀況" badge="無 VIP、無返傭" rows={[["基準費率", percent(baselineRate)], ["30 日交易量", volumeNumber.format(Math.max(0, volume)) + " USDT"], ["30 日原始手續費", money.format(result.baselineFee)], ["年度預估成本", money.format(result.annualBaselineCost)]]} />
+            <ScenarioCard code="方案 B" title="VIP" badge="有 VIP、無 BiBeck 返傭" rows={[[vipMode === "auto" ? "推估 VIP 等級" : "手動 VIP 等級", selectedVip.label], ["VIP 費率", percent(vipRate)], ["30 日 VIP 後手續費", money.format(result.vipFee)], ["VIP 省下金額", money.format(result.vipSavings)], ["年度預估成本", money.format(result.annualVipCost)]]} />
+            <ScenarioCard featured code="方案 C" title="VIP + BiBeck 返傭" badge="套用 VIP 費率與 BiBeck 返傭" rows={[["VIP 等級", selectedVip.label], ["BiBeck 返傭比例", (rebateRate * 100).toFixed(0) + "%"], ["預估返傭回饋", money.format(result.rebate)], ["30 日實際成本", money.format(result.actualCost)], ["有效手續費率", percent(result.effectiveFeeRate)], ["年度預估成本", money.format(result.annualActualCost)]]} />
           </div>
 
           <div className="savings-summary">

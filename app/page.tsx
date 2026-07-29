@@ -53,7 +53,7 @@ export default function Home() {
 
       <section className="border-y border-white/10 px-5 py-20 sm:px-8" id="calculator">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="交易成本計算器" title="比較真正的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
+          <SectionTitle label="交易成本計算器" title="比較真實的交易成本" copy="比較不同交易所、VIP 等級與 BiBeck 返傭後的實際交易成本。目前 Bybit 提供完整計算，其餘平台將陸續開放。" />
           <div className="mt-10"><BybitCostCalculator /></div>
         </div>
       </section>
