@@ -17,7 +17,7 @@ function proof(type = "image/jpeg", name = "proof.jpg", extraSize = 0) {
 
 function validForm(exchangeId = "bybit") {
   const form = new FormData();
-  Object.entries({ name: "王先生", email: "trader@example.com", exchangeId, applicantType: "專業交易者", volume30d: "12500000", volume90dAverage: "10000000", expectedMonthlyVolume: "15000000", product: "USDT 永續", vipLevel: "vip2", requestedRebate: "30", dataConsent: "true", privacyConfirmed: "true" }).forEach(([key, value]) => form.set(key, value));
+  Object.entries({ name: "王先生", email: "trader@example.com", exchangeId, applicantType: "專業交易者", volume30d: "12500000", volume90dAverage: "10000000", expectedMonthlyVolume: "15000000", product: "USDT 永續", vipLevel: "vip2", requestedRebate: "30", legalConsent: "true", dataConsent: "true", privacyConfirmed: "true" }).forEach(([key, value]) => form.set(key, value));
   form.append("attachments", proof());
   return form;
 }

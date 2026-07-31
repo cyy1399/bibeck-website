@@ -11,19 +11,6 @@ export const metadata: Metadata = {
     template: "%s｜BiBeck",
   },
   description: siteDescription,
-  keywords: [
-    "BiBeck",
-    "交易成本",
-    "交易成本計算器",
-    "Bybit",
-    "Bybit返傭",
-    "Bybit手續費",
-    "Binance",
-    "OKX",
-    "Bitget",
-    "Crypto Rebate",
-    "Trading Fee Calculator",
-  ],
   authors: [{ name: "BiBeck" }],
   creator: "BiBeck",
   publisher: "BiBeck",
@@ -86,22 +73,14 @@ export default function RootLayout({
         name: brandConfig.name,
         url: brandConfig.websiteUrl,
         description: siteDescription,
-        inLanguage: "zh-Hant-TW",
+        inLanguage: "zh-TW",
         publisher: { "@id": `${brandConfig.websiteUrl}/#organization` },
-        potentialAction: {
-          "@type": "SearchAction",
-          target: {
-            "@type": "EntryPoint",
-            urlTemplate: `${brandConfig.websiteUrl}/search?q={search_term_string}`,
-          },
-          "query-input": "required name=search_term_string",
-        },
       },
     ],
   };
 
   return (
-    <html lang="zh-Hant-TW">
+    <html lang="zh-TW">
       <body className="antialiased">
         <PreferencesProvider>{children}</PreferencesProvider>
         <script

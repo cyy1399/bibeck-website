@@ -26,6 +26,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
     { href: `${localizePath("/platform/bybit", locale)}#rebate`, label: t("nav.rebate") },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
+    { href: "/privacy", label: "隱私權政策" },
+    { href: "/terms", label: "使用條款" },
+    { href: "/affiliate-disclosure", label: "合作連結與佣金揭露" },
+    { href: "/personal-data-notice", label: "個人資料蒐集告知" },
   ];
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">

@@ -8,20 +8,19 @@ import { convertCurrency, formatCurrency } from "../lib/currency.ts";
 test("currency and locale defaults match the public site", () => {
   assert.equal(DEFAULT_CURRENCY, "USDT");
   assert.equal(DEFAULT_LOCALE, "zh-TW");
-  assert.deepEqual(currencyCodes, ["USDT", "USDC", "BTC", "ETH", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD", "AUD", "CAD"]);
-  assert.deepEqual(localeCodes, ["zh-TW", "zh-CN", "en", "ja", "ko"]);
-  assert.equal(currencies.length, 15);
-  assert.equal(locales.length, 5);
+  assert.deepEqual(currencyCodes, ["USDT", "USDC", "USD", "TWD", "CNY", "HKD", "JPY", "KRW", "EUR", "GBP", "SGD"]);
+  assert.deepEqual(localeCodes, ["zh-TW"]);
+  assert.equal(currencies.length, 11);
+  assert.equal(locales.length, 1);
 });
 
-test("localized App Router pages and SEO language alternates exist", async () => {
-  const localeLayout = await readFile(new URL("../app/[locale]/layout.tsx", import.meta.url), "utf8");
+test("網站維持單一繁體中文路由，設定選單不含語言切換", async () => {
+  const proxy = await readFile(new URL("../proxy.ts", import.meta.url), "utf8");
   const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
   const settings = await readFile(new URL("../components/SettingsMenu.tsx", import.meta.url), "utf8");
-  assert.match(localeLayout, /generateStaticParams/);
-  assert.match(sitemap, /localizedAlternates/);
-  assert.doesNotMatch(settings, /shortLabel/);
-  assert.match(settings, /router\.push\(localizePath/);
+  assert.match(proxy, /308/);
+  assert.doesNotMatch(sitemap, /localizedAlternates|hreflang/);
+  assert.doesNotMatch(settings, /語言|shortLabel|setLocale/);
 });
 
 test("currency conversion is reversible and formatting is unambiguous", () => {
@@ -30,7 +29,7 @@ test("currency conversion is reversible and formatting is unambiguous", () => {
   assert.equal(convertCurrency(twd, "TWD", "USDT"), 1_000);
   assert.equal(formatCurrency(1_000, "USDT"), "1,000 USDT");
   assert.match(formatCurrency(32_500, "TWD"), /^NT\$/);
-  assert.match(formatCurrency(0.025, "BTC"), / BTC$/);
+  assert.equal(formatCurrency(150_000, "JPY"), "¥150,000");
   assert.equal(formatCurrency(Number.NaN, "USD"), "US$0");
 });
 
