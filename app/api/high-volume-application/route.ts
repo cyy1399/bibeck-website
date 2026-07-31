@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { validateHighVolumeApplication } from "@/lib/high-volume-application";
 import { sendHighVolumeApplicationEmail } from "@/lib/high-volume-email";
+import { createCaseNumber } from "@/lib/rebate-activation";
+import { recordHighVolumeNotificationError, saveHighVolumePreReview } from "@/lib/rebate-case-store";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const attempts = new Map<string, number[]>();
 const RATE_WINDOW_MS = 15 * 60 * 1000;
@@ -23,12 +25,6 @@ function isRateLimited(request: Request): boolean {
   return recent.length > RATE_LIMIT;
 }
 
-function createApplicationId(): string {
-  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
-  const bytes = new Uint8Array(2); crypto.getRandomValues(bytes);
-  return `HV-${date}-${Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
-}
-
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return NextResponse.json({ error: "無效的提交來源。" }, { status: 403 });
   if (isRateLimited(request)) return NextResponse.json({ error: "提交次數過多，請稍後再試。" }, { status: 429 });
@@ -36,8 +32,9 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const result = await validateHighVolumeApplication(form);
     if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
-    const applicationId = createApplicationId();
-    await sendHighVolumeApplicationEmail({ applicationId, submittedAt: new Date().toISOString(), userAgent: request.headers.get("user-agent") ?? "", data: result.data, attachments: result.attachments });
+    const applicationId = createCaseNumber("HV");
+    const saved = await saveHighVolumePreReview(applicationId, result.data as unknown as Record<string, unknown>);
+    try { await sendHighVolumeApplicationEmail({ applicationId, submittedAt: new Date().toISOString(), userAgent: request.headers.get("user-agent") ?? "", data: result.data, attachments: result.attachments }); await recordHighVolumeNotificationError(saved.id, null); } catch (error) { await recordHighVolumeNotificationError(saved.id, error instanceof Error ? error.message : "EMAIL_FAILED"); }
     return NextResponse.json({ applicationId }, { status: 201 });
   } catch (error) {
     const unconfigured = error instanceof Error && error.message === "EMAIL_PROVIDER_NOT_CONFIGURED";
