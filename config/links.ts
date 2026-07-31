@@ -15,3 +15,18 @@ export const BITGET_FEE_CENTER = "https://www.bitget.com/fee/spot-trading";
 
 export const OKX_FEE_RULES = "https://www.okx.com/en-gb/help/trading-fee-rules-faq";
 export const OKX_FUTURES_FEE_GUIDE = "https://www.okx.com/en-us/help/how-to-calculate-the-contract-transaction-fee";
+
+const externalServices: Record<string, string> = {
+  "partner.bybit.com": "Bybit 註冊頁",
+  "bybackoffice.com": "Bybit 合作夥伴返傭後台",
+  "www.bybit.com": "Bybit 官方網站",
+  "www.binance.com": "Binance 官方網站",
+  "bingx.com": "BingX 官方網站",
+  "www.bitget.com": "Bitget 官方網站",
+  "www.okx.com": "OKX 官方網站",
+};
+
+export function externalDestinationFor(href: string): { serviceName: string; domain: string } {
+  const domain = new URL(href).hostname.toLowerCase();
+  return { serviceName: externalServices[domain] ?? "外部服務", domain };
+}

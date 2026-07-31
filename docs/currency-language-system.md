@@ -1,17 +1,13 @@
-# Currency and language preferences
+# BiBeck 貨幣與語言政策
 
-## Current rollout (v2)
+## 語言
 
-- The canonical default remains `https://bibeck.com` in Traditional Chinese (`zh-TW`). English, Japanese, Korean and Simplified Chinese are published under `/en`, `/ja`, `/ko` and `/zh-cn`.
-- Currency and language preferences are saved under `bibeck.currency` and `bibeck.locale`; locale is also stored in a first-party cookie so routing can retain the language across navigation.
-- The first client render uses `USDT` and `zh-TW`, then restores saved preferences after hydration. This prevents server/client markup mismatches.
-- Currency conversion is based on bundled fallback estimates and is always labelled as an estimate, not a live market quote. Trading calculations continue to use USDT as their base unit.
-- Shared navigation, footer, settings, primary page heroes, calculator fields and calculator monetary results use JSON dictionaries. Locale routes are statically generated through the App Router.
+網站目前只提供繁體中文，避免未完成翻譯造成產品資訊、費率與法律揭露不一致。預設且唯一語系為 `zh-TW`，正式網址不使用語系前綴。
 
-## SEO strategy
+舊 `/en`、`/ja`、`/ko`、`/zh-cn` 與 `/zh-tw` 前綴由 `proxy.ts` 以 308 導向相同的不含前綴路徑，並保留查詢參數。
 
-Every published locale route receives a locale-specific canonical, Open Graph locale, Twitter title/description and `hreflang` set including `x-default`. The sitemap includes each language URL and its language alternates. The default language intentionally remains unprefixed.
+## 貨幣
 
-## Exchange-rate provider boundary
+交易計算以 USDT 為基準。使用者可在「設定」選擇顯示貨幣，偏好保存於 `bibeck.currency`；Header 不顯示目前選擇摘要。
 
-`config/currencies.ts` owns supported currencies and the fallback rate policy. A future provider may replace `unitsPerUsdt` values with server-fetched, cached rates, but must include a source name and update timestamp and must fall back safely when unavailable.
+`config/currencies.ts` 集中管理貨幣與估算匯率政策。匯率透過 `ExchangeRateProvider` 介面讀取；目前使用標示更新日期的內建估算資料，絕不描述為即時報價。若供應商無法提供有效匯率，介面必須顯示「匯率暫時無法取得」，不可靜默套用錯誤數值。

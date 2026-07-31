@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { brandConfig } from "@/config/brand";
 
-export const siteTitle = "BiBeck｜交易成本計算器、交易所手續費比較與返傭平台";
+export const siteTitle = "交易成本計算器、交易所手續費比較與返傭｜BiBeck";
 export const siteDescription = "BiBeck 提供交易成本計算器、交易所手續費比較與返傭服務，協助交易者降低長期交易成本，支援 Bybit、Binance、OKX、Bitget 等交易所。";
 export const socialImage = {
   url: "/og-seo.png",

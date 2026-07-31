@@ -36,7 +36,15 @@ test("返傭比例最高限制為 100% 且不產生負成本", () => {
 
 test("三層比較正確計算基準、返傭與年度成本", () => {
   const result = calculateTradingCostComparison({ thirtyDayVolume: 1_000_000, baselineFeeRate: 0.0003, vipFeeRate: 0.0003, rebateRate: 0.2 });
-  assert.deepEqual(result, { baselineFee: 300, vipFee: 300, vipSavings: 0, rebate: 60, actualCost: 240, totalSavings: 60, effectiveFeeRate: 0.00024, annualBaselineCost: 3600, annualVipCost: 3600, annualActualCost: 2880, annualTotalSavings: 720 });
+  assert.deepEqual(result, { baselineFee: 300, vipFee: 300, vipSavings: 0, rebate: 60, actualCost: 240, totalSavings: 60, effectiveFeeRate: 0.00024, annualBaselineCost: 3600, annualVipCost: 3600, annualVipSavings: 0, annualActualCost: 2880, annualTotalSavings: 720 });
+});
+
+test("小數交易量與費率使用固定精度運算，不累積浮點誤差", () => {
+  const result = calculateTradingCostComparison({ thirtyDayVolume: 1_000_000.5, baselineFeeRate: 0.00055, vipFeeRate: 0.0004, rebateRate: 0.25 });
+  assert.equal(result.vipFee, 400.0002);
+  assert.equal(result.rebate, 100.00005);
+  assert.equal(result.actualCost, 300.00015);
+  assert.equal(Number.isFinite(result.annualActualCost), true);
 });
 
 test("VIP 優惠與返傭會分開計算省下金額", () => {

@@ -34,6 +34,9 @@ export default function Home() {
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
               <TranslatedText message="home.disclosure" />
             </p>
+            <ul className="reveal mt-7 grid max-w-3xl gap-2 text-xs text-white/58 sm:grid-cols-2" aria-label="BiBeck 信任標記">
+              {["不保管使用者資產", "不要求密碼或驗證碼", "費率來源可查證", "使用計算工具不另收費"].map((item) => <li key={item} className="border-l border-gold/55 py-1 pl-3">{item}</li>)}
+            </ul>
           </div>
         </div>
       </section>

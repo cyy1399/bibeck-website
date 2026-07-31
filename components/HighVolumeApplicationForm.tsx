@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type DragEvent, type FormEvent, type Reac
 import { brandConfig } from "@/config/brand";
 import { applicantTypes, applicationUploadPolicy, bybitVipOptions, highVolumeApplicationExchanges, productOptions, requestedRebateOptions } from "@/config/high-volume-application";
 import { FormattedNumberInput } from "@/components/FormattedNumberInput";
+import Link from "next/link";
 
 const inputClass = "calculator-input mt-2 w-full min-w-0";
 const enabledExchanges = highVolumeApplicationExchanges.filter((exchange) => exchange.applicationEnabled);
@@ -77,11 +78,19 @@ export function HighVolumeApplicationForm() {
       <div>
         <h2 className="text-xl font-semibold text-white">證明資料說明</h2>
         <p className="mt-3 text-sm leading-7 text-secondary">請上傳可驗證近期交易量、VIP 等級或手續費紀錄的畫面。建議讓交易所名稱、UID 與交易量同時可見，並遮蔽資產餘額、姓名、Email、手機號碼等不必要資訊。</p>
-        <p className="mt-3 border-l-2 border-gold/60 pl-4 text-sm leading-7 text-secondary">BiBeck 不會要求帳戶密碼、驗證碼、API Secret、私鑰或助記詞。</p>
+        <p className="mt-3 border-l-2 border-gold/60 pl-4 text-sm leading-7 text-secondary">BiBeck 不會要求帳戶密碼、驗證碼、API Secret、私鑰或助記詞。附件不會建立公開永久網址。</p>
         <UploadArea files={files} dragging={dragging} error={fileError} onFiles={addFiles} onDragging={setDragging} onRemove={(index) => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} onClear={() => { setFiles([]); setFileError(""); }} />
       </div>
 
+      <aside className="border border-gold/25 bg-gold/[0.04] p-5 text-sm leading-7 text-secondary" aria-labelledby="data-collection-title">
+        <h2 id="data-collection-title" className="text-base font-semibold text-white">提交前的個人資料告知</h2>
+        <p className="mt-3">蒐集目的為聯絡申請人、核對交易量證明、評估返傭方案與防止濫用；資料類型包含聯絡資料、交易所 UID、交易量、VIP 狀態、申請內容及附件。</p>
+        <p className="mt-2">資料將透過網站與郵件服務處理。正式保存期限、私有附件儲存與到期刪除流程仍待營運者確認，因此請遮蔽非必要個資與資產餘額，只提供審核所需資料。</p>
+        <p className="mt-2">你可透過 <a className="break-all text-gold underline" href={`mailto:${brandConfig.publicEmails.contact}`}>{brandConfig.publicEmails.contact}</a> 申請查詢、更正或刪除資料。詳情請閱讀 <Link className="text-gold underline" href="/privacy">隱私權政策</Link> 與 <Link className="text-gold underline" href="/personal-data-notice">個人資料蒐集告知</Link>。</p>
+      </aside>
+
       <div className="grid gap-3">
+        <Consent name="legalConsent">我已閱讀並同意《隱私權政策》與《個人資料蒐集告知》。</Consent>
         <Consent name="dataConsent">我確認提供的資料真實且可供 BiBeck 進行高交易量方案評估，並理解申請比例不代表最終核准比例。</Consent>
         <Consent name="privacyConfirmed">我已遮蔽不必要的個人及資產資訊，且未提供密碼、驗證碼、API Secret、私鑰或助記詞。</Consent>
       </div>

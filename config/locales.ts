@@ -1,13 +1,9 @@
-export const localeCodes = ["zh-TW", "zh-CN", "en", "ja", "ko"] as const;
+export const localeCodes = ["zh-TW"] as const;
 export type LocaleCode = (typeof localeCodes)[number];
 export const DEFAULT_LOCALE: LocaleCode = "zh-TW";
 
 export const locales = [
-  { code: "zh-TW", slug: "", label: "繁體中文", shortLabel: "繁中", htmlLang: "zh-Hant-TW", openGraphLocale: "zh_TW" },
-  { code: "zh-CN", slug: "zh-cn", label: "简体中文", shortLabel: "简中", htmlLang: "zh-Hans-CN", openGraphLocale: "zh_CN" },
-  { code: "en", slug: "en", label: "English", shortLabel: "EN", htmlLang: "en", openGraphLocale: "en_US" },
-  { code: "ja", slug: "ja", label: "日本語", shortLabel: "日本語", htmlLang: "ja", openGraphLocale: "ja_JP" },
-  { code: "ko", slug: "ko", label: "한국어", shortLabel: "한국어", htmlLang: "ko", openGraphLocale: "ko_KR" },
+  { code: "zh-TW", slug: "", label: "繁體中文", shortLabel: "繁中", htmlLang: "zh-TW", openGraphLocale: "zh_TW" },
 ] as const;
 
 export function isLocaleCode(value: string | null): value is LocaleCode {

@@ -4,7 +4,7 @@ export type HighVolumeApplicationData = {
   name: string; email: string; contactHandle: string; exchangeId: string; currentUid: string;
   applicantType: string; volume30d: number; volume90dAverage: number; expectedMonthlyVolume: number | null;
   product: string; makerTakerRatio: string; frequency: string; vipLevel: string;
-  otherRebate: string; requestedRebate: string; notes: string; dataConsent: boolean; privacyConfirmed: boolean;
+  otherRebate: string; requestedRebate: string; notes: string; legalConsent: boolean; dataConsent: boolean; privacyConfirmed: boolean;
 };
 
 export type ValidatedAttachment = { filename: string; mimeType: string; size: number; bytes: Uint8Array };
@@ -69,7 +69,7 @@ export async function validateHighVolumeApplication(form: FormData): Promise<Val
   const volume30d = requiredNumber(form, "volume30d"); const volume90dAverage = requiredNumber(form, "volume90dAverage");
   const expectedMonthlyVolume = optionalNumber(form, "expectedMonthlyVolume");
   if (volume30d === null || volume90dAverage === null || expectedMonthlyVolume === "invalid") return { ok: false, error: "交易量必須為有效且不含逗號的非負數字。" };
-  if (textValue(form, "dataConsent") !== "true" || textValue(form, "privacyConfirmed") !== "true") return { ok: false, error: "請勾選兩項送出前聲明。" };
+  if (textValue(form, "legalConsent") !== "true" || textValue(form, "dataConsent") !== "true" || textValue(form, "privacyConfirmed") !== "true") return { ok: false, error: "請閱讀並勾選三項送出前聲明。" };
   const fileValues = form.getAll("attachments").filter((value): value is File => typeof File !== "undefined" && value instanceof File && value.size > 0);
   const attachments = await validateAttachments(fileValues);
   if (typeof attachments === "string") return { ok: false, error: attachments };
@@ -77,6 +77,6 @@ export async function validateHighVolumeApplication(form: FormData): Promise<Val
     name, email, exchangeId, applicantType, product, vipLevel, requestedRebate, volume30d, volume90dAverage,
     expectedMonthlyVolume, contactHandle: textValue(form, "contactHandle"), currentUid: textValue(form, "currentUid"),
     makerTakerRatio: textValue(form, "makerTakerRatio"), frequency: textValue(form, "frequency"),
-    otherRebate: textValue(form, "otherRebate"), notes: textValue(form, "notes"), dataConsent: true, privacyConfirmed: true,
+    otherRebate: textValue(form, "otherRebate"), notes: textValue(form, "notes"), legalConsent: true, dataConsent: true, privacyConfirmed: true,
   }, attachments };
 }

@@ -1,10 +1,12 @@
-import { currencyByCode, type CurrencyCode } from "../config/currencies.ts";
+import { bundledEstimateRateProvider, currencyByCode, type CurrencyCode, type ExchangeRateProvider } from "../config/currencies.ts";
 
-export function convertCurrency(amount: number, from: CurrencyCode, to: CurrencyCode): number {
-  if (!Number.isFinite(amount)) return 0;
+export function convertCurrency(amount: number, from: CurrencyCode, to: CurrencyCode, provider: ExchangeRateProvider = bundledEstimateRateProvider): number | null {
+  if (!Number.isFinite(amount)) return null;
   if (from === to) return amount;
-  const inUsdt = amount / currencyByCode[from].unitsPerUsdt;
-  return inUsdt * currencyByCode[to].unitsPerUsdt;
+  const fromRate = provider.getUnitsPerUsdt(from);
+  const toRate = provider.getUnitsPerUsdt(to);
+  if (fromRate === null || toRate === null) return null;
+  return (amount / fromRate) * toRate;
 }
 
 export function formatCurrency(amount: number, code: CurrencyCode): string {
@@ -25,5 +27,6 @@ export function formatCurrency(amount: number, code: CurrencyCode): string {
 }
 
 export function formatConvertedCurrency(amountInUsdt: number, code: CurrencyCode): string {
-  return formatCurrency(convertCurrency(amountInUsdt, "USDT", code), code);
+  const converted = convertCurrency(amountInUsdt, "USDT", code);
+  return converted === null ? "匯率暫時無法取得" : formatCurrency(converted, code);
 }

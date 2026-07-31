@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#090909",
     theme_color: "#090909",
-    lang: "zh-Hant-TW",
+    lang: "zh-TW",
     icons: [
       { src: "/icon.png", sizes: "512x512", type: "image/png" },
       { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },

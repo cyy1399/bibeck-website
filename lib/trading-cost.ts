@@ -16,20 +16,34 @@ function nonNegative(value: number): number {
   return Number.isFinite(value) && value > 0 ? value : 0;
 }
 
+const DECIMAL_SCALE = BigInt("1000000000000");
+
+function decimal(value: number): bigint {
+  return BigInt(Math.round(nonNegative(value) * Number(DECIMAL_SCALE)));
+}
+
+function multiply(left: number, right: number): number {
+  return Number((decimal(left) * decimal(right)) / DECIMAL_SCALE) / Number(DECIMAL_SCALE);
+}
+
+function subtract(left: number, right: number): number {
+  return Number(decimal(left) - decimal(right)) / Number(DECIMAL_SCALE);
+}
+
 export function calculateTradingCost(input: TradingCostInput): TradingCostResult {
   const monthlyVolume = nonNegative(input.monthlyVolume);
   const feeRate = nonNegative(input.feeRate);
   const rebateRate = Math.min(1, nonNegative(input.rebateRate));
-  const monthlyRawFee = monthlyVolume * feeRate;
-  const monthlyRebate = monthlyRawFee * rebateRate;
-  const monthlyActualCost = Math.max(0, monthlyRawFee - monthlyRebate);
+  const monthlyRawFee = multiply(monthlyVolume, feeRate);
+  const monthlyRebate = multiply(monthlyRawFee, rebateRate);
+  const monthlyActualCost = Math.max(0, subtract(monthlyRawFee, monthlyRebate));
 
   return {
     monthlyRawFee,
     monthlyRebate,
     monthlyActualCost,
-    annualActualCost: monthlyActualCost * 12,
-    effectiveFeeRate: monthlyVolume > 0 ? monthlyActualCost / monthlyVolume : 0,
+    annualActualCost: multiply(monthlyActualCost, 12),
+    effectiveFeeRate: monthlyVolume > 0 ? multiply(monthlyActualCost, 1 / monthlyVolume) : 0,
   };
 }
 
@@ -59,6 +73,7 @@ export type TradingCostComparison = {
   effectiveFeeRate: number;
   annualBaselineCost: number;
   annualVipCost: number;
+  annualVipSavings: number;
   annualActualCost: number;
   annualTotalSavings: number;
 };
@@ -68,12 +83,12 @@ export function calculateTradingCostComparison(input: TradingCostComparisonInput
   const baselineRate = nonNegative(input.baselineFeeRate);
   const vipRate = nonNegative(input.vipFeeRate);
   const rebateRate = Math.min(1, nonNegative(input.rebateRate));
-  const baselineFee = volume * baselineRate;
-  const vipFee = volume * vipRate;
-  const vipSavings = Math.max(0, baselineFee - vipFee);
-  const rebate = vipFee * rebateRate;
-  const actualCost = Math.max(0, vipFee - rebate);
-  const totalSavings = Math.max(0, baselineFee - actualCost);
+  const baselineFee = multiply(volume, baselineRate);
+  const vipFee = multiply(volume, vipRate);
+  const vipSavings = Math.max(0, subtract(baselineFee, vipFee));
+  const rebate = multiply(vipFee, rebateRate);
+  const actualCost = Math.max(0, subtract(vipFee, rebate));
+  const totalSavings = Math.max(0, subtract(baselineFee, actualCost));
 
   return {
     baselineFee,
@@ -82,11 +97,12 @@ export function calculateTradingCostComparison(input: TradingCostComparisonInput
     rebate,
     actualCost,
     totalSavings,
-    effectiveFeeRate: volume === 0 ? 0 : actualCost / volume,
-    annualBaselineCost: baselineFee * 12,
-    annualVipCost: vipFee * 12,
-    annualActualCost: actualCost * 12,
-    annualTotalSavings: totalSavings * 12,
+    effectiveFeeRate: volume === 0 ? 0 : multiply(actualCost, 1 / volume),
+    annualBaselineCost: multiply(baselineFee, 12),
+    annualVipCost: multiply(vipFee, 12),
+    annualVipSavings: multiply(vipSavings, 12),
+    annualActualCost: multiply(actualCost, 12),
+    annualTotalSavings: multiply(totalSavings, 12),
   };
 }
 

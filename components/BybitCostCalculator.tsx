@@ -10,10 +10,13 @@ import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolv
 import { useCurrency, usePreferences } from "@/components/PreferencesProvider";
 import { convertCurrency, formatConvertedCurrency } from "@/lib/currency";
 import { exchangeRatePolicy } from "@/config/currencies";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BYBIT_FEE_STRUCTURE } from "@/config/links";
 
 type ProductId = "spot" | "usdtPerpetual" | "usdcContract";
 type OrderRole = "maker" | "taker";
 type Mode = "auto" | "manual";
+type RebateScenario = "new" | "reviewed" | "custom";
 
 const volumeNumber = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 });
 
@@ -33,7 +36,7 @@ export function BybitCostCalculator() {
   const [volume, setVolume] = useState(1_000_000);
   const [vipMode, setVipMode] = useState<Mode>("auto");
   const [manualVipId, setManualVipId] = useState("vip-0");
-  const [rebateMode, setRebateMode] = useState<Mode>("auto");
+  const [rebateMode, setRebateMode] = useState<RebateScenario>("new");
   const [manualRebateId, setManualRebateId] = useState("standard");
   const [negotiatedPercent, setNegotiatedPercent] = useState(40);
   const [customFeeEnabled, setCustomFeeEnabled] = useState(false);
@@ -42,7 +45,7 @@ export function BybitCostCalculator() {
   const estimatedVip = estimateBybitVipTier(volume);
   const selectedVip = resolveBybitVipTier(vipMode, volume, manualVipId);
   const recommendedRebate = recommendBiBeckTier(volume);
-  const selectedRebate = rebateMode === "auto" ? recommendedRebate : BIBECK_REBATE_TIERS.find((tier) => tier.id === manualRebateId) ?? BIBECK_REBATE_TIERS[0];
+  const selectedRebate = rebateMode === "new" ? BIBECK_REBATE_TIERS[0] : rebateMode === "reviewed" ? recommendedRebate : BIBECK_REBATE_TIERS.find((tier) => tier.id === manualRebateId) ?? BIBECK_REBATE_TIERS[0];
   const baselineRate = rateFor(BYBIT_VIP_TIERS[0], product, role);
   const vipRate = customFeeEnabled ? Math.max(0, customFeePercent) / 100 : rateFor(selectedVip, product, role);
   const rebateRate = selectedRebate.isNegotiated ? negotiatedRebateRate(negotiatedPercent, true) : selectedRebate.rebateRate;
@@ -62,7 +65,16 @@ export function BybitCostCalculator() {
   ] as const;
   const maxCost = Math.max(1, result.baselineFee, result.vipFee, result.actualCost);
   const displayMoney = (amount: number) => formatConvertedCurrency(amount, currency);
-  const displayVolume = convertCurrency(volume, "USDT", currency);
+  const displayVolume = convertCurrency(volume, "USDT", currency) ?? 0;
+  const scenarioRows = (feeRate: number, fee: number, actualCost: number, annualCost: number, savings: number, effectiveRate: number): [string, string][] => [
+    ["手續費率", percent(feeRate)],
+    ["30 日交易量", formatConvertedCurrency(Math.max(0, volume), currency)],
+    ["30 日原始手續費", displayMoney(fee)],
+    ["30 日實際交易成本", displayMoney(actualCost)],
+    ["年度推估成本", displayMoney(annualCost)],
+    ["年度推估節省", displayMoney(savings)],
+    ["實際有效費率", percent(effectiveRate)],
+  ];
 
   return (
     <div className="bybit-calculator">
@@ -91,7 +103,7 @@ export function BybitCostCalculator() {
             </div>
             <label className="block">
               <span className="flex items-baseline justify-between gap-3 text-sm font-medium text-white">{t("common.volume")} <span className="text-xs font-normal text-white/42">{currency}</span></span>
-              <FormattedNumberInput key={currency} ariaLabel={t("common.volume")} placeholder="1,000,000" value={displayVolume} onChange={(value) => setVolume(convertCurrency(value, currency, "USDT"))} />
+              <FormattedNumberInput key={currency} ariaLabel={t("common.volume")} placeholder="1,000,000" value={displayVolume} onChange={(value) => setVolume(convertCurrency(value, currency, "USDT") ?? 0)} />
               <span className="mt-2 block text-xs leading-6 text-white/44">{t("calculator.volumeHelp")}</span>
             </label>
 
@@ -100,12 +112,18 @@ export function BybitCostCalculator() {
               <p className="text-xs leading-6 text-white/42">實際 VIP 等級仍可能受到資產條件、平台政策與每日系統更新影響，請以 Bybit 帳戶顯示為準。</p>
             </ModeField>
 
-            <ModeField title={t("calculator.rebateMode")} mode={rebateMode} setMode={setRebateMode} autoLabel={t("calculator.estimated")} manualLabel={t("calculator.scenario")}>
-              {rebateMode === "manual" ? <Select label="選擇返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : <p className="text-sm text-white/72">依目前交易量推估：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p>}
+            <div className="mode-field">
+              <p className="text-sm font-semibold text-white">{t("calculator.rebateMode")}</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3" role="group" aria-label="返傭試算情境">
+                {([["new", "新帳戶預設 20%"], ["reviewed", "月度審核推估"], ["custom", "自訂情境試算"]] as const).map(([id, label]) => <button key={id} type="button" aria-pressed={rebateMode === id} onClick={() => setRebateMode(id)} className={`min-h-12 border px-3 py-2 text-sm ${rebateMode === id ? "border-gold bg-gold text-black" : "border-white/15 text-white"}`}>{label}</button>)}
+              </div>
+              <div className="mt-4 grid gap-3">
+              {rebateMode === "custom" ? <Select label="選擇模擬返傭方案" value={manualRebateId} onChange={setManualRebateId}>{BIBECK_REBATE_TIERS.map((tier) => <option key={tier.id} value={tier.id}>{tier.name} {Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? "+" : ""}</option>)}</Select> : rebateMode === "reviewed" ? <p className="text-sm text-white/72">依目前交易量推估：<strong className="text-gold">{recommendedRebate.name} {Math.round(recommendedRebate.rebateRate * 100)}%{recommendedRebate.isNegotiated ? " 或以上" : ""}</strong></p> : <p className="text-sm text-white/72">一般申請新帳戶預設：<strong className="text-gold">標準交易者 20%</strong></p>}
               <p className="text-xs leading-6 text-white/52">適用交易量：{formatRebateVolumeRange(selectedRebate)}</p>
               {selectedRebate.isNegotiated ? <div className="grid gap-3 rounded-sm border border-gold/25 bg-black/20 p-4"><NumberInput label="協商返傭比例" value={negotiatedPercent} setValue={setNegotiatedPercent} min={40} max={100} step={1} suffix="%" /><p className="text-xs text-gold">僅供試算，不代表正式核准比例。</p><a href={professionalPartnershipMailto} className="button-secondary w-full">洽談專業合作方案</a><p className="text-xs leading-6 text-white/42">40% 或以上方案僅提供給符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與專業協商。</p></div> : null}
-              <p className="text-xs leading-6 text-white/42">{rebateMode === "manual" ? "此功能僅供比較不同返傭比例下的交易成本，不代表帳戶實際核准比例。" : "一般申請帳戶初始仍為標準交易者 20%，實際級距會在每月 1 日依前一完整月份交易量審核後生效。"}</p>
-            </ModeField>
+              <p className="text-xs leading-6 text-white/42">{rebateMode === "custom" ? "此功能僅供比較不同返傭比例下的交易成本，不代表帳戶實際核准比例。" : rebateMode === "reviewed" ? "此為依交易量推估級距；實際級距會在每月 1 日依前一完整月份交易量審核後生效，結果可能升等、降等或維持。" : "一般申請帳戶初始為標準交易者 20%；未滿一個完整月份不會提前分級。"}</p>
+              </div>
+            </div>
 
             <ModeField title={t("calculator.feeRate")} mode={customFeeEnabled ? "manual" : "auto"} setMode={(mode) => setCustomFeeEnabled(mode === "manual")} autoLabel={t("calculator.auto")} manualLabel={t("calculator.manual")}>
               {customFeeEnabled ? <><NumberInput label="自訂 VIP 費率" value={customFeePercent} setValue={setCustomFeePercent} min={0} step={0.0001} suffix="%" /><p className="text-xs leading-6 text-white/42">自訂費率僅供試算，不會改變實際 Bybit 帳戶費率。</p></> : <p className="text-sm text-white/72">目前套用費率：<strong className="font-mono text-gold">{percent(vipRate)}</strong></p>}
@@ -123,9 +141,9 @@ export function BybitCostCalculator() {
         <section className="comparison-results" aria-live="polite">
           <p className="eyebrow">{t("calculator.results")}</p>
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            <ScenarioCard code="A" title={t("calculator.planA")} badge={t("calculator.noVip")} rows={[[t("calculator.feeRate"), percent(baselineRate)], [t("common.volume"), formatConvertedCurrency(Math.max(0, volume), currency)], [t("common.fee"), displayMoney(result.baselineFee)], [t("common.result"), displayMoney(result.annualBaselineCost)]]} />
-            <ScenarioCard code="B" title={t("calculator.planB")} badge={t("calculator.vipNoRebate")} rows={[[t("calculator.vip"), selectedVip.label], [t("calculator.feeRate"), percent(vipRate)], [t("common.fee"), displayMoney(result.vipFee)], [t("common.result"), displayMoney(result.annualVipCost)]]} />
-            <ScenarioCard featured code="C" title={t("calculator.planC")} badge={t("calculator.withRebate")} rows={[[t("calculator.vip"), selectedVip.label], [t("common.rebate"), (rebateRate * 100).toFixed(0) + "%"], [t("common.rebate"), displayMoney(result.rebate)], [t("common.result"), displayMoney(result.actualCost)], [t("calculator.feeRate"), percent(result.effectiveFeeRate)]]} />
+            <ScenarioCard code="A" title={t("calculator.planA")} badge={t("calculator.noVip")} rows={scenarioRows(baselineRate, result.baselineFee, result.baselineFee, result.annualBaselineCost, 0, baselineRate)} />
+            <ScenarioCard code="B" title={t("calculator.planB")} badge={`${selectedVip.label} · ${t("calculator.vipNoRebate")}`} rows={scenarioRows(vipRate, result.vipFee, result.vipFee, result.annualVipCost, result.annualVipSavings, vipRate)} />
+            <ScenarioCard featured code="C" title={t("calculator.planC")} badge={`${selectedVip.label} · 返傭 ${(rebateRate * 100).toFixed(0)}%`} rows={[...scenarioRows(vipRate, result.vipFee, result.actualCost, result.annualActualCost, result.annualTotalSavings, result.effectiveFeeRate), ["30 日返傭金額", displayMoney(result.rebate)]]} />
           </div>
 
           <div className="savings-summary">
@@ -143,6 +161,8 @@ export function BybitCostCalculator() {
       </div>
 
       <div className="mt-8 border-t border-white/10 pt-7 text-xs leading-6 text-white/44">
+        <details className="mb-6 border border-white/10 bg-black/20 p-4"><summary className="cursor-pointer font-semibold text-white">計算公式與年度推估方式</summary><div className="mt-3 grid gap-1"><p>手續費 = 30 日交易量 × 手續費率</p><p>返傭 = 符合條件的手續費 × 返傭比例</p><p>實際交易成本 = 手續費 − 返傭</p><p>實際有效費率 = 實際交易成本 ÷ 30 日交易量</p><p>年度推估 = 30 日成本 × 12；僅為情境估算，不代表未來實際成本。</p></div></details>
+        <div className="mb-6 border border-white/10 p-4"><p className="font-semibold text-white">費率資料來源與適用範圍</p><p className="mt-2">來源：<ExternalLink href={BYBIT_FEE_STRUCTURE} variant="ghost" className="!min-h-0 !px-0 !py-0 !tracking-normal">Bybit Trading Fee Structure</ExternalLink></p><p>最後檢核：2026-07-29 · 商品：現貨、USDT 永續與 USDC 合約 · 依所選 Maker／Taker 與推估或手動 VIP 費率套用。</p><p>未納入臨時活動、折扣券、資產條件、資金費率或帳戶個別優惠；請以 Bybit 帳戶實際顯示為準。</p></div>
         <p>{t("calculator.disclaimer")}</p>
         <p className="mt-2">返傭是部分交易手續費的回饋，不代表交易獲利，也不會降低交易本身的市場風險。依 30 日交易量顯示的 VIP 與 BiBeck 方案僅為推估或建議，實際資格可能受到資產條件、平台政策、帳戶狀態與人工審核影響。</p>
         <p className="mt-2">40% 或以上返傭方案僅適用於符合條件的高額交易量個體戶、專業交易者、代理或合作夥伴，實際比例須經人工評估與確認。BiBeck 為獨立第三方平台，並非由 Bybit 擁有、營運或官方背書；不保管使用者資產、不代替使用者下單，也不保證任何投資收益。</p>
