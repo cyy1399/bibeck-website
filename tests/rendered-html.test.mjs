@@ -42,16 +42,18 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 5);
 });
 
-test("首頁與 Bybit Hero 使用三個集中式核心按鈕", async () => {
+test("首頁與 Bybit Hero 使用三個帳號操作入口並遵守功能開關", async () => {
+  const actionSource = await readFile(new URL("../components/ExchangeActionButtons.tsx", import.meta.url), "utf8");
+  assert.match(actionSource, /已完成註冊，繼續開通返傭/);
+  assert.match(actionSource, /\/rebate\/activate/);
   for (const pathname of ["/", "/platform/bybit"]) {
     const response = await render(pathname);
     const html = await response.text();
     assert.match(html, /取得 Bybit 返傭帳號/);
     assert.match(html, /登入 Bybit 返傭後台/);
-    assert.match(html, /交易成本計算器/);
     assert.match(html, /https:\/\/partner\.bybit\.com\/b\/t00000016/);
     assert.match(html, /https:\/\/bybackoffice\.com\/user-login/);
-    assert.match(html, /#trading-cost-calculator/);
+    assert.match(html, /功能準備中/);
   }
 });
 
@@ -135,14 +137,15 @@ test("Bybit 返傭級距說明初始 20% 與每月完整月份審核", async () 
   assert.match(html, /一般申請初始級距/);
   assert.match(html, /每月依實際交易量審核/);
   assert.match(html, /不因交易量達標而自動取得 40% 或以上/);
-  assert.match(html, /申請較高初始返傭/);
+  assert.match(html, /申請提高返傭比例/);
 });
 
-test("高交易量快速審核頁提供人工審核、觀察期與安全提醒", async () => {
+test("提高返傭比例頁明確限定完成 20% 開通後申請", async () => {
   const response = await render("/high-volume-application");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /高交易量快速審核/);
+  assert.match(html, /申請提高返傭比例/);
+  assert.match(html, /已完成開通/);
   assert.match(html, /最近 90 日平均月交易量/);
   assert.match(html, /30 日觀察期/);
   assert.match(html, /API Secret/);

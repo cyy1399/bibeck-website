@@ -50,22 +50,22 @@ export const generalFaqs: FAQItem[] = [
     answer: "一般透過 BiBeck 申請返傭帳號的使用者，初始皆適用標準交易者 20%。BiBeck 會在每月 1 日統計前一個完整月份的實際交易量，並依交易量級距決定升等、降等或維持原方案。若帳戶尚未累積一個完整月份，將在完成第一個完整月份後的下一個月 1 日進行首次分級。",
   },
   {
-    question: "可以一開始就取得較高返傭比例嗎？",
-    answer: "一般申請者不會在註冊時直接取得較高級距，初始皆為標準交易者 20%。只有具備穩定且可驗證交易紀錄的高額交易量個體戶、專業交易者、量化交易者、代理或特殊合作夥伴，經人工評估與協商後，才可能在合作開始時適用較高的暫定返傭比例。",
-    link: { href: "/high-volume-application", label: "高交易量快速審核" },
+    question: "如何申請提高返傭比例？",
+    answer: "所有一般 Bybit 返傭帳戶完成開通後，初始返傭比例為 20%。已完成開通且具備穩定交易量的使用者，可以另行提交可驗證資料申請提高返傭比例；實際結果仍須人工審核。",
+    link: { href: "/high-volume-application", label: "申請提高返傭比例" },
   },
 ];
 
 export const homeFaqs: FAQItem[] = [generalFaqs[0], generalFaqs[1], generalFaqs[2], generalFaqs[6], generalFaqs[7]];
 
 export const bybitFaqs: FAQItem[] = [
-  { question: "完成 Bybit 註冊後還要做什麼？", answer: "請返回 BiBeck 使用返傭啟用申請表提交 UID。BiBeck 收到案件後，會人工確認推薦關係並在外部後台設定；收到完成通知前，請勿自行假設返傭已生效。", link: { href: "/rebate/activate?exchange=bybit", label: "返傭啟用申請" } },
+  { question: "完成 Bybit 註冊後還要做什麼？", answer: "完成註冊後，請返回 BiBeck，填寫名稱、Bybit UID 與接收通知的 Email，提交返傭開通申請。", link: { href: "/rebate/activate", label: "開通 Bybit 返傭" } },
   { question: "為什麼需要提交 UID？", answer: "UID 用於營運者在外部後台搜尋帳戶、確認是否歸屬指定推薦關係，並人工設定返傭比例。UID 不等於密碼，也不能用來操作你的資產。" },
   { question: "聯絡 Email 必須和 Bybit Email 相同嗎？", answer: "不需要。聯絡 Email 只用於 BiBeck 案件進度與設定通知，可以和 Bybit 登入 Email 不同。" },
-  { question: "提交 UID 是否代表返傭立即生效？", answer: "不是。提交只代表 BiBeck 收到申請；仍須完成 UID 查核與人工設定。實際生效時間與系統同步仍以 Bybit 規則及後台紀錄為準。" },
+  { question: "提交申請後，返傭會立即生效嗎？", answer: "不會。提交只代表 BiBeck 已收到申請。BiBeck 營運人員仍需在返傭後台人工確認 UID 並設定返傭比例。" },
   { question: "設定前的交易手續費會追溯嗎？", answer: "不保證追溯。設定前的交易是否符合回饋、是否可追溯及實際紀錄，均以 Bybit 當時規則與系統資料為準。" },
-  { question: "如果後台找不到 UID 怎麼辦？", answer: `案件可能轉為「待確認 UID」、「需要補件」或「無法歸戶」。請依案件狀態頁說明提供註冊日期等必要資訊，或聯絡 ${brandConfig.publicEmails.support}；不要提供密碼或驗證碼。` },
-  { question: "高交易量預審核准後還需要提交 UID 嗎？", answer: "需要。預審只代表暫定比例經人工評估，不代表返傭已啟用；仍須透過指定流程建立帳戶、提交 UID 並完成人工設定。" },
+  { question: "一般申請的返傭比例是多少？", answer: "一般申請首次開通的返傭比例固定為 20%。提高返傭比例屬於完成開通後的另一項申請流程。" },
+  { question: "為什麼我的 UID 找不到？", answer: `可能是註冊資料尚未同步、UID 輸入錯誤，或帳號沒有透過指定推薦連結建立。請確認 UID 後聯絡 ${brandConfig.publicEmails.support}。` },
   { question: "BiBeck 會要求我的密碼或驗證碼嗎？", answer: "不會。BiBeck 不會要求 Bybit 密碼、Email／簡訊／Google Authenticator 驗證碼、API Secret、私鑰或助記詞。" },
   {
     question: "已有 Bybit 帳戶，如何使用 BiBeck 返傭？",

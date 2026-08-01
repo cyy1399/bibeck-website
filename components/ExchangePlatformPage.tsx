@@ -105,7 +105,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className={"mt-10 grid gap-7 border-l-2 bg-[#111] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center " + (isBybit ? "border-gold" : "border-white/18")}>
             <p className="max-w-4xl text-base leading-8 text-white/78">{exchange.summary}</p>
             {isBybit ? (
-              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>{activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : <span className="cta-button button-secondary cursor-not-allowed opacity-50">功能準備中</span>}</div>
+              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>{activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : <span className="cta-button button-secondary cursor-not-allowed opacity-50">功能準備中</span>}</div>
             ) : (
               <a href="#comparison" className="button-secondary">比較 Bybit + BiBeck</a>
             )}
@@ -201,12 +201,12 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <p>一般透過 BiBeck 申請返傭帳號的使用者，初始皆歸類為「標準交易者」，返傭比例為 20%。</p>
                 <p>BiBeck 會在每月 1 日統計前一個完整曆月的實際交易量，並依交易量級距調整下一期返傭方案；結果可能為升等、降等或維持原級距。</p>
                 <p>若帳戶啟用尚未滿一個完整月份，將在完成第一個完整月份後的下一個月 1 日首次分級。</p>
-                <p>特殊合作夥伴或已有穩定且可驗證交易紀錄者，可先申請人工審核；較高初始比例不會只憑自行填寫的交易量核准。</p>
+                <p>所有一般 Bybit 返傭帳戶完成開通後，初始返傭比例為 20%。已完成開通且具備穩定交易量的使用者，可另行申請提高返傭比例。</p>
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
                 <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                {activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : null}
-                <Link href="/high-volume-application" className="cta-button button-secondary">已有交易量？申請較高初始返傭</Link>
+                {activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : null}
+                <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
               </div>
             </div>
             <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
@@ -254,8 +254,8 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <SectionTitle label="BiBeck 返傭" title="返傭級距的生效流程" copy="一般申請從標準交易者 20% 開始；累積完整月份交易量後，於次月 1 日重新審核。" />
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                  {activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : null}
-                  <Link href="/high-volume-application" className="cta-button button-secondary">申請較高初始返傭</Link>
+                  {activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : null}
+                  <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
                 </div>
               </div>
               <ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">

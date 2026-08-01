@@ -32,14 +32,3 @@ export async function sendHighVolumeApplicationEmail(request: EmailRequest, fetc
   ];
   await sendTransactionalEmail({ to: process.env.APPLICATION_EMAIL_TO || brandConfig.publicEmails.support, replyTo: data.email, subject: `[BiBeck 高交易量申請] Bybit｜${data.name}｜${formatVolume(data.volume30d)}`, idempotencyKey: `high-volume-${request.applicationId}`, html: `<h1>BiBeck 高交易量快速審核</h1><table>${rows.map(([label, value]) => `<tr><th align="left">${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`).join("")}</table>`, attachments: request.attachments.map((attachment) => ({ filename: attachment.filename, content: bytesToBase64(attachment.bytes) })) }, fetcher);
 }
-
-export async function sendHighVolumeApprovalEmail(input: { caseNumber: string; displayName: string; contactEmail: string; approvedRate: number }, fetcher: FetchLike = fetch): Promise<void> {
-  const appUrl = (process.env.APP_URL || "https://bibeck.com").replace(/\/$/, "");
-  const activationUrl = `${appUrl}/rebate/activate?exchange=bybit&preReview=${encodeURIComponent(input.caseNumber)}`;
-  await sendTransactionalEmail({
-    to: input.contactEmail,
-    subject: `[BiBeck] 高交易量預審結果｜${input.caseNumber}`,
-    idempotencyKey: `high-volume-approved-${input.caseNumber}-${input.approvedRate}`,
-    html: `<h1>高交易量預審已核准</h1><p>${escapeHtml(input.displayName)} 您好，預審案件 ${escapeHtml(input.caseNumber)} 的暫定比例為 ${escapeHtml(String(input.approvedRate))}%。</p><p>預審核准不代表返傭已啟用；仍需透過指定連結建立帳戶、提交 UID，並由 BiBeck 完成人工設定。</p><p><a href="${escapeHtml(activationUrl)}">完成 Bybit 註冊並提交 UID</a></p><p>實際生效時間、顯示同步及是否追溯，仍以 Bybit 系統紀錄與適用規則為準。</p>`,
-  }, fetcher);
-}

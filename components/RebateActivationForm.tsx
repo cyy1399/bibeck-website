@@ -3,24 +3,31 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useState, type FormEvent } from "react";
-import { accountScenarios, kycStatuses } from "@/config/rebate-activation";
 
 const inputClass = "calculator-input mt-2 w-full";
-export function RebateActivationForm({ preReview = "", siteKey }: { preReview?: string; siteKey: string }) {
-  const [result, setResult] = useState<{ caseNumber: string; maskedUid: string; statusUrl: string } | null>(null); const [error, setError] = useState(""); const [submitting, setSubmitting] = useState(false);
-  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setError(""); setSubmitting(true); const form = event.currentTarget; try { const response = await fetch("/api/rebate/activate", { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } }); const payload = await response.json() as { error?: string; caseNumber?: string; maskedUid?: string; statusUrl?: string; duplicate?: boolean }; if (!response.ok) throw new Error(payload.error || "申請未能送出。"); if (payload.duplicate && !payload.caseNumber) { setError("此 UID 已存在處理中的申請。如聯絡 Email 與原申請相符，我們將重新寄送案件查詢連結；否則請聯絡 support@bibeck.com。"); return; } setResult({ caseNumber: payload.caseNumber!, maskedUid: payload.maskedUid!, statusUrl: payload.statusUrl! }); form.reset(); } catch (cause) { setError(cause instanceof Error ? cause.message : "申請未能送出。"); } finally { setSubmitting(false); } }
-  if (result) return <div className="border border-gold/35 bg-gold/[0.04] p-7" role="status"><p className="eyebrow">申請已送出</p><h2 className="mt-5 text-2xl font-semibold text-white">案件編號：{result.caseNumber}</h2><p className="mt-4 text-secondary">UID：{result.maskedUid}</p><p className="mt-2 text-secondary">目前狀態：已送出</p><p className="mt-5 text-sm leading-7 text-secondary">BiBeck 將人工確認 UID 並設定返傭比例。設定完成前，返傭是否生效及是否追溯，仍以 Bybit 規則及後台紀錄為準。</p><Link href={result.statusUrl} className="button-primary mt-6 w-full sm:w-auto">查看案件狀態</Link></div>;
-  return <form onSubmit={submit} className="grid gap-8 border border-white/10 bg-[#121212] p-6 sm:p-8" noValidate>
+export function RebateActivationForm({ siteKey }: { siteKey: string }) {
+  const [result, setResult] = useState<{ caseNumber: string; maskedUid: string } | null>(null);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setError(""); setSubmitting(true);
+    try {
+      const response = await fetch("/api/rebate/activate", { method: "POST", body: new FormData(event.currentTarget), headers: { Accept: "application/json" } });
+      const payload = await response.json() as { error?: string; caseNumber?: string; maskedUid?: string };
+      if (!response.ok) throw new Error(payload.error || "申請無法送出，請稍後再試。");
+      setResult({ caseNumber: payload.caseNumber!, maskedUid: payload.maskedUid! });
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "申請無法送出，請稍後再試。"); }
+    finally { setSubmitting(false); }
+  }
+  if (result) return <div className="border border-gold/35 bg-gold/[0.04] p-7" role="status"><p className="eyebrow">申請已送出</p><h2 className="mt-5 text-2xl font-semibold text-white">案件編號：{result.caseNumber}</h2><div className="mt-5 space-y-2 text-secondary"><p>Bybit UID：{result.maskedUid}</p><p>目前狀態：待人工設定</p><p>預設返傭比例：20%</p></div><p className="mt-5 text-sm leading-7 text-secondary">BiBeck 將核對您的 UID，並在外部返傭後台人工完成設定。設定完成後，系統會寄送 Email 通知。這個畫面只代表 BiBeck 已收到申請，不代表返傭已完成開通。</p></div>;
+  return <form onSubmit={submit} className="grid gap-7 border border-white/10 bg-[#121212] p-6 sm:p-8" noValidate>
     <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" /><input type="hidden" name="exchange" value="bybit" /><input type="hidden" name="source" value="rebate-activation-page" />
-    <div className="border-l-2 border-gold bg-black/25 p-5"><strong className="text-white">安全提醒</strong><p className="mt-2 text-sm leading-7 text-secondary">BiBeck 不會要求您的交易所密碼、驗證碼、API Secret、私鑰或助記詞。一般 20% 啟用流程不需要身分證件、資產餘額或交易紀錄附件。</p></div>
-    <div className="grid gap-5 sm:grid-cols-2"><Field label="申請交易所" name="exchangeDisplay" value="Bybit" disabled /><Field label="姓名或稱呼" name="displayName" minLength={2} maxLength={50} required /><Field label="聯絡 Email" name="contactEmail" type="email" required hint="僅用於 BiBeck 申請進度及返傭設定通知，可與 Bybit 登入 Email 不同。" /><Field label="Bybit UID" name="uid" inputMode="numeric" pattern="[0-9]{4,24}" required /><Field label="註冊日期" name="registrationDate" type="date" max={new Date().toISOString().slice(0, 10)} required /><Select label="帳號情境" name="accountScenario" options={accountScenarios} /><Select label="KYC 狀態" name="kycStatus" options={kycStatuses} /><Field label="高交易量預審案件編號" name="preReviewCaseNumber" defaultValue={preReview} placeholder="HV-20260730-A7K2（選填）" /><Field label="LINE／Telegram" name="messagingContact" placeholder="選填" /></div>
-    <label className="text-sm font-medium text-white">補充說明<textarea name="userNote" maxLength={1000} rows={5} className={inputClass} /></label>
-    <div className="border border-white/10 p-5 text-sm leading-7 text-secondary"><p>蒐集稱呼、Email、UID、註冊日期、帳號與 KYC 狀態、選填聯絡方式及案件資料，用於核對推薦關係、人工設定、通知、補件、客服與操作稽核。保存期限仍待營運者確認。</p><label className="mt-4 flex items-start gap-3"><input type="checkbox" name="consent" value="true" required className="mt-1.5 accent-[var(--gold)]" /><span>我已閱讀並同意<Link href="/privacy" className="text-gold">《隱私權政策》</Link>、<Link href="/terms" className="text-gold">《使用條款》</Link>及<Link href="/personal-data-notice" className="text-gold">《個人資料蒐集告知》</Link>。</span></label></div>
+    <div className="border-l-2 border-gold bg-black/25 p-5"><strong className="text-white">安全提醒</strong><p className="mt-2 text-sm leading-7 text-secondary">BiBeck 不會要求您的 Bybit 密碼、Email 驗證碼、簡訊驗證碼、Google Authenticator 驗證碼、API Secret、私鑰或助記詞。</p></div>
+    <div className="grid gap-5 lg:grid-cols-3"><Field label="名稱或稱呼" name="displayName" placeholder="例如：王先生" minLength={2} maxLength={50} required /><Field label="Bybit UID" name="uid" placeholder="請輸入 Bybit 帳戶 UID" inputMode="numeric" pattern="[0-9]{4,24}" required hint="UID 是 BiBeck 核對帳戶及設定返傭比例的必要資料。" /><Field label="接收返傭設定通知的 Email" name="contactEmail" type="email" placeholder="name@example.com" required hint="只用於申請、補件及設定完成通知，可與 Bybit 登入 Email 不同。" /></div>
+    <label className="flex items-start gap-3 text-sm leading-7 text-secondary"><input type="checkbox" name="consent" value="true" required className="mt-1.5 accent-[var(--gold)]" /><span>我已閱讀並同意《<Link href="/privacy" className="text-gold">隱私權政策</Link>》、《<Link href="/terms" className="text-gold">使用條款</Link>》及《<Link href="/personal-data-notice" className="text-gold">個人資料蒐集告知</Link>》，並同意 BiBeck 使用上述資料處理 Bybit 返傭開通申請。</span></label>
     <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" /><div className="cf-turnstile" data-sitekey={siteKey} data-theme="dark" />
-    {error ? <p role="alert" className="text-sm leading-7 text-red-300">{error}</p> : null}<button type="submit" disabled={submitting} className="button-primary w-full disabled:opacity-50">{submitting ? "送出中…" : "提交返傭啟用申請"}</button>
+    {error ? <p role="alert" className="text-sm leading-7 text-red-300">{error}</p> : null}<button type="submit" disabled={submitting} className="button-primary w-full disabled:opacity-50">{submitting ? "送出中…" : "送出返傭開通申請"}</button>
   </form>;
 }
-
-type FieldProps = { label: string; name: string; type?: string; required?: boolean; hint?: string; placeholder?: string; value?: string; defaultValue?: string; disabled?: boolean; minLength?: number; maxLength?: number; inputMode?: "numeric"; pattern?: string; max?: string };
+type FieldProps = { label: string; name: string; type?: string; required?: boolean; hint?: string; placeholder?: string; minLength?: number; maxLength?: number; inputMode?: "numeric"; pattern?: string };
 function Field({ label, hint, ...props }: FieldProps) { return <label className="min-w-0 text-sm font-medium text-white">{label}<input className={inputClass} {...props} />{hint ? <span className="mt-2 block text-xs leading-6 text-secondary">{hint}</span> : null}</label>; }
-function Select({ label, name, options }: { label: string; name: string; options: readonly (readonly [string, string])[] }) { return <label className="text-sm font-medium text-white">{label}<select name={name} required defaultValue="" className={inputClass}><option value="" disabled>請選擇</option>{options.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>; }
