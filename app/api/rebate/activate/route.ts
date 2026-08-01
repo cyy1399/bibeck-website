@@ -1,0 +1,12 @@
+import { NextResponse } from "next/server";
+import { rebateActivationReadiness } from "@/config/rebate-activation";
+import { createOrResolveActivationCase, recordNotificationError } from "@/lib/rebate-case-store";
+import { maskUid, validateRebateActivation, verifyTurnstile } from "@/lib/rebate-activation";
+import { sendActivationReceived, sendAdminNewCase } from "@/lib/rebate-email";
+
+export const runtime = "nodejs";
+function sameOrigin(request: Request) { const origin = request.headers.get("origin"); const host = request.headers.get("host"); if (!origin || !host) return false; try { return new URL(origin).host === host; } catch { return false; } }
+export async function POST(request: Request) {
+  const readiness = rebateActivationReadiness(); if (!readiness.enabled) return NextResponse.json({ error: "返傭啟用功能尚未完成正式設定。" }, { status: 503 }); if (!sameOrigin(request)) return NextResponse.json({ error: "無效的提交來源。" }, { status: 403 });
+  try { const form = await request.formData(); const result = validateRebateActivation(form); if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 }); const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null; if (!await verifyTurnstile(result.data.turnstileToken, ip)) return NextResponse.json({ error: "人機驗證失敗，請重新整理後再試。" }, { status: 400 }); const created = await createOrResolveActivationCase(result.data); if (created.kind === "duplicate-private") return NextResponse.json({ duplicate: true }, { status: 200 }); try { await sendActivationReceived(created.caseData, created.trackingToken); if (created.kind === "created") await sendAdminNewCase(created.caseData); await recordNotificationError(created.caseData.id, null); } catch (emailError) { await recordNotificationError(created.caseData.id, emailError instanceof Error ? emailError.message : "EMAIL_FAILED"); } return NextResponse.json({ duplicate: created.kind === "resent", caseNumber: created.caseData.caseNumber, maskedUid: maskUid(created.caseData.uid), statusUrl: `/rebate/status/${created.trackingToken}` }, { status: created.kind === "created" ? 201 : 200 }); } catch (error) { const message = error instanceof Error && error.message === "INVALID_PRE_REVIEW_CASE" ? "找不到此高交易量預審案件，請確認案件編號或留空後走標準 20% 流程。" : "申請暫時無法送出，請稍後再試。"; return NextResponse.json({ error: message }, { status: error instanceof Error && error.message === "INVALID_PRE_REVIEW_CASE" ? 400 : 500 }); }
+}

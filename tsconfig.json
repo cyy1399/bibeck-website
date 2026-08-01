@@ -25,6 +25,8 @@
     "components/**/*.tsx",
     "config/**/*.ts",
     "lib/**/*.ts",
+    "db/**/*.ts",
+    "auth.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

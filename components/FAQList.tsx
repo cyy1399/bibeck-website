@@ -59,6 +59,14 @@ export const generalFaqs: FAQItem[] = [
 export const homeFaqs: FAQItem[] = [generalFaqs[0], generalFaqs[1], generalFaqs[2], generalFaqs[6], generalFaqs[7]];
 
 export const bybitFaqs: FAQItem[] = [
+  { question: "完成 Bybit 註冊後還要做什麼？", answer: "請返回 BiBeck 使用返傭啟用申請表提交 UID。BiBeck 收到案件後，會人工確認推薦關係並在外部後台設定；收到完成通知前，請勿自行假設返傭已生效。", link: { href: "/rebate/activate?exchange=bybit", label: "返傭啟用申請" } },
+  { question: "為什麼需要提交 UID？", answer: "UID 用於營運者在外部後台搜尋帳戶、確認是否歸屬指定推薦關係，並人工設定返傭比例。UID 不等於密碼，也不能用來操作你的資產。" },
+  { question: "聯絡 Email 必須和 Bybit Email 相同嗎？", answer: "不需要。聯絡 Email 只用於 BiBeck 案件進度與設定通知，可以和 Bybit 登入 Email 不同。" },
+  { question: "提交 UID 是否代表返傭立即生效？", answer: "不是。提交只代表 BiBeck 收到申請；仍須完成 UID 查核與人工設定。實際生效時間與系統同步仍以 Bybit 規則及後台紀錄為準。" },
+  { question: "設定前的交易手續費會追溯嗎？", answer: "不保證追溯。設定前的交易是否符合回饋、是否可追溯及實際紀錄，均以 Bybit 當時規則與系統資料為準。" },
+  { question: "如果後台找不到 UID 怎麼辦？", answer: `案件可能轉為「待確認 UID」、「需要補件」或「無法歸戶」。請依案件狀態頁說明提供註冊日期等必要資訊，或聯絡 ${brandConfig.publicEmails.support}；不要提供密碼或驗證碼。` },
+  { question: "高交易量預審核准後還需要提交 UID 嗎？", answer: "需要。預審只代表暫定比例經人工評估，不代表返傭已啟用；仍須透過指定流程建立帳戶、提交 UID 並完成人工設定。" },
+  { question: "BiBeck 會要求我的密碼或驗證碼嗎？", answer: "不會。BiBeck 不會要求 Bybit 密碼、Email／簡訊／Google Authenticator 驗證碼、API Secret、私鑰或助記詞。" },
   {
     question: "已有 Bybit 帳戶，如何使用 BiBeck 返傭？",
     answer: "若要使用 BiBeck 的 Bybit 返傭方案，需透過「取得 Bybit 返傭帳號」指定推薦連結註冊符合條件的 Bybit 帳戶。新使用者可透過指定連結完成註冊，並依 Bybit 要求完成身分驗證後使用。已有 Bybit 帳戶的使用者，如原帳戶無法直接歸戶至指定推薦關係，可能需要透過指定推薦連結註冊新的 Bybit 帳戶，再依 Bybit 官方規則評估是否能將既有帳戶的身分驗證資料轉移至新帳戶。身分轉移具有資格與帳戶狀態限制，並非所有帳戶都一定適用；請以 Bybit 實際審核結果為準。",

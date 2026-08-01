@@ -12,6 +12,7 @@ import { getExchangeActionLabels } from "@/config/actions";
 import { BYBIT_REGISTER } from "@/config/links";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, getRebateTierStatus, rebateReviewLabels } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
+import { rebateActivationReadiness } from "@/config/rebate-activation";
 
 const costFactors = [
   ["01", "基礎手續費", "交易所公開的掛單與吃單費率，是計算交易成本的起點。"],
@@ -39,6 +40,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
   const currentDefaultRate = futures?.fee.taker ?? spot?.fee.taker ?? null;
   const bybitDefaultRate = bybitFutures?.fee.taker ?? 0.00055;
   const actionLabels = getExchangeActionLabels({ name: exchange.name });
+  const activation = rebateActivationReadiness();
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -103,7 +105,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className={"mt-10 grid gap-7 border-l-2 bg-[#111] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center " + (isBybit ? "border-gold" : "border-white/18")}>
             <p className="max-w-4xl text-base leading-8 text-white/78">{exchange.summary}</p>
             {isBybit ? (
-              <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>{activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : <span className="cta-button button-secondary cursor-not-allowed opacity-50">功能準備中</span>}</div>
             ) : (
               <a href="#comparison" className="button-secondary">比較 Bybit + BiBeck</a>
             )}
@@ -203,6 +205,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
                 <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                {activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : null}
                 <Link href="/high-volume-application" className="cta-button button-secondary">已有交易量？申請較高初始返傭</Link>
               </div>
             </div>
@@ -222,7 +225,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
         <section className="px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-5xl">
             <SectionTitle label="Bybit 專屬 FAQ" title="舊帳戶、返傭綁定與身分轉移" copy="返傭資格與身分轉移皆受 Bybit 規則及帳戶狀態限制，不保證所有帳戶都適用。" />
-            <div className="mt-10"><FAQList items={bybitFaqs.slice(0, 3)} /></div>
+            <div className="mt-10"><FAQList items={bybitFaqs} /></div>
             <div className="mt-7 border-l-2 border-gold/60 bg-[#101010] p-6 text-sm leading-7 text-secondary">
               <p className="font-semibold text-white">重要提醒</p>
               <p className="mt-2">接收身分驗證的目標帳戶必須保持未認證狀態。身分轉移只轉移身分驗證資訊，不會轉移推薦碼、代理關係、資產、電子郵件或手機號碼。轉移前後亦可能存在提現、法幣服務及帳戶狀態限制。</p>
@@ -251,11 +254,12 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <SectionTitle label="BiBeck 返傭" title="返傭級距的生效流程" copy="一般申請從標準交易者 20% 開始；累積完整月份交易量後，於次月 1 日重新審核。" />
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                  {activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary">已完成註冊，提交 UID</Link> : null}
                   <Link href="/high-volume-application" className="cta-button button-secondary">申請較高初始返傭</Link>
                 </div>
               </div>
               <ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
-                {["透過指定連結建立返傭帳號", "一般申請者初始適用 20%", "累積一個完整月份的實際交易量", "每月 1 日重新審核級距", "依結果升等、降等或維持"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
+                {["透過 BiBeck 指定連結註冊 Bybit", "完成必要帳戶與 KYC 流程", "返回 BiBeck 提交 UID", "BiBeck 人工確認推薦關係並設定返傭比例", "收到完成通知後，前往返傭後台確認"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
               </ol>
               <p className="mt-6 text-sm leading-7 text-secondary">特殊合作夥伴可在建立返傭帳戶前提出可驗證資料，經人工評估與協商後議定暫定初始比例。初步核准不代表返傭已生效，仍需完成指定帳戶註冊、UID 歸戶及必要驗證。</p>
             </div>
