@@ -15,9 +15,9 @@ export const metadata: Metadata = createPageMetadata({
 
 const steps = [
   ["01", "透過指定連結建立帳戶", "使用支援交易所的 BiBeck 指定連結建立符合資格的返傭帳戶。"],
-  ["02", "一般申請初始為 20%", "一般申請者初始適用標準交易者 20%，不因自行填寫交易量立即升級。"],
-  ["03", "累積完整月份交易量", "BiBeck 依前一個完整曆月的實際交易量進行級距審核。"],
-  ["04", "每月 1 日重新分級", "審核結果可能升等、降等或維持；特殊合作方案需人工評估。"],
+  ["02", "返回 BiBeck 提交 UID", "填寫名稱、Bybit UID 與接收通知的 Email，建立待人工設定案件。"],
+  ["03", "人工設定 20%", "BiBeck 營運者核對 UID，並在外部返傭後台人工完成一般帳戶的 20% 設定。"],
+  ["04", "收到完成通知", "營運者確認完成後，系統寄送 Email；提高返傭比例屬於完成開通後的另一項申請流程。"],
 ] as const;
 
 export default function RebatePage() {
@@ -25,7 +25,7 @@ export default function RebatePage() {
     <SiteShell>
       <LocalizedPageHero eyebrow="nav.rebate" title="page.rebateTitle" description="page.rebateDescription" />
       <section className="px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl">
-        <SectionTitle label="運作方式" title="從建立帳戶到每月審核" copy="一般申請與高交易量快速審核採不同的初始級距流程，但後續皆依實際交易紀錄與合作條件評估。" />
+        <SectionTitle label="運作方式" title="從建立帳戶到人工確認" copy="所有一般 Bybit 返傭帳戶首次開通固定為 20%；完成開通且具穩定交易量後，才可另行申請提高返傭比例。" />
         <div className="mt-12 grid gap-px border border-white/10 bg-white/10 md:grid-cols-2">{steps.map(([number, title, copy]) => <article key={number} className="bg-[#121212] p-7"><p className="font-mono text-sm text-gold">{number}</p><h2 className="mt-5 text-xl font-semibold text-white">{title}</h2><p className="mt-3 text-sm leading-7 text-secondary">{copy}</p></article>)}</div>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row"><ExchangeActionButtons exchangeSlug="bybit" calculatorHref="/calculator" /><Link href="/platform/bybit#rebate" className="cta-button button-secondary">查看 Bybit 返傭級距</Link></div>
       </div></section>

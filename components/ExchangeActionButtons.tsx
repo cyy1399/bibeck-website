@@ -17,9 +17,9 @@ export function ExchangeActionButtons({ exchangeSlug, calculatorHref }: { exchan
         ) : (
           <button type="button" disabled title="此交易所的 BiBeck 返傭服務尚未開放" className="cta-button button-primary w-full cursor-not-allowed opacity-40 sm:w-auto">{labels.rebateSignup}</button>
         )}
-        {exchangeSlug === "bybit" ? activation.enabled ? <Link href="/rebate/activate?exchange=bybit" className="cta-button button-secondary w-full sm:w-auto">已完成註冊，提交 UID</Link> : <span className="cta-button button-secondary w-full cursor-not-allowed opacity-50 sm:w-auto" title="返傭啟用功能準備中">功能準備中</span> : null}
+        {exchangeSlug === "bybit" ? activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary w-full sm:w-auto">已完成註冊，繼續開通返傭</Link> : <span className="cta-button button-secondary w-full cursor-not-allowed opacity-50 sm:w-auto" title="返傭開通功能準備中">功能準備中</span> : null}
         {exchange.rebateDashboardUrl ? (
-          <ExternalLink href={exchange.rebateDashboardUrl} variant="secondary" className="w-full sm:w-auto">{labels.rebateDashboard}</ExternalLink>
+          <ExternalLink href={exchange.rebateDashboardUrl} sponsored={false} variant="secondary" className="w-full sm:w-auto">{labels.rebateDashboard}</ExternalLink>
         ) : (
           <button type="button" disabled title="此交易所的 BiBeck 返傭服務尚未開放" className="cta-button button-secondary w-full cursor-not-allowed opacity-40 sm:w-auto">{labels.rebateDashboard}</button>
         )}
