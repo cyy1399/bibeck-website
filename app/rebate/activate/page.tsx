@@ -6,7 +6,7 @@ import { PageHero } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { rebateActivationReadiness } from "@/config/rebate-activation";
 
-export const metadata: Metadata = { title: "開通 Bybit 返傭｜BiBeck", description: "完成 Bybit 註冊後提交 UID，由 BiBeck 人工設定 20% 返傭。", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "開通 Bybit 返傭", description: "完成 Bybit 註冊後提交 UID，由 BiBeck 人工設定 20% 返傭。", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 export default function RebateActivatePage() {
   const readiness = rebateActivationReadiness();

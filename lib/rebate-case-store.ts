@@ -39,8 +39,15 @@ export async function createActivationCase(input: RebateActivationInput): Promis
   }
 }
 
-export async function markReceiptEmail(caseId: string, error: string | null) {
-  await getDb().update(rebateActivationCases).set({ emailReceiptSentAt: error ? null : new Date(), notificationStatus: error ? "FAILED" : "SENT", notificationError: error?.slice(0, 500) ?? null, updatedAt: new Date() }).where(eq(rebateActivationCases.id, caseId));
+export async function markReceiptEmail(caseId: string, receiptError: string | null, adminNotificationError: string | null = null) {
+  const db = getDb();
+  await db.transaction(async (tx) => {
+    await tx.update(rebateActivationCases).set({ emailReceiptSentAt: receiptError ? null : new Date(), notificationStatus: receiptError ? "FAILED" : "SENT", notificationError: receiptError, updatedAt: new Date() }).where(eq(rebateActivationCases.id, caseId));
+    await tx.insert(rebateCaseEvents).values([
+      { caseId, eventType: receiptError ? "RECEIPT_EMAIL_FAILED" : "RECEIPT_EMAIL_SENT", previousStatus: "PENDING", newStatus: "PENDING", actorEmail: "system", internalMessage: receiptError ? "申請收件通知寄送失敗。" : "申請收件通知寄送成功。" },
+      { caseId, eventType: adminNotificationError ? "ADMIN_NOTIFICATION_FAILED" : "ADMIN_NOTIFICATION_SENT", previousStatus: "PENDING", newStatus: "PENDING", actorEmail: "system", internalMessage: adminNotificationError ? "管理員新案件通知寄送失敗。" : "管理員新案件通知寄送成功。" },
+    ]);
+  });
 }
 export async function markCompletionEmail(caseId: string, actorEmail: string, error: string | null, retry = false) {
   const db = getDb();

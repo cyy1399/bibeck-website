@@ -2,6 +2,8 @@
 
 正式啟用前，`REBATE_ACTIVATION_ENABLED` 必須保持 `false`。本功能不會自動登入、爬取或操作 Bybit 或第三方返傭後台。
 
+首頁、Bybit 頁與聯絡頁仍會顯示「已完成註冊，繼續開通返傭」入口；當功能尚未符合啟用條件時，`/rebate/activate` 會顯示準備中訊息而不呈現可送出的表單。這可讓使用者理解完整流程，同時避免資料庫、Email、OAuth 或 Turnstile 尚未就緒時接受正式個資。
+
 ## 1. PostgreSQL 與 DATABASE_URL
 
 在正式 Vercel Project 連接受管理 PostgreSQL（建議透過 Vercel Marketplace 的 Neon），取得 pooled TLS `DATABASE_URL`。不要將連線密碼提交至 Git。
