@@ -42,7 +42,7 @@ test("首頁保留 BiBeck 品牌與新的繁體中文導覽", async () => {
   assert.equal((html.match(/class="faq-item group"/g) ?? []).length, 5);
 });
 
-test("首頁與 Bybit Hero 使用三個帳號操作入口並遵守功能開關", async () => {
+test("首頁與 Bybit Hero 固定顯示三個帳號操作入口", async () => {
   const actionSource = await readFile(new URL("../components/ExchangeActionButtons.tsx", import.meta.url), "utf8");
   assert.match(actionSource, /已完成註冊，繼續開通返傭/);
   assert.match(actionSource, /\/rebate\/activate/);
@@ -53,7 +53,9 @@ test("首頁與 Bybit Hero 使用三個帳號操作入口並遵守功能開關",
     assert.match(html, /登入 Bybit 返傭後台/);
     assert.match(html, /https:\/\/partner\.bybit\.com\/b\/t00000016/);
     assert.match(html, /https:\/\/bybackoffice\.com\/user-login/);
-    assert.match(html, /功能準備中/);
+    assert.match(html, /已完成註冊，繼續開通返傭/);
+    assert.match(html, /href="\/rebate\/activate"/);
+    assert.doesNotMatch(html, /功能準備中/);
   }
 });
 

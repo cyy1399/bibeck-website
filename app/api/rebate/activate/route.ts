@@ -23,10 +23,13 @@ export async function POST(request: Request) {
       const completed = created.status === "COMPLETED";
       return NextResponse.json({ error: completed ? "此 UID 已有完成紀錄。如返傭後台未顯示或資料有誤，請聯絡 support@bibeck.com。" : "此 UID 已存在處理中的申請。若需要補充資料，請聯絡 support@bibeck.com。" }, { status: 409 });
     }
-    let emailError: string | null = null;
-    try { await sendActivationReceipt(created.caseData); await sendAdminNewRequest(created.caseData); }
-    catch (error) { emailError = error instanceof Error ? error.message : "EMAIL_FAILED"; }
-    await markReceiptEmail(created.caseData.id, emailError);
+    let receiptError: string | null = null;
+    let adminNotificationError: string | null = null;
+    try { await sendActivationReceipt(created.caseData); }
+    catch { receiptError = "RECEIPT_EMAIL_FAILED"; }
+    try { await sendAdminNewRequest(created.caseData); }
+    catch { adminNotificationError = "ADMIN_NOTIFICATION_FAILED"; }
+    await markReceiptEmail(created.caseData.id, receiptError, adminNotificationError);
     return NextResponse.json({ caseNumber: created.caseData.caseNumber, maskedUid: maskUid(created.caseData.uid) }, { status: 201 });
   } catch { return NextResponse.json({ error: "申請暫時無法送出，請稍後再試。" }, { status: 500 }); }
 }

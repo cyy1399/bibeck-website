@@ -13,15 +13,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (body.retryNotification === true) {
       const record = await getCaseWithEvents(id); if (!record || record.caseData.status !== "COMPLETED") throw new Error("NO_COMPLETION_NOTIFICATION");
       try { await sendCompletionEmail(record.caseData, true); await markCompletionEmail(id, actorEmail, null, true); }
-      catch (error) { await markCompletionEmail(id, actorEmail, error instanceof Error ? error.message : "EMAIL_FAILED", true); throw new Error("EMAIL_FAILED"); }
+      catch { await markCompletionEmail(id, actorEmail, "COMPLETION_EMAIL_FAILED", true); throw new Error("EMAIL_FAILED"); }
       return NextResponse.json({ ok: true });
     }
     const newStatus = String(body.newStatus || ""); if (!isStatus(newStatus)) return NextResponse.json({ error: "無效的案件狀態" }, { status: 400 });
     const updated = await updateActivationCase(id, { newStatus, actorEmail, publicMessage: String(body.publicMessage || "").trim().slice(0, 1_000) || null, internalMessage: String(body.internalMessage || "").trim().slice(0, 2_000) || null, completionConfirmed: body.completionConfirmed === true || body.completionConfirmed === "true" });
     if (newStatus === "COMPLETED") {
       try { await sendCompletionEmail(updated); await markCompletionEmail(id, actorEmail, null); }
-      catch (error) { await markCompletionEmail(id, actorEmail, error instanceof Error ? error.message : "EMAIL_FAILED"); }
-    } else if (newStatus === "NEEDS_INFORMATION" || newStatus === "NOT_FOUND" || newStatus === "CANCELLED") {
+      catch { await markCompletionEmail(id, actorEmail, "COMPLETION_EMAIL_FAILED"); }
+    } else if (newStatus === "NEEDS_INFORMATION" || ((newStatus === "NOT_FOUND" || newStatus === "CANCELLED") && body.notifyUser === true)) {
       try { await sendStatusEmail(updated, newStatus); } catch { /* case state remains authoritative */ }
     }
     return NextResponse.json({ ok: true });

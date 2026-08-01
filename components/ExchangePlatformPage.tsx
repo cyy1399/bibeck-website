@@ -12,7 +12,6 @@ import { getExchangeActionLabels } from "@/config/actions";
 import { BYBIT_REGISTER } from "@/config/links";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, getRebateTierStatus, rebateReviewLabels } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
-import { rebateActivationReadiness } from "@/config/rebate-activation";
 
 const costFactors = [
   ["01", "基礎手續費", "交易所公開的掛單與吃單費率，是計算交易成本的起點。"],
@@ -40,7 +39,6 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
   const currentDefaultRate = futures?.fee.taker ?? spot?.fee.taker ?? null;
   const bybitDefaultRate = bybitFutures?.fee.taker ?? 0.00055;
   const actionLabels = getExchangeActionLabels({ name: exchange.name });
-  const activation = rebateActivationReadiness();
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -105,7 +103,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className={"mt-10 grid gap-7 border-l-2 bg-[#111] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center " + (isBybit ? "border-gold" : "border-white/18")}>
             <p className="max-w-4xl text-base leading-8 text-white/78">{exchange.summary}</p>
             {isBybit ? (
-              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>{activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : <span className="cta-button button-secondary cursor-not-allowed opacity-50">功能準備中</span>}</div>
+              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink><Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link></div>
             ) : (
               <a href="#comparison" className="button-secondary">比較 Bybit + BiBeck</a>
             )}
@@ -205,7 +203,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
                 <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                {activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : null}
+                <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link>
                 <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
               </div>
             </div>
@@ -254,7 +252,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <SectionTitle label="BiBeck 返傭" title="返傭級距的生效流程" copy="一般申請從標準交易者 20% 開始；累積完整月份交易量後，於次月 1 日重新審核。" />
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                  {activation.enabled ? <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link> : null}
+                  <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link>
                   <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
                 </div>
               </div>

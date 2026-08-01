@@ -10,7 +10,7 @@
         "build": "next build",
         "start": "next start",
         "build:sites": "vinext build",
-        "test": "pnpm build && node --experimental-strip-types --test tests/*.test.mjs",
+        "test": "pnpm build && pnpm build:sites && node --experimental-strip-types --test tests/*.test.mjs",
         "lint": "eslint app components config lib db auth.ts --max-warnings=0",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
@@ -22,7 +22,8 @@
         "next-auth": "5.0.0-beta.32",
         "postgres": "^3.4.9",
         "react": "19.2.6",
-        "react-dom": "19.2.6"
+        "react-dom": "19.2.6",
+        "zod": "4.4.3"
     },
     "devDependencies": {
         "@cloudflare/vite-plugin": "1.37.1",
