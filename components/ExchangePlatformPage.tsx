@@ -192,11 +192,11 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       {isBybit ? (
         <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionTitle label="BiBeck 返傭方案" title="公開返傭級距" copy="標準交易者可申請 20%；較高交易量可依公開級距申請 25%～35%，實際結果以資料核對與通知為準。" />
+            <SectionTitle label="BiBeck 返傭方案" title="公開返傭級距" copy="依最近 30 日有效交易量可申請 20%～40% 公開級距；特殊合作 40% 以上須個別評估與協商。" />
             <div className="mt-10 border-l-2 border-gold bg-[#101010] p-6 sm:p-8">
               <h3 className="text-2xl font-semibold text-white">BiBeck Bybit 返傭</h3>
               <div className="mt-5 grid gap-3 text-sm leading-7 text-secondary">
-                <p>透過 BiBeck 指定申請流程完成 Bybit 註冊與返傭資料提交。標準交易者可申請 20% 返傭，較高交易量可依公開級距申請 25%～35%。</p>
+                <p>透過 BiBeck 指定申請流程完成 Bybit 註冊與返傭資料提交，可依最近 30 日有效交易量申請 20%～40% 公開返傭級距。</p>
                 <p>計算器與級距表為申請參考，實際結果以帳戶資料核對與通知為準；特殊合作方案不會因交易量自動取得。</p>
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
@@ -205,7 +205,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <Link href="/calculator" className="cta-button button-secondary">使用交易成本計算器</Link>
               </div>
             </div>
-            <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-3">
               {BIBECK_REBATE_TIERS.map((tier) => (
                 <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isSpecial ? "ring-1 ring-inset ring-gold/45" : "")}>
                   <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{tier.isSpecial ? "個別協商" : "公開級距"}</p>
@@ -244,29 +244,14 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
 
       <section id="rebate" className="px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          {isBybit ? (
-            <div className="border-y border-white/10 py-12">
-              <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-                <SectionTitle label="BiBeck 返傭" title="統一申請 Bybit 返傭" copy="完成指定申請流程並提交 UID 與級距資料；實際結果以帳戶核對與通知為準。" />
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                  <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary" aria-label="登入外部 Bybit 返傭後台">{actionLabels.rebateDashboard}</ExternalLink>
-                  <Link href="/calculator" className="cta-button button-secondary">交易成本計算器</Link>
-                </div>
-              </div>
-              <ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
-                {["前往返傭申請頁", "使用指定連結完成 Bybit 註冊", "提交名稱、UID、Email 與申請級距", "BiBeck 核對帳戶資料並處理設定", "完成後接收登入資訊與申請結果"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
-              </ol>
-              <p className="mt-6 text-sm leading-7 text-secondary">特殊合作方案依代理、社群、團隊或其他合作需求個別協商，不會因交易量自動取得；申請結果以資料核對與通知為準。</p>
-            </div>
-          ) : (
+          {!isBybit ? (
             <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">
               <SectionTitle label="下一步" title="比較返傭後的實際交易成本" copy="BiBeck 目前主要提供 Bybit 返傭服務。你可以使用成本比較工具，確認 Bybit + BiBeck 是否符合你的交易需求。" />
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link href="#trading-cost-calculator" className="button-secondary">{actionLabels.costCalculator}</Link>
               </div>
             </div>
-          )}
+          ) : null}
 
           <aside className="mt-10 border-l-2 border-gold/70 bg-[#101010] p-7 text-sm leading-7 text-secondary">
             <p className="font-medium text-white">BiBeck 為獨立第三方交易成本與返傭資訊平台，並非由任何交易所擁有、營運或官方背書。</p>
