@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildTradingCostChartPoints, calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
+import { calculateCostComparisonBars, calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
 import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, formatVolume } from "../config/bibeck-rebate-tiers.ts";
@@ -137,17 +137,27 @@ test("交易量輸入支援空格、貼上與不四捨五入的小數", () => {
   assert.equal(parseNumberInput("１Ｂ"), 1_000_000_000);
 });
 
-test("成本圖包含目前交易量與全部公開級距門檻", () => {
-  const points = buildTradingCostChartPoints({ currentVolume: 75_000_000, baselineFeeRate: .00055, vipFeeRate: .0004, resolveTier: recommendBiBeckTier });
-  for (const volume of [0, 10_000_000, 50_000_000, 75_000_000, 200_000_000, 500_000_000]) assert.ok(points.some((point) => point.volume === volume));
-  assert.equal(points.find((point) => point.volume === 10_000_000)?.rebateRate, .25);
-  assert.equal(points.find((point) => point.volume === 500_000_000)?.rebateRate, .4);
-  assert.equal(points.find((point) => point.isCurrent)?.tierId, "elite");
+test("水平成本比較條以一般狀況為 100% 並共用計算結果", () => {
+  const result = calculateTradingCostComparison({ thirtyDayVolume: 1_000_000, baselineFeeRate: .00055, vipFeeRate: .0004, rebateRate: .25 });
+  const bars = calculateCostComparisonBars(result);
+  assert.deepEqual(bars.map((bar) => bar.id), ["baseline","vip","bibeck"]);
+  assert.equal(bars[0].widthPercent, 100);
+  assert.equal(bars[1].widthPercent, result.vipFee / result.baselineFee * 100);
+  assert.equal(bars[2].widthPercent, result.netTradingCost / result.baselineFee * 100);
+  assert.equal(bars[2].cost, result.netTradingCost);
 });
 
-test("成本圖自訂模式固定使用同一返傭比例", () => {
-  const points = buildTradingCostChartPoints({ currentVolume: 20_000_000, baselineFeeRate: .00055, vipFeeRate: .0004, customRebateRate: .33, resolveTier: recommendBiBeckTier });
-  assert.ok(points.every((point) => point.rebateRate === .33));
+test("零交易量的水平成本比較條不產生 NaN 或 Infinity", () => {
+  const bars = calculateCostComparisonBars({baselineFee:0,vipFee:0,netTradingCost:0});
+  assert.ok(bars.every((bar) => bar.widthPercent === 0 && bar.reductionPercent === 0 && Number.isFinite(bar.cost)));
+});
+
+test("BiBeck 級距內進度在門檻重新起算", () => {
+  assert.equal(calculateTierProgress(50_000_000,50_000_000,200_000_000).percentage,0);
+  assert.equal(calculateTierProgress(125_000_000,50_000_000,200_000_000).percentage,50);
+  assert.equal(calculateTierProgress(200_000_000,200_000_000,500_000_000).percentage,0);
+  assert.equal(calculateTierProgress(350_000_000,200_000_000,500_000_000).percentage,50);
+  assert.equal(calculateTierProgress(500_000_000,500_000_000,null).percentage,100);
 });
 
 test("交易所選單狀態只由點擊切換並可統一關閉", () => {

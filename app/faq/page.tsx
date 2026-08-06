@@ -10,8 +10,8 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "交易所返傭常見問題",
-  description: "了解 BiBeck 返傭、帳戶綁定、資金安全與交易手續費的跨交易所通用問題。",
+  title: "Bybit 返傭帳戶與級距常見問題",
+  description: "了解 BiBeck Bybit 返傭帳戶、推薦關係、KYC 身分轉移、公開級距與級距調整規則。",
   path: "/faq",
 });
 
@@ -32,8 +32,8 @@ export default function FAQPage() {
       <LocalizedPageHero eyebrow="nav.faq" title="page.faqTitle" description="page.faqDescription" />
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-4xl">
-          <p className="eyebrow">通用問題</p>
-          <h2 className="mt-4 text-3xl font-semibold text-white">跨交易所都適用的重要資訊</h2>
+          <p className="eyebrow">常見問題</p>
+          <h2 className="mt-4 text-3xl font-semibold text-white">Bybit 返傭帳戶與使用說明</h2>
           <div className="mt-8"><FAQList items={generalFaqs} /></div>
         </div>
       </section>
