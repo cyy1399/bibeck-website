@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
-import { BYBIT_REGISTER } from "@/config/links";
+import { REBATE_BACKOFFICE_URL } from "@/config/links";
 import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
 import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
@@ -17,14 +17,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const localizedMobileNavItems = [
     { href: localizePath("/", locale), label: t("nav.home") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: `${localizePath("/platform/bybit", locale)}#rebate`, label: t("nav.rebate") },
+    { href: localizePath("/rebate", locale), label: t("nav.rebate") },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: localizePath("/contact", locale), label: t("nav.contact") },
   ];
   const localizedFooterNavItems = [
     { href: localizePath("/platforms", locale), label: t("nav.exchanges") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: `${localizePath("/platform/bybit", locale)}#rebate`, label: t("nav.rebate") },
+    { href: localizePath("/rebate", locale), label: t("nav.rebate") },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: "/privacy", label: "隱私權政策" },
     { href: "/terms", label: "使用條款" },
@@ -45,13 +45,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href={localizePath("/", locale)} className="nav-link">{t("nav.home")}</Link>
             <DesktopExchangeMenu />
             <Link href={localizePath("/calculator", locale)} className="nav-link">{t("nav.calculator")}</Link>
-            <Link href={`${localizePath("/platform/bybit", locale)}#rebate`} className="nav-link">{t("nav.rebate")}</Link>
+            <Link href={localizePath("/rebate", locale)} className="nav-link">{t("nav.rebate")}</Link>
             <Link href={localizePath("/faq", locale)} className="nav-link">{t("nav.faq")}</Link>
             <SettingsMenu />
           </nav>
 
-          <ExternalLink href={BYBIT_REGISTER} sponsored className="ml-auto hidden !min-h-11 !px-5 !text-xs sm:inline-flex lg:ml-0">
-            {bybitActionLabels.rebateSignup}
+          <ExternalLink href={REBATE_BACKOFFICE_URL} className="ml-auto hidden !min-h-11 !px-5 !text-xs sm:inline-flex lg:ml-0" aria-label="登入外部 Bybit 返傭後台">
+            {bybitActionLabels.rebateDashboard}
           </ExternalLink>
 
           <details className="mobile-nav relative ml-3 lg:hidden">
@@ -76,7 +76,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </div>
               {localizedMobileNavItems.slice(1).map((item) => <Link key={item.href} href={item.href} className="mobile-nav-link">{item.label}</Link>)}
               <SettingsMenu mobile />
-              <ExternalLink href={BYBIT_REGISTER} sponsored className="mt-2 w-full sm:hidden">{bybitActionLabels.rebateSignup}</ExternalLink>
+              <ExternalLink href={REBATE_BACKOFFICE_URL} className="mt-2 w-full sm:hidden" aria-label="登入外部 Bybit 返傭後台">{bybitActionLabels.rebateDashboard}</ExternalLink>
             </nav>
           </details>
         </header>
@@ -103,7 +103,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div className="max-w-3xl text-sm leading-7 text-white/48">
             <p className="text-white/72">BiBeck 為獨立第三方交易成本與返傭資訊平台，並非由任何交易所擁有、營運或官方背書。</p>
             <p className="mt-3">BiBeck 不提供投資建議、不保證任何獲利，也不保管使用者資產。交易涉及風險，使用者應自行評估並閱讀相關交易所條款。</p>
-            <p className="mt-3">部分連結可能為合作夥伴連結。當使用者透過相關連結註冊或交易時，BiBeck 可能取得合作佣金或返傭收入。</p>
+            <p className="mt-3">部分連結可能為合作夥伴連結；這項合作關係不會提高使用者原本適用的交易所手續費。</p>
             <p className="mt-3">各交易所名稱與商標均屬其各自權利人所有。© 2026 BiBeck.</p>
           </div>
         </div>

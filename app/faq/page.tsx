@@ -5,7 +5,7 @@ import { FAQList, generalFaqs } from "@/components/FAQList";
 import { LocalizedPageHero } from "@/components/TranslatedText";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
-import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
+import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
@@ -44,8 +44,8 @@ export default function FAQPage() {
             <h2 className="mt-4 text-3xl font-semibold text-white">準備好降低交易成本？</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ExternalLink href={BYBIT_REGISTER} sponsored>{bybitActionLabels.rebateSignup}</ExternalLink>
-            <ExternalLink href={REBATE_LOGIN} variant="secondary">{bybitActionLabels.rebateDashboard}</ExternalLink>
+            <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{bybitActionLabels.rebateSignup}</ExternalLink>
+            <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary">{bybitActionLabels.rebateDashboard}</ExternalLink>
             <Link href="/calculator" className="cta-button button-secondary">{bybitActionLabels.costCalculator}</Link>
           </div>
         </div>

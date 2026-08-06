@@ -361,6 +361,14 @@ summary {
   background: #16140e;
 }
 
+.scenario-comparison {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.comparison-swipe-hint { display: none; }
+
 .savings-summary {
   margin-top: 1.5rem;
   border-top: 1px solid rgba(212, 175, 55, 0.3);
@@ -501,6 +509,21 @@ summary {
     border-top: 1px solid rgba(212, 175, 55, 0.28);
     border-left: 0;
   }
+
+  .scenario-comparison {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(250px, 82vw);
+    grid-template-columns: none;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-color: rgba(212, 175, 55, 0.55) rgba(255, 255, 255, 0.05);
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scenario-card { scroll-snap-align: start; }
+  .comparison-swipe-hint { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) {

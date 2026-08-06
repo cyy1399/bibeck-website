@@ -1,51 +1,49 @@
+export type BiBeckRebateTierId = "standard" | "active" | "elite" | "core" | "special";
+
 export interface BiBeckRebateTier {
-  id: string;
+  id: BiBeckRebateTierId;
   name: string;
-  rebateRate: number;
-  minThirtyDayVolume: number;
-  maxThirtyDayVolume: number | null;
+  minVolume: number | null;
+  maxVolume: number | null;
+  rebateRate: number | null;
+  shortLabel: string;
+  volumeLabel: string;
   description: string;
-  isNegotiated: boolean;
-  isProvisional: boolean;
+  requiresReview: boolean;
+  isSpecial: boolean;
+  order: number;
 }
 
-export const BIBECK_REBATE_TIERS: BiBeckRebateTier[] = [
-  { id: "standard", name: "標準交易者", rebateRate: 0.2, minThirtyDayVolume: 0, maxThirtyDayVolume: 999_999, description: "適合一般交易使用者", isNegotiated: false, isProvisional: true },
-  { id: "active", name: "活躍交易者", rebateRate: 0.25, minThirtyDayVolume: 1_000_000, maxThirtyDayVolume: 4_999_999, description: "適合穩定且持續交易的使用者", isNegotiated: false, isProvisional: true },
-  { id: "professional", name: "專業交易者", rebateRate: 0.3, minThirtyDayVolume: 5_000_000, maxThirtyDayVolume: 24_999_999, description: "適合高頻或高交易量使用者", isNegotiated: false, isProvisional: true },
-  { id: "elite", name: "菁英交易者", rebateRate: 0.35, minThirtyDayVolume: 25_000_000, maxThirtyDayVolume: 99_999_999, description: "適合大型或高額交易使用者", isNegotiated: false, isProvisional: true },
-  { id: "partner", name: "專業合作方案", rebateRate: 0.4, minThirtyDayVolume: 100_000_000, maxThirtyDayVolume: null, description: "高額交易量個體戶、專業交易者、代理或合作夥伴可專業協商", isNegotiated: true, isProvisional: true },
-];
+export const BIBECK_REBATE_TIERS = [
+  { id: "standard", name: "標準交易者", minVolume: 0, maxVolume: 10_000_000, rebateRate: 0.2, shortLabel: "20%", volumeLabel: "未滿 10M USDT", description: "最近 30 日有效交易量未滿 10M USDT", requiresReview: true, isSpecial: false, order: 1 },
+  { id: "active", name: "活躍交易者", minVolume: 10_000_000, maxVolume: 50_000_000, rebateRate: 0.25, shortLabel: "25%", volumeLabel: "10M～49.99M USDT", description: "最近 30 日有效交易量 10M～49.99M USDT", requiresReview: true, isSpecial: false, order: 2 },
+  { id: "elite", name: "菁英交易者", minVolume: 50_000_000, maxVolume: 200_000_000, rebateRate: 0.3, shortLabel: "30%", volumeLabel: "50M～199.99M USDT", description: "最近 30 日有效交易量 50M～199.99M USDT", requiresReview: true, isSpecial: false, order: 3 },
+  { id: "core", name: "核心交易者", minVolume: 200_000_000, maxVolume: null, rebateRate: 0.35, shortLabel: "35%", volumeLabel: "200M USDT 以上", description: "最近 30 日有效交易量達 200M USDT", requiresReview: true, isSpecial: false, order: 4 },
+  { id: "special", name: "特殊合作方案", minVolume: null, maxVolume: null, rebateRate: null, shortLabel: "個別協商", volumeLabel: "不依交易量自動取得", description: "適用代理、社群、團隊或其他合作需求", requiresReview: true, isSpecial: true, order: 5 },
+] as const satisfies readonly BiBeckRebateTier[];
 
-export const rebateReviewPolicy = {
-  defaultTierId: "standard",
-  defaultRate: 20,
-  reviewDayOfMonth: 1,
-  reviewBasis: "previous_full_calendar_month",
-  partialMonthEligible: false,
-  outcomes: ["upgrade", "downgrade", "maintain"],
-  specialPartnerManualReview: true,
-  highVolumeObservationDays: 30,
-} as const;
+export const PUBLIC_REBATE_TIERS = BIBECK_REBATE_TIERS.filter((tier) => !tier.isSpecial);
+export const SPECIAL_REBATE_TIER = BIBECK_REBATE_TIERS.find((tier) => tier.isSpecial)!;
 
-export const rebateReviewLabels = {
-  initialTier: "一般申請初始級距",
-  monthlyReview: "每月依實際交易量審核",
-  estimatedTier: "依交易量推估級距",
-  effectiveTier: "實際生效級距",
-  manualReview: "人工評估",
-} as const;
-
-export function getRebateTierStatus(tier: BiBeckRebateTier): string {
-  if (tier.id === rebateReviewPolicy.defaultTierId) return rebateReviewLabels.initialTier;
-  if (tier.isNegotiated) return rebateReviewLabels.manualReview;
-  return rebateReviewLabels.monthlyReview;
+export function getBiBeckRebateTier(volume: number): (typeof PUBLIC_REBATE_TIERS)[number] {
+  const safeVolume = Number.isFinite(volume) && volume > 0 ? volume : 0;
+  return [...PUBLIC_REBATE_TIERS].reverse().find((tier) => safeVolume >= (tier.minVolume ?? 0)) ?? PUBLIC_REBATE_TIERS[0];
 }
 
-const volumeFormatter = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 0 });
+export function getNextBiBeckRebateTier(tierId: BiBeckRebateTierId) {
+  const index = PUBLIC_REBATE_TIERS.findIndex((tier) => tier.id === tierId);
+  return index >= 0 ? PUBLIC_REBATE_TIERS[index + 1] ?? null : null;
+}
+
+export function formatVolume(value: number): string {
+  const safe = Number.isFinite(value) && value >= 0 ? value : 0;
+  if (safe >= 1_000_000) {
+    const millions = safe / 1_000_000;
+    return `${millions.toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1")}M`;
+  }
+  return new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 }).format(safe);
+}
 
 export function formatRebateVolumeRange(tier: BiBeckRebateTier): string {
-  if (tier.maxThirtyDayVolume === null) return `${volumeFormatter.format(tier.minThirtyDayVolume)} USDT 以上`;
-  if (tier.minThirtyDayVolume === 0) return `低於 ${volumeFormatter.format(tier.maxThirtyDayVolume + 1)} USDT`;
-  return `${volumeFormatter.format(tier.minThirtyDayVolume)}–${volumeFormatter.format(tier.maxThirtyDayVolume)} USDT`;
+  return tier.volumeLabel;
 }

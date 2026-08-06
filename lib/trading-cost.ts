@@ -67,14 +67,16 @@ export type TradingCostComparison = {
   baselineFee: number;
   vipFee: number;
   vipSavings: number;
-  rebate: number;
-  actualCost: number;
+  rebateAmount: number;
+  netTradingCost: number;
   totalSavings: number;
   effectiveFeeRate: number;
+  totalSavingsPercent: number;
   annualBaselineCost: number;
   annualVipCost: number;
   annualVipSavings: number;
-  annualActualCost: number;
+  annualRebateAmount: number;
+  annualNetCost: number;
   annualTotalSavings: number;
 };
 
@@ -86,22 +88,24 @@ export function calculateTradingCostComparison(input: TradingCostComparisonInput
   const baselineFee = multiply(volume, baselineRate);
   const vipFee = multiply(volume, vipRate);
   const vipSavings = Math.max(0, subtract(baselineFee, vipFee));
-  const rebate = multiply(vipFee, rebateRate);
-  const actualCost = Math.max(0, subtract(vipFee, rebate));
-  const totalSavings = Math.max(0, subtract(baselineFee, actualCost));
+  const rebateAmount = multiply(vipFee, rebateRate);
+  const netTradingCost = Math.max(0, subtract(vipFee, rebateAmount));
+  const totalSavings = Math.max(0, subtract(baselineFee, netTradingCost));
 
   return {
     baselineFee,
     vipFee,
     vipSavings,
-    rebate,
-    actualCost,
+    rebateAmount,
+    netTradingCost,
     totalSavings,
-    effectiveFeeRate: volume === 0 ? 0 : multiply(actualCost, 1 / volume),
+    effectiveFeeRate: volume === 0 ? 0 : multiply(netTradingCost, 1 / volume),
+    totalSavingsPercent: baselineFee === 0 ? 0 : totalSavings / baselineFee,
     annualBaselineCost: multiply(baselineFee, 12),
     annualVipCost: multiply(vipFee, 12),
     annualVipSavings: multiply(vipSavings, 12),
-    annualActualCost: multiply(actualCost, 12),
+    annualRebateAmount: multiply(rebateAmount, 12),
+    annualNetCost: multiply(netTradingCost, 12),
     annualTotalSavings: multiply(totalSavings, 12),
   };
 }

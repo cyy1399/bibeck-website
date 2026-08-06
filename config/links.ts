@@ -1,5 +1,7 @@
 export const BYBIT_REGISTER = "https://partner.bybit.com/b/t00000016";
 export const REBATE_LOGIN = "https://bybackoffice.com/user-login";
+export const REBATE_APPLICATION_URL = process.env.NEXT_PUBLIC_BIBECK_REBATE_APPLICATION_URL ?? "https://docs.google.com/forms/d/e/1FAIpQLScPAwgBuIVlaJ_0dM5JXF1_QhEgCwygM9PBZRFItiQF6AQ74Q/viewform?usp=dialog";
+export const REBATE_BACKOFFICE_URL = process.env.NEXT_PUBLIC_REBATE_BACKOFFICE_URL ?? REBATE_LOGIN;
 export const BYBIT_FEE_STRUCTURE = "https://www.bybit.com/zh-TW/help-center/article/Trading-Fee-Structure";
 export const BYBIT_MAKER_TAKER = "https://www.bybit.com/zh-TW/help-center/article/Comparison-Of-Trading-Fees-Between-Maker-Orders-and-Taker-Orders";
 export const BYBIT_FUNDING_FEE = "https://www.bybit.com/zh-TW/help-center/article/Funding-fee-calculation";

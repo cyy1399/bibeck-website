@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 import { createPageMetadata } from "@/config/seo";
-export const metadata: Metadata = createPageMetadata({ title: "個人資料蒐集告知", description: "提交 BiBeck 返傭相關申請前應閱讀的個人資料蒐集與使用說明。", path: "/personal-data-notice" });
-export default function PersonalDataNoticePage() { return <LegalPage eyebrow="申請前告知" title="個人資料蒐集告知" description="提交返傭相關申請前，請確認你瞭解資料的蒐集目的、類型、使用方式與可提出的權利。" sections={[
-  { heading: "蒐集目的與資料類型", paragraphs: ["標準返傭開通資料用於核對推薦及歸戶關係、人工設定返傭比例、發送申請與完成通知、補件聯絡、客服與爭議處理、操作稽核及防止濫用。蒐集項目包含名稱或稱呼、Bybit UID、聯絡 Email、案件編號、案件狀態、固定返傭比例、申請與完成時間及操作紀錄；另行申請提高比例時，才會處理使用者主動提供的交易量資料。"] },
-  { heading: "使用方式與對象", paragraphs: ["資料由 BiBeck 及提供部署、郵件或必要技術處理的服務供應商，在完成申請處理與服務安全所需範圍內使用，不會作為代客交易或資產保管用途。"] },
-  { heading: "保存方式與期限", paragraphs: ["返傭啟用案件及操作紀錄將保存於受控的正式資料庫；確切保存期限仍需營運者確認。高交易量附件目前仍透過郵件處理，未建立可確認的私有檔案儲存與自動到期刪除機制，因此請只提供審核必要資料並遮蔽不必要資訊。"] },
-  { heading: "使用者權利與聯絡方式", paragraphs: ["你可透過 contact@bibeck.com 要求查詢、更正、停止使用或刪除資料。若不同意必要資料的蒐集，BiBeck 將無法受理高交易量申請，但仍可使用一般公開資訊與計算工具。"] },
-  { heading: "安全提醒", paragraphs: ["BiBeck 不會要求密碼、電子郵件或簡訊驗證碼、Google Authenticator 驗證碼、API Secret、私鑰或助記詞。請勿在表單或附件中提供上述資訊。"] },
-]} />; }
+export const metadata: Metadata=createPageMetadata({title:"個人資料蒐集告知",description:"提交 BiBeck 返傭申請前應閱讀的個人資料蒐集與使用說明。",path:"/personal-data-notice"});
+export default function PersonalDataNoticePage(){return <LegalPage eyebrow="申請前告知" title="個人資料蒐集告知" description="本頁為一般資訊，正式法律適用仍應依實際營運地區與專業法律意見調整。" sections={[
+{heading:"蒐集者、目的與資料類別",paragraphs:["蒐集者為 BiBeck。蒐集目的包括帳戶核對、返傭申請與設定、通知、客服及服務安全；資料類別可能包含名稱或稱呼、Bybit UID、Email、申請級距、交易量或帳戶條件及提交紀錄。"]},
+{heading:"期間、地區、對象與方式",paragraphs:["資料於完成申請、客服、爭議處理及必要法令遵循期間使用，可能在 BiBeck 與 Google Forms、Google Sheets、Email 服務及外部返傭後台服務所涵蓋地區，由 BiBeck 及必要服務供應商以電子方式處理。"]},
+{heading:"不提供資料的影響",paragraphs:["若不提供核對帳戶及返傭申請所需資料，BiBeck 可能無法受理或完成返傭設定；你仍可使用公開資訊與交易成本計算器。"]},
+{heading:"你的權利",paragraphs:["你可透過 contact@bibeck.com 請求查詢、閱覽、複製、更正、停止蒐集或使用，以及刪除資料。BiBeck 可能要求合理資訊確認申請人身分。"]},
+]}/>;}
