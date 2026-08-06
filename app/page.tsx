@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ExchangeActionButtons } from "@/components/ExchangeActionButtons";
 import { FAQList, homeFaqs } from "@/components/FAQList";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
@@ -30,7 +29,7 @@ export default function Home() {
             <p className="reveal mt-7 max-w-2xl text-lg leading-9 text-secondary">
               <TranslatedText message="home.description" />
             </p>
-            <div className="reveal mt-9"><ExchangeActionButtons exchangeSlug="bybit" calculatorHref="#trading-cost-calculator" /></div>
+            <div className="reveal mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"><Link href="/calculator" className="cta-button button-primary">開始計算交易成本</Link><Link href="/rebate" className="text-link">了解 BiBeck 返傭 <span aria-hidden="true">→</span></Link></div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
               <TranslatedText message="home.disclosure" />
             </p>

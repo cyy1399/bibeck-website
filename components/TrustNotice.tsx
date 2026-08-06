@@ -9,7 +9,7 @@ export function TrustNotice({ compact = false }: { compact?: boolean }) {
         BiBeck 不提供投資建議、不保證任何獲利，也不保管使用者資產。交易涉及風險，使用者應自行評估並閱讀相關交易所條款。
       </p>
       <p className="mt-3 text-sm leading-7 text-secondary">
-        部分連結可能為合作夥伴連結。當使用者透過相關連結註冊或交易時，BiBeck 可能取得合作佣金或返傭收入。
+        部分連結可能為合作夥伴連結；這項合作關係不會提高使用者原本適用的交易所手續費。
       </p>
     </aside>
   );

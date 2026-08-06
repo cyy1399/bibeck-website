@@ -1,5 +1,5 @@
 import type { ExchangeSlug } from "@/config/exchanges";
-import { BYBIT_REGISTER, REBATE_LOGIN } from "@/config/links";
+import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 
 export type ExchangeActionConfig = {
   id: ExchangeSlug;
@@ -18,7 +18,7 @@ export function getExchangeActionLabels(exchange: Pick<ExchangeActionConfig, "na
 }
 
 export const exchangeActionConfig: Record<ExchangeSlug, ExchangeActionConfig> = {
-  bybit: { id: "bybit", name: "Bybit", rebateSupported: true, registrationUrl: BYBIT_REGISTER, rebateDashboardUrl: REBATE_LOGIN },
+  bybit: { id: "bybit", name: "Bybit", rebateSupported: true, registrationUrl: REBATE_APPLICATION_URL, rebateDashboardUrl: REBATE_BACKOFFICE_URL },
   binance: { id: "binance", name: "Binance", rebateSupported: false, registrationUrl: null, rebateDashboardUrl: null },
   bitget: { id: "bitget", name: "Bitget", rebateSupported: false, registrationUrl: null, rebateDashboardUrl: null },
   bingx: { id: "bingx", name: "BingX", rebateSupported: false, registrationUrl: null, rebateDashboardUrl: null },

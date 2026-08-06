@@ -9,8 +9,8 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges";
 import { getExchangeActionLabels } from "@/config/actions";
-import { BYBIT_REGISTER } from "@/config/links";
-import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, getRebateTierStatus, rebateReviewLabels } from "@/config/bibeck-rebate-tiers";
+import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
+import { BIBECK_REBATE_TIERS } from "@/config/bibeck-rebate-tiers";
 import { brandConfig } from "@/config/brand";
 
 const costFactors = [
@@ -103,7 +103,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <div className={"mt-10 grid gap-7 border-l-2 bg-[#111] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center " + (isBybit ? "border-gold" : "border-white/18")}>
             <p className="max-w-4xl text-base leading-8 text-white/78">{exchange.summary}</p>
             {isBybit ? (
-              <div className="grid gap-3"><ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink><Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link></div>
+              <ExternalLink href={REBATE_APPLICATION_URL} sponsored aria-label="前往 BiBeck Bybit 返傭申請頁">{actionLabels.rebateSignup}</ExternalLink>
             ) : (
               <a href="#comparison" className="button-secondary">比較 Bybit + BiBeck</a>
             )}
@@ -192,26 +192,24 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       {isBybit ? (
         <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionTitle label="BiBeck 返傭方案" title="依交易需求選擇合適的參考方案" copy="一般申請者初始皆為標準交易者 20%，後續於每月 1 日依前一完整月份交易量重新分級；特殊合作方案則採人工評估與協商。" />
+            <SectionTitle label="BiBeck 返傭方案" title="公開返傭級距" copy="標準交易者可申請 20%；較高交易量可依公開級距申請 25%～35%，實際結果以資料核對與通知為準。" />
             <div className="mt-10 border-l-2 border-gold bg-[#101010] p-6 sm:p-8">
-              <h3 className="text-2xl font-semibold text-white">返傭級距如何生效？</h3>
+              <h3 className="text-2xl font-semibold text-white">BiBeck Bybit 返傭</h3>
               <div className="mt-5 grid gap-3 text-sm leading-7 text-secondary">
-                <p>一般透過 BiBeck 申請返傭帳號的使用者，初始皆歸類為「標準交易者」，返傭比例為 20%。</p>
-                <p>BiBeck 會在每月 1 日統計前一個完整曆月的實際交易量，並依交易量級距調整下一期返傭方案；結果可能為升等、降等或維持原級距。</p>
-                <p>若帳戶啟用尚未滿一個完整月份，將在完成第一個完整月份後的下一個月 1 日首次分級。</p>
-                <p>所有一般 Bybit 返傭帳戶完成開通後，初始返傭比例為 20%。已完成開通且具備穩定交易量的使用者，可另行申請提高返傭比例。</p>
+                <p>透過 BiBeck 指定申請流程完成 Bybit 註冊與返傭資料提交。標準交易者可申請 20% 返傭，較高交易量可依公開級距申請 25%～35%。</p>
+                <p>計算器與級距表為申請參考，實際結果以帳戶資料核對與通知為準；特殊合作方案不會因交易量自動取得。</p>
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
-                <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link>
-                <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
+                <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary" aria-label="登入外部 Bybit 返傭後台">{actionLabels.rebateDashboard}</ExternalLink>
+                <Link href="/calculator" className="cta-button button-secondary">使用交易成本計算器</Link>
               </div>
             </div>
             <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-5">
               {BIBECK_REBATE_TIERS.map((tier) => (
-                <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isNegotiated ? "ring-1 ring-inset ring-gold/45" : "")}>
-                  <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{getRebateTierStatus(tier)}</p>
-                  <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{Math.round(tier.rebateRate * 100)}%{tier.isNegotiated ? " 或以上" : " 返傭回饋"}</p><p className="mt-5 text-xs text-white/42">最近 30 日交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{formatRebateVolumeRange(tier)}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>{tier.isNegotiated ? <><p className="mt-3 text-xs leading-6 text-gold">可依合作條件議定初始比例</p><p className="mt-3 text-xs leading-6 text-white/42">特殊合作夥伴可經人工評估與協商適用較高暫定比例；實際比例、門檻與生效方式以個別合作結果為準，不因交易量達標而自動取得 40% 或以上。</p></> : <p className="mt-3 text-xs leading-6 text-white/42">{tier.id === "standard" ? rebateReviewLabels.initialTier : rebateReviewLabels.monthlyReview}</p>}
+                <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isSpecial ? "ring-1 ring-inset ring-gold/45" : "")}>
+                  <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{tier.isSpecial ? "個別協商" : "公開級距"}</p>
+                  <h3 className="text-lg font-semibold text-white">{tier.name}</h3><p className="mt-5 font-mono text-xl text-gold">{tier.shortLabel}</p><p className="mt-5 text-xs text-white/42">最近 30 日有效交易量</p><p className="mt-2 break-words font-mono text-sm leading-6 text-white">{tier.volumeLabel}</p><p className="mt-3 text-sm leading-6 text-secondary">{tier.description}</p>
                 </article>
               ))}
             </div>
@@ -249,17 +247,17 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           {isBybit ? (
             <div className="border-y border-white/10 py-12">
               <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-                <SectionTitle label="BiBeck 返傭" title="返傭級距的生效流程" copy="一般申請從標準交易者 20% 開始；累積完整月份交易量後，於次月 1 日重新審核。" />
+                <SectionTitle label="BiBeck 返傭" title="統一申請 Bybit 返傭" copy="完成指定申請流程並提交 UID 與級距資料；實際結果以帳戶核對與通知為準。" />
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <ExternalLink href={BYBIT_REGISTER} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                  <Link href="/rebate/activate" className="cta-button button-secondary">已完成註冊，繼續開通返傭</Link>
-                  <Link href="/high-volume-application" className="cta-button button-secondary">申請提高返傭比例</Link>
+                  <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{actionLabels.rebateSignup}</ExternalLink>
+                  <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary" aria-label="登入外部 Bybit 返傭後台">{actionLabels.rebateDashboard}</ExternalLink>
+                  <Link href="/calculator" className="cta-button button-secondary">交易成本計算器</Link>
                 </div>
               </div>
               <ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
-                {["透過 BiBeck 指定連結註冊 Bybit", "完成必要帳戶與 KYC 流程", "返回 BiBeck 提交 UID", "BiBeck 人工確認推薦關係並設定返傭比例", "收到完成通知後，前往返傭後台確認"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
+                {["前往返傭申請頁", "使用指定連結完成 Bybit 註冊", "提交名稱、UID、Email 與申請級距", "BiBeck 核對帳戶資料並處理設定", "完成後接收登入資訊與申請結果"].map((step, index) => <li key={step} className="min-w-0 bg-[#111] p-5 text-sm leading-7 text-secondary"><span className="mr-3 font-mono text-gold">0{index + 1}</span>{step}</li>)}
               </ol>
-              <p className="mt-6 text-sm leading-7 text-secondary">特殊合作夥伴可在建立返傭帳戶前提出可驗證資料，經人工評估與協商後議定暫定初始比例。初步核准不代表返傭已生效，仍需完成指定帳戶註冊、UID 歸戶及必要驗證。</p>
+              <p className="mt-6 text-sm leading-7 text-secondary">特殊合作方案依代理、社群、團隊或其他合作需求個別協商，不會因交易量自動取得；申請結果以資料核對與通知為準。</p>
             </div>
           ) : (
             <div className="grid gap-10 border-y border-white/10 py-12 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -273,7 +271,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
           <aside className="mt-10 border-l-2 border-gold/70 bg-[#101010] p-7 text-sm leading-7 text-secondary">
             <p className="font-medium text-white">BiBeck 為獨立第三方交易成本與返傭資訊平台，並非由任何交易所擁有、營運或官方背書。</p>
             <p className="mt-3">BiBeck 不提供投資建議、不保證任何獲利，也不保管使用者資產。交易涉及風險，使用者應自行評估並閱讀相關交易所條款。</p>
-            <p className="mt-3">部分連結可能為合作夥伴連結。當使用者透過相關連結註冊或交易時，BiBeck 可能取得合作佣金或返傭收入。</p>
+            <p className="mt-3">部分連結可能為合作夥伴連結；這項合作關係不會提高使用者原本適用的交易所手續費。</p>
           </aside>
         </div>
       </section>

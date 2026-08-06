@@ -3,7 +3,7 @@ import test from "node:test";
 import { calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
 import { estimateBybitVipTier, negotiatedRebateRate, recommendBiBeckTier, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
-import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, rebateReviewLabels, rebateReviewPolicy } from "../config/bibeck-rebate-tiers.ts";
+import { BIBECK_REBATE_TIERS, formatRebateVolumeRange, formatVolume } from "../config/bibeck-rebate-tiers.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
 import { navigationMenuReducer } from "../lib/navigation-menu.ts";
 
@@ -36,20 +36,20 @@ test("返傭比例最高限制為 100% 且不產生負成本", () => {
 
 test("三層比較正確計算基準、返傭與年度成本", () => {
   const result = calculateTradingCostComparison({ thirtyDayVolume: 1_000_000, baselineFeeRate: 0.0003, vipFeeRate: 0.0003, rebateRate: 0.2 });
-  assert.deepEqual(result, { baselineFee: 300, vipFee: 300, vipSavings: 0, rebate: 60, actualCost: 240, totalSavings: 60, effectiveFeeRate: 0.00024, annualBaselineCost: 3600, annualVipCost: 3600, annualVipSavings: 0, annualActualCost: 2880, annualTotalSavings: 720 });
+  assert.deepEqual(result, { baselineFee: 300, vipFee: 300, vipSavings: 0, rebateAmount: 60, netTradingCost: 240, totalSavings: 60, effectiveFeeRate: 0.00024, totalSavingsPercent: 0.2, annualBaselineCost: 3600, annualVipCost: 3600, annualVipSavings: 0, annualRebateAmount: 720, annualNetCost: 2880, annualTotalSavings: 720 });
 });
 
 test("小數交易量與費率使用固定精度運算，不累積浮點誤差", () => {
   const result = calculateTradingCostComparison({ thirtyDayVolume: 1_000_000.5, baselineFeeRate: 0.00055, vipFeeRate: 0.0004, rebateRate: 0.25 });
   assert.equal(result.vipFee, 400.0002);
-  assert.equal(result.rebate, 100.00005);
-  assert.equal(result.actualCost, 300.00015);
-  assert.equal(Number.isFinite(result.annualActualCost), true);
+  assert.equal(result.rebateAmount, 100.00005);
+  assert.equal(result.netTradingCost, 300.00015);
+  assert.equal(Number.isFinite(result.annualNetCost), true);
 });
 
 test("VIP 優惠與返傭會分開計算省下金額", () => {
   const result = calculateTradingCostComparison({ thirtyDayVolume: 100_000, baselineFeeRate: 0.00055, vipFeeRate: 0.0004, rebateRate: 0.2 });
-  assert.equal(result.baselineFee, 55); assert.equal(result.vipFee, 40); assert.equal(result.vipSavings, 15); assert.equal(result.rebate, 8); assert.equal(result.actualCost, 32); assert.equal(result.totalSavings, 23); assert.equal(result.effectiveFeeRate, 0.00032); assert.equal(result.annualTotalSavings, 276);
+  assert.equal(result.baselineFee, 55); assert.equal(result.vipFee, 40); assert.equal(result.vipSavings, 15); assert.equal(result.rebateAmount, 8); assert.equal(result.netTradingCost, 32); assert.equal(result.totalSavings, 23); assert.equal(result.effectiveFeeRate, 0.00032); assert.equal(result.annualTotalSavings, 276);
 });
 
 test("自動 VIP 推估涵蓋門檻邊界與最高等級", () => {
@@ -66,14 +66,10 @@ test("手動 VIP 不會因交易量變更而被覆蓋", () => {
 
 test("返傭自動建議使用明確且不重疊的交易量邊界", () => {
   const cases = [
-    [999_999, "standard", 0.2],
-    [1_000_000, "active", 0.25],
-    [4_999_999, "active", 0.25],
-    [5_000_000, "professional", 0.3],
-    [24_999_999, "professional", 0.3],
-    [25_000_000, "elite", 0.35],
-    [99_999_999, "elite", 0.35],
-    [100_000_000, "partner", 0.4],
+    [0, "standard", 0.2], [1, "standard", 0.2], [9_999_999.99, "standard", 0.2],
+    [10_000_000, "active", 0.25], [49_999_999.99, "active", 0.25],
+    [50_000_000, "elite", 0.3], [100_000_000, "elite", 0.3], [199_999_999.99, "elite", 0.3],
+    [200_000_000, "core", 0.35], [500_000_000, "core", 0.35],
   ];
 
   for (const [volume, id, rebateRate] of cases) {
@@ -85,33 +81,20 @@ test("返傭自動建議使用明確且不重疊的交易量邊界", () => {
 
 test("返傭級距顯示千分位交易量標準", () => {
   assert.deepEqual(BIBECK_REBATE_TIERS.map(formatRebateVolumeRange), [
-    "低於 1,000,000 USDT",
-    "1,000,000–4,999,999 USDT",
-    "5,000,000–24,999,999 USDT",
-    "25,000,000–99,999,999 USDT",
-    "100,000,000 USDT 以上",
+    "未滿 10M USDT", "10M～49.99M USDT", "50M～199.99M USDT", "200M USDT 以上", "不依交易量自動取得",
   ]);
 });
 
-test("返傭審核制度集中設定一般初始級距與完整月份規則", () => {
-  assert.equal(rebateReviewPolicy.defaultTierId, "standard");
-  assert.equal(rebateReviewPolicy.defaultRate, 20);
-  assert.equal(rebateReviewPolicy.reviewDayOfMonth, 1);
-  assert.equal(rebateReviewPolicy.reviewBasis, "previous_full_calendar_month");
-  assert.equal(rebateReviewPolicy.partialMonthEligible, false);
-  assert.deepEqual(rebateReviewPolicy.outcomes, ["upgrade", "downgrade", "maintain"]);
-  assert.equal(rebateReviewPolicy.specialPartnerManualReview, true);
-  assert.equal(rebateReviewLabels.estimatedTier, "依交易量推估級距");
-});
+test("特殊合作不會由交易量自動取得且 M 格式正確", () => { assert.equal(recommendBiBeckTier(Number.MAX_SAFE_INTEGER).id, "core"); assert.equal(BIBECK_REBATE_TIERS.at(-1).isSpecial, true); assert.equal(formatVolume(49_990_000), "49.99M"); assert.equal(formatVolume(200_000_000), "200M"); });
 
 test("零交易量不產生 NaN 或 Infinity", () => {
   const result = calculateTradingCostComparison({ thirtyDayVolume: 0, baselineFeeRate: 0.001, vipFeeRate: 0.0005, rebateRate: 0.35 });
   for (const value of Object.values(result)) assert.equal(value, 0);
 });
 
-test("專業協商試算限制在 40% 至 100%", () => {
+test("自訂情境比例限制在 0% 至 100%", () => {
   assert.equal(negotiatedRebateRate(45, true), 0.45);
-  assert.equal(negotiatedRebateRate(20, true), 0.4);
+  assert.equal(negotiatedRebateRate(20, true), 0.2);
   assert.equal(negotiatedRebateRate(120, true), 1);
   assert.equal(negotiatedRebateRate(45, false), 0);
 });
@@ -134,8 +117,10 @@ test("交易量輸入支援空格、貼上與不四捨五入的小數", () => {
   assert.equal(parseNumberInput("1,000,000.5"), 1_000_000.5);
   assert.equal(formatNumberInput(""), "");
   assert.equal(parseNumberInput(""), 0);
-  assert.equal(parseNumberInput("-1,000"), 1000);
+  assert.equal(parseNumberInput("-1,000"), 0);
   assert.equal(Number.isNaN(parseNumberInput("abc")), false);
+  assert.equal(parseNumberInput("10M"), 10_000_000);
+  assert.equal(parseNumberInput("１０Ｍ"), 10_000_000);
 });
 
 test("交易所選單狀態只由點擊切換並可統一關閉", () => {

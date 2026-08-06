@@ -2,7 +2,7 @@ export const rebateActivationStatuses = ["PENDING", "NEEDS_INFORMATION", "NOT_FO
 export type RebateActivationStatus = (typeof rebateActivationStatuses)[number];
 
 export const rebateStatusLabels: Record<RebateActivationStatus, string> = {
-  PENDING: "待人工設定",
+  PENDING: "待設定",
   NEEDS_INFORMATION: "需要補件",
   NOT_FOUND: "找不到 UID／無法歸戶",
   COMPLETED: "已開通",

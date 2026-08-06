@@ -12,18 +12,18 @@ export async function sendActivationReceipt(caseData: RebateActivationCase) {
     subject: `[BiBeck] 已收到您的 Bybit 返傭開通申請｜${caseData.caseNumber}`,
     idempotencyKey: `activation-receipt-${caseData.id}`,
     html: emailLayout("已收到您的 Bybit 返傭開通申請", [
-      `您好，${caseData.displayName}：BiBeck 已收到您的申請，將由營運人員核對 UID 並在返傭後台人工完成設定。`,
+      `您好，${caseData.displayName}：BiBeck 已收到您的申請，將核對 UID 並在返傭後台完成設定。`,
       "此 Email 只代表 BiBeck 已收到申請，不代表返傭已完成設定或已開始生效。設定完成後，我們會再次寄送通知。",
       safety,
       `如有問題，請聯絡 ${support}。`,
-    ], [["案件編號", caseData.caseNumber], ["Bybit UID", maskUid(caseData.uid)], ["申請時間", caseData.createdAt.toISOString()], ["目前狀態", "待人工設定"], ["預設返傭比例", "20%"]]),
+    ], [["案件編號", caseData.caseNumber], ["Bybit UID", maskUid(caseData.uid)], ["申請時間", caseData.createdAt.toISOString()], ["目前狀態", "待設定"], ["預設返傭比例", "20%"]]),
   });
 }
 
 export async function sendAdminNewRequest(caseData: RebateActivationCase) {
   const to = process.env.REBATE_ADMIN_EMAIL;
   if (!to) throw new Error("REBATE_ADMIN_EMAIL_NOT_CONFIGURED");
-  await sendTransactionalEmail({ to, replyTo: caseData.contactEmail, subject: `[BiBeck 營運] 新 Bybit 返傭開通申請｜${caseData.caseNumber}`, idempotencyKey: `activation-admin-${caseData.id}`, html: emailLayout("新 Bybit 返傭開通申請", ["請登入 BiBeck 管理後台核對 UID，並在外部返傭後台人工設定 20%。"], [["案件編號", caseData.caseNumber], ["名稱", caseData.displayName], ["UID", caseData.uid], ["Email", caseData.contactEmail]]) });
+  await sendTransactionalEmail({ to, replyTo: caseData.contactEmail, subject: `[BiBeck 營運] 新 Bybit 返傭開通申請｜${caseData.caseNumber}`, idempotencyKey: `activation-admin-${caseData.id}`, html: emailLayout("新 Bybit 返傭開通申請", ["請登入 BiBeck 管理後台核對 UID，並在外部返傭後台完成 20% 設定。"], [["案件編號", caseData.caseNumber], ["名稱", caseData.displayName], ["UID", caseData.uid], ["Email", caseData.contactEmail]]) });
 }
 
 export async function sendCompletionEmail(caseData: RebateActivationCase, retry = false) {
@@ -32,7 +32,7 @@ export async function sendCompletionEmail(caseData: RebateActivationCase, retry 
     subject: `[BiBeck] 您的 Bybit 返傭已完成設定｜${caseData.caseNumber}`,
     idempotencyKey: `activation-completed-${caseData.id}${retry ? `-retry-${caseData.updatedAt.getTime()}` : ""}`,
     html: emailLayout("您的 Bybit 返傭已完成設定", [
-      `您好，${caseData.displayName}：BiBeck 已完成人工設定。`,
+      `您好，${caseData.displayName}：BiBeck 已完成返傭設定。`,
       "實際生效時間、資料同步、返傭顯示及過往交易手續費是否追溯，仍以返傭後台及適用規則為準。",
       safety,
       `如有問題，請聯絡 ${support}。`,

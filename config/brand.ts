@@ -1,7 +1,7 @@
 export const brandConfig = {
   name: "BiBeck",
   domain: "bibeck.com",
-  websiteUrl: "https://bibeck.com",
+  websiteUrl: "https://www.bibeck.com",
   publicEmails: {
     contact: "contact@bibeck.com",
     support: "support@bibeck.com",
@@ -23,18 +23,3 @@ export function mailto(email: string, subject?: string, body?: string): string {
 
 export const contactMailto = mailto(brandConfig.publicEmails.contact, "BiBeck 官網聯絡");
 export const supportMailto = mailto(brandConfig.publicEmails.support, "BiBeck 返傭支援");
-export const professionalPartnershipMailto = mailto(
-  brandConfig.publicEmails.contact,
-  "申請 Bybit 40%+ 專業合作方案",
-  `您好，我想申請 BiBeck Bybit 40%+ 專業合作方案。
-
-身分類型：
-個體交易者／專業交易者／代理／合作夥伴
-
-最近 30 日交易量：
-主要交易商品：
-目前 VIP 等級：
-預計合作方式：
-
-其他補充：`,
-);
