@@ -1,11 +1,12 @@
 function normalizeDigits(value: string): string {
-  return value.replace(/[０-９]/g, (digit) => String(digit.charCodeAt(0) - 0xff10)).replace(/．/g, ".").replace(/Ｍ/g, "M");
+  return value.replace(/[０-９]/g, (digit) => String(digit.charCodeAt(0) - 0xff10)).replace(/．/g, ".").replace(/Ｍ/g, "M").replace(/Ｂ/g, "B");
 }
 
 export function sanitizeNumberInput(value: string): string {
   const normalized = normalizeDigits(value.trim());
-  const multiplier = /m$/i.test(normalized) ? 1_000_000 : 1;
-  const compact = normalized.replace(/m$/i, "").replace(/[\s,]/g, "");
+  const suffix = normalized.match(/[mb]$/i)?.[0]?.toLowerCase();
+  const multiplier = suffix === "b" ? 1_000_000_000 : suffix === "m" ? 1_000_000 : 1;
+  const compact = normalized.replace(/[mb]$/i, "").replace(/[\s,]/g, "");
   if (compact.startsWith("-") || !/^\d*(?:\.\d*)?$/.test(compact)) return "";
   const dotIndex = compact.indexOf(".");
   const sanitized = dotIndex === -1 ? compact : compact.slice(0, dotIndex + 1) + compact.slice(dotIndex + 1).replace(/\./g, "");

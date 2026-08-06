@@ -122,3 +122,38 @@ export function calculateTierProgress(volume: number, currentMin: number, nextMi
     isHighest: false,
   };
 }
+
+export type TradingCostChartPoint = {
+  volume: number;
+  baselineCost: number;
+  vipCost: number;
+  rebateCost: number;
+  rebateRate: number;
+  tierId: string;
+  tierName: string;
+  isCurrent: boolean;
+};
+
+export function buildTradingCostChartPoints(input: {
+  currentVolume: number;
+  baselineFeeRate: number;
+  vipFeeRate: number;
+  customRebateRate?: number;
+  resolveTier: (volume: number) => { id: string; name: string; rebateRate: number | null };
+}): TradingCostChartPoint[] {
+  const currentVolume = nonNegative(input.currentVolume);
+  const thresholds = [0, 10_000_000, 50_000_000, 200_000_000, 500_000_000];
+  const higherPoint = Math.max(600_000_000, currentVolume * 1.2);
+  const volumes = [...new Set([...thresholds, currentVolume, higherPoint])].sort((a, b) => a - b);
+  return volumes.map((volume) => {
+    const tier = input.resolveTier(volume);
+    const rebateRate = input.customRebateRate ?? tier.rebateRate ?? 0;
+    const result = calculateTradingCostComparison({
+      thirtyDayVolume: volume,
+      baselineFeeRate: input.baselineFeeRate,
+      vipFeeRate: input.vipFeeRate,
+      rebateRate,
+    });
+    return { volume, baselineCost: result.baselineFee, vipCost: result.vipFee, rebateCost: result.netTradingCost, rebateRate, tierId: tier.id, tierName: tier.name, isCurrent: volume === currentVolume };
+  });
+}

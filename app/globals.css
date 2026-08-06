@@ -361,6 +361,17 @@ summary {
   background: #16140e;
 }
 
+.scenario-card-title {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: clamp(0.92rem, 1.15vw, 1.18rem);
+}
+
+.scenario-row { min-height: 3.9rem; }
+.scenario-card dd { font-variant-numeric: tabular-nums; }
+
 .scenario-comparison {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -368,6 +379,26 @@ summary {
 }
 
 .comparison-swipe-hint { display: none; }
+
+.cost-chart { border-top: 1px solid rgba(255,255,255,.1); padding-top: 1.5rem; }
+.cost-chart-legend { display:flex; flex-wrap:wrap; gap:.75rem 1.25rem; font-size:.72rem; color:rgba(255,255,255,.62); }
+.cost-chart-legend span::before { content:""; display:inline-block; width:2.25rem; margin-right:.45rem; vertical-align:middle; border-top:2px solid; }
+.cost-chart-legend .line-a::before { border-color:#777; }
+.cost-chart-legend .line-b::before { border-color:#e6e6e6; border-top-style:dashed; }
+.cost-chart-legend .line-c::before { border-color:var(--gold); border-top-width:3px; }
+.cost-chart-scroll { overflow-x:auto; overscroll-behavior-inline:contain; scrollbar-color:rgba(212,175,55,.55) rgba(255,255,255,.05); }
+.cost-chart-scroll svg { display:block; min-width:720px; width:100%; height:auto; }
+.chart-grid { stroke:rgba(255,255,255,.08); stroke-width:1; }
+.chart-label { fill:rgba(255,255,255,.48); font-size:10px; font-family:ui-monospace,monospace; }
+.chart-line { fill:none; stroke-width:2; vector-effect:non-scaling-stroke; }
+.chart-line-a { stroke:#777; }
+.chart-line-b { stroke:#e6e6e6; stroke-dasharray:7 5; }
+.chart-line-c { stroke:var(--gold); stroke-width:3; }
+.chart-hit-line { stroke:transparent; stroke-width:18; cursor:pointer; }
+.chart-current { stroke:rgba(212,175,55,.55); stroke-width:1; stroke-dasharray:3 4; }
+.chart-point { fill:#111; stroke:var(--gold); stroke-width:2; cursor:pointer; }
+.cost-chart-tooltip { margin-top:.75rem; display:grid; grid-template-columns:repeat(5,minmax(0,auto)); gap:.5rem 1rem; border-left:2px solid var(--gold); background:#0b0b0b; padding:.75rem 1rem; color:rgba(255,255,255,.68); font-size:.72rem; font-variant-numeric:tabular-nums; }
+.cost-chart-tooltip strong { color:white; }
 
 .savings-summary {
   margin-top: 1.5rem;
@@ -524,6 +555,7 @@ summary {
 
   .scenario-card { scroll-snap-align: start; }
   .comparison-swipe-hint { display: block; }
+  .cost-chart-tooltip { grid-template-columns:1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
