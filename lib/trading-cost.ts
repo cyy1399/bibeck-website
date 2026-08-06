@@ -123,37 +123,17 @@ export function calculateTierProgress(volume: number, currentMin: number, nextMi
   };
 }
 
-export type TradingCostChartPoint = {
-  volume: number;
-  baselineCost: number;
-  vipCost: number;
-  rebateCost: number;
-  rebateRate: number;
-  tierId: string;
-  tierName: string;
-  isCurrent: boolean;
-};
+export type CostComparisonBar = { id: "baseline" | "vip" | "bibeck"; widthPercent: number; reductionPercent: number; cost: number };
 
-export function buildTradingCostChartPoints(input: {
-  currentVolume: number;
-  baselineFeeRate: number;
-  vipFeeRate: number;
-  customRebateRate?: number;
-  resolveTier: (volume: number) => { id: string; name: string; rebateRate: number | null };
-}): TradingCostChartPoint[] {
-  const currentVolume = nonNegative(input.currentVolume);
-  const thresholds = [0, 10_000_000, 50_000_000, 200_000_000, 500_000_000];
-  const higherPoint = Math.max(600_000_000, currentVolume * 1.2);
-  const volumes = [...new Set([...thresholds, currentVolume, higherPoint])].sort((a, b) => a - b);
-  return volumes.map((volume) => {
-    const tier = input.resolveTier(volume);
-    const rebateRate = input.customRebateRate ?? tier.rebateRate ?? 0;
-    const result = calculateTradingCostComparison({
-      thirtyDayVolume: volume,
-      baselineFeeRate: input.baselineFeeRate,
-      vipFeeRate: input.vipFeeRate,
-      rebateRate,
-    });
-    return { volume, baselineCost: result.baselineFee, vipCost: result.vipFee, rebateCost: result.netTradingCost, rebateRate, tierId: tier.id, tierName: tier.name, isCurrent: volume === currentVolume };
+export function calculateCostComparisonBars(comparison: Pick<TradingCostComparison, "baselineFee" | "vipFee" | "netTradingCost">): CostComparisonBar[] {
+  const baseline = nonNegative(comparison.baselineFee);
+  const values = [
+    { id: "baseline" as const, cost: baseline },
+    { id: "vip" as const, cost: nonNegative(comparison.vipFee) },
+    { id: "bibeck" as const, cost: nonNegative(comparison.netTradingCost) },
+  ];
+  return values.map(({ id, cost }) => {
+    const ratio = baseline === 0 ? 0 : Math.min(1, Math.max(0, cost / baseline));
+    return { id, cost, widthPercent: ratio * 100, reductionPercent: baseline === 0 ? 0 : (1 - ratio) * 100 };
   });
 }

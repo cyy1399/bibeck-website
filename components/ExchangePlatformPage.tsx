@@ -205,6 +205,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
                 <Link href="/calculator" className="cta-button button-secondary">使用交易成本計算器</Link>
               </div>
             </div>
+            <aside className="mt-6 border-l-2 border-gold bg-[#101010] p-6 text-sm leading-7 text-secondary"><h3 className="font-semibold text-white">請使用 BiBeck 返傭帳戶進行交易</h3><p className="mt-3">只有透過 BiBeck 指定申請流程註冊，並成功綁定於 BiBeck 推薦關係下的 Bybit 返傭帳戶，使用該帳戶交易時才能獲得 BiBeck 返傭。</p><p className="mt-2">原有 Bybit 帳戶若未綁定於 BiBeck，即使已有交易量、VIP 等級或完成 KYC，也無法直接套用 BiBeck 返傭。KYC 身分轉移不等於推薦關係、資產、Email 或手機號碼轉移。</p></aside>
             <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-3">
               {BIBECK_REBATE_TIERS.map((tier) => (
                 <article key={tier.id} className={"min-w-0 bg-[#141414] p-6 " + (tier.isSpecial ? "ring-1 ring-inset ring-gold/45" : "")}>
@@ -220,13 +221,8 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       {isBybit ? (
         <section className="px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-5xl">
-            <SectionTitle label="Bybit 專屬 FAQ" title="舊帳戶、返傭綁定與身分轉移" copy="返傭資格與身分轉移皆受 Bybit 規則及帳戶狀態限制，不保證所有帳戶都適用。" />
-            <div className="mt-10"><FAQList items={bybitFaqs} /></div>
-            <div className="mt-7 border-l-2 border-gold/60 bg-[#101010] p-6 text-sm leading-7 text-secondary">
-              <p className="font-semibold text-white">重要提醒</p>
-              <p className="mt-2">接收身分驗證的目標帳戶必須保持未認證狀態。身分轉移只轉移身分驗證資訊，不會轉移推薦碼、代理關係、資產、電子郵件或手機號碼。轉移前後亦可能存在提現、法幣服務及帳戶狀態限制。</p>
-              <ExternalLink href="https://www.bybit.com/zh-TW/help-center/article/How-to-Transfer-Your-Identity-to-Another-Account" variant="ghost" className="mt-4 !min-h-0 !justify-start !px-0 !tracking-normal">Bybit 身分轉移說明</ExternalLink>
-            </div>
+            <p className="eyebrow">常見問題</p><h2 className="mt-4 text-2xl font-semibold text-white">Bybit 返傭帳戶與使用說明</h2><p className="mt-3 text-sm leading-7 text-secondary">BiBeck 可協助確認返傭申請、UID、帳戶綁定與流程資訊；KYC、身分轉移、資產與帳戶安全限制由 Bybit 依官方規則處理。</p>
+            <div className="mt-8"><FAQList items={bybitFaqs} /></div>
           </div>
         </section>
       ) : null}
