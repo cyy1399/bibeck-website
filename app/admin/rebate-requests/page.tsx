@@ -4,6 +4,7 @@ import { CopyButton } from "@/components/AdminCaseActions";
 import { rebateActivationStatuses, rebateStatusLabels, type RebateActivationStatus } from "@/config/rebate-activation";
 import { requireAdmin } from "@/lib/admin-auth";
 import { listActivationCases } from "@/lib/rebate-case-store";
+import { formatBibeckRebateRate } from "@/lib/bibeck-rebate";
 
 export const metadata: Metadata = { title: "Bybit 返傭開通申請｜BiBeck Operations", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -26,7 +27,7 @@ export default async function AdminRequestsPage({ searchParams }: { searchParams
       <td className="px-4 py-4">{item.displayName}</td>
       <td className="px-4 font-mono">{item.uid}<span className="ml-2"><CopyButton value={item.uid} label=" UID" /></span></td>
       <td className="px-4">{item.contactEmail}<span className="ml-2"><CopyButton value={item.contactEmail} label=" Email" /></span></td>
-      <td className="px-4">{item.createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false })}</td><td className="px-4">20%</td><td className="px-4">{rebateStatusLabels[item.status as RebateActivationStatus]}{item.notificationStatus === "FAILED" ? <span className="ml-2 text-red-300">通知失敗</span> : null}</td><td className="px-4"><Link href={`/admin/rebate-requests/${item.id}`} className="text-gold">查看完整案件</Link></td>
+      <td className="px-4">{item.createdAt.toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false })}</td><td className="px-4">{formatBibeckRebateRate()}</td><td className="px-4">{rebateStatusLabels[item.status as RebateActivationStatus]}{item.notificationStatus === "FAILED" ? <span className="ml-2 text-red-300">通知失敗</span> : null}</td><td className="px-4"><Link href={`/admin/rebate-requests/${item.id}`} className="text-gold">查看完整案件</Link></td>
     </tr>)}</tbody></table></div>
     <div className="mt-6 flex justify-end gap-3">{page > 1 ? <Link className="button-secondary" href={pageHref(page - 1)}>上一頁</Link> : null}{cases.length === 50 ? <Link className="button-secondary" href={pageHref(page + 1)}>下一頁</Link> : null}</div>
   </div></main>;

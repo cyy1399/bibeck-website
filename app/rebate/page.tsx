@@ -1,30 +1,32 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ExternalLink } from "@/components/ExternalLink";
 import { PageHero, SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
-import { BIBECK_REBATE_TIERS } from "@/config/bibeck-rebate-tiers";
-import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
+import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL, SUPPORT_EMAIL } from "@/config/links";
 import { createPageMetadata } from "@/config/seo";
-import { rebateReviewPolicy } from "@/config/rebate-review-policy";
+import { BIBECK_REBATE_ELIGIBILITY_NOTICE } from "@/lib/bibeck-rebate";
+import { BIBECK_TRADER_STATUSES } from "@/lib/bibeck-trader-status";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Bybit 返傭級距與申請流程",
-  description: "了解 BiBeck 20%～40% 公開返傭級距、40% 以上特殊合作方案、交易量門檻、返傭申請與帳戶使用方式。",
-  path: "/rebate",
-});
+export const metadata: Metadata = createPageMetadata({ title: "Bybit 40% 返傭與交易成本優惠", description: "了解 BiBeck Bybit 標準 40% 交易手續費返傭、VIP 費率、Trader Status、返傭帳戶申請方式與實際交易成本計算。", path: "/rebate" });
 
-const steps = [["01","前往返傭申請頁","從統一入口開始申請。"],["02","建立返傭帳戶","使用頁面中的 BiBeck 指定連結註冊新的 Bybit 返傭帳戶。"],["03","依規定處理 KYC","依帳戶功能與 Bybit 規定，可能需要完成或轉移 KYC 身分驗證。"],["04","提交返傭資料","提交名稱、Bybit UID、返傭後台登入 Email 與申請級距。"],["05","帳戶與資料核對","BiBeck 核對帳戶推薦關係與申請資料。"],["06","完成返傭設定","完成後寄送通知與登入資訊。"],["07","使用返傭帳戶交易","返傭依成功開通帳戶產生的有效手續費計算。"]] as const;
+const steps = [
+  ["01", "建立 BiBeck 返傭帳戶", "透過 BiBeck 指定申請入口完成帳戶建立。"],
+  ["02", "完成返傭開通", "提交 UID、Email 與必要資料，完成帳戶核對及返傭設定。"],
+  ["03", "使用返傭帳戶交易", "使用成功開通並綁定於 BiBeck 推薦關係下的帳戶進行符合條件的交易，即可依適用規則取得返傭。"],
+] as const;
 
 export default function RebatePage() {
   return <SiteShell>
-    <PageHero eyebrow="返傭說明" title="公開返傭級距 20%～40%" copy="公開級距依最近 30 日有效交易量推估；代理、社群、團隊或其他合作需求，可另外申請 40% 以上特殊合作方案。實際比例以資料核對與通知結果為準。" actions={<><ExternalLink href={REBATE_APPLICATION_URL} sponsored>取得 Bybit 返傭帳號</ExternalLink><ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary">登入 Bybit 返傭後台</ExternalLink></>} />
+    <PageHero eyebrow="Bybit 返傭" title="40% Bybit 交易手續費返傭" copy="使用成功開通並綁定於 BiBeck 推薦關係下的符合資格 Bybit 返傭帳戶進行交易，可依實際符合返傭條件的交易手續費取得 BiBeck 40% 標準返傭。" actions={<><ExternalLink href={REBATE_APPLICATION_URL} sponsored>取得 Bybit 返傭帳號</ExternalLink><ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary">登入 Bybit 返傭後台</ExternalLink></>} />
     <section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl">
-      <SectionTitle label="公開級距" title="依最近 30 日有效交易量申請 20%～40%" copy="公開級距依申請與資料核對結果生效；特殊合作 40% 以上不會因交易量自動取得，須個別評估與協商。"/>
-      <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-3">{BIBECK_REBATE_TIERS.map((tier) => <article key={tier.id} className={`min-w-0 bg-[#121212] p-6 ${tier.isSpecial ? "border border-gold/45" : ""}`}><h2 className="text-lg font-semibold text-white">{tier.name}</h2><p className="mt-4 font-mono text-xl text-gold">{tier.shortLabel}</p><p className="mt-4 text-sm leading-6 text-white/72">{tier.volumeLabel}</p><p className="mt-3 text-xs leading-6 text-white/44">{tier.description}</p>{tier.isSpecial ? <ExternalLink href={REBATE_APPLICATION_URL} sponsored variant="secondary" className="mt-5 w-full">申請特殊合作方案</ExternalLink> : null}</article>)}</div>
-      <p className="mt-5 text-xs leading-6 text-white/44">M 代表百萬，B 代表十億；例如 10M＝10,000,000、1B＝1,000,000,000 USDT。VIP 等級只作費率參考，不是 BiBeck 級距的絕對取得條件。</p>
+      <div className="grid gap-8 border border-gold/35 bg-[#14130e] p-7 lg:grid-cols-[16rem_1fr] lg:items-center"><p className="font-mono text-7xl font-semibold text-gold">40%</p><div><h2 className="text-2xl font-semibold">BiBeck 標準返傭</h2><p className="mt-4 text-sm leading-7 text-secondary">{BIBECK_REBATE_ELIGIBILITY_NOTICE}</p><p className="mt-3 text-xs leading-6 text-white/44">返傭以 VIP 後實際適用的符合條件交易手續費為試算基礎，不是以原始費率計算，也不代表所有帳戶、商品、地區或交易一定適用。</p></div></div>
+      <div className="mt-8 grid gap-4 sm:grid-cols-3"><div className="border border-white/10 p-5"><p className="text-xs text-white/44">示意</p><p className="mt-3">VIP 後手續費</p><strong className="mt-2 block font-mono text-xl">1,000 USDT</strong></div><div className="border border-white/10 p-5"><p className="text-xs text-white/44">40% 返傭</p><strong className="mt-8 block font-mono text-xl text-gold">400 USDT</strong></div><div className="border border-gold/35 p-5"><p className="text-xs text-white/44">返傭後成本</p><strong className="mt-8 block font-mono text-xl">600 USDT</strong></div></div>
+      <Link href="/calculator" className="button-secondary mt-7">免費計算交易成本</Link>
     </div></section>
-    <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="申請方式" title="一次完成註冊與返傭資料提交"/><ol className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">{steps.map(([n,title,copy]) => <li key={n} className="bg-[#111] p-6"><span className="font-mono text-gold">{n}</span><h3 className="mt-4 font-semibold text-white">{title}</h3><p className="mt-3 text-sm leading-7 text-secondary">{copy}</p></li>)}</ol><div className="mt-8 border-l-2 border-gold bg-black/20 p-6 text-sm leading-7 text-secondary"><h3 className="font-semibold text-white">請使用 BiBeck 返傭帳戶進行交易</h3><p className="mt-3">只有透過 BiBeck 指定申請流程註冊，並成功綁定於 BiBeck 推薦關係下的 Bybit 返傭帳戶，使用該帳戶交易時才能獲得 BiBeck 返傭。</p><p className="mt-2">原有 Bybit 帳戶若未綁定於 BiBeck，即使已有交易量、VIP 等級或完成 KYC，也無法直接套用 BiBeck 返傭。返傭依成功開通的 BiBeck 返傭帳戶所產生的有效手續費計算。</p></div><div className="mt-8 grid gap-3 border border-white/10 bg-[#111] p-6 text-sm leading-7 text-secondary"><h3 className="font-semibold text-white">級距審查規則</h3><p>使用者可主動提交級距申請；若未主動申請，BiBeck 於{rebateReviewPolicy.reviewSchedule}統一檢視最近 30 日有效交易量。</p><p>{rebateReviewPolicy.firstShortfall}；{rebateReviewPolicy.secondShortfall}。{rebateReviewPolicy.special}。</p><p>{rebateReviewPolicy.effectiveTiming}，實際結果以通知為準。</p></div></div></section>
-    <section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><TrustNotice/></div></section>
+    <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="Trader Status" title="40% 不因交易量改變，身分里程碑反映交易活動。" copy="Member、Pro 與 Black 的標準返傭皆為 40%。高交易量交易者可能取得活動、獎勵或合作資格評估，實際內容依當期條件與 BiBeck 確認結果為準。"/><div className="mt-10 grid gap-px bg-white/10 md:grid-cols-2 xl:grid-cols-4">{BIBECK_TRADER_STATUSES.map((status)=><article key={status.id} className={`bg-[#121212] p-6 ${status.id==="black"?"border border-gold/45":""}`}><h2 className="text-xl font-semibold">{status.name}</h2><p className="mt-4 font-mono text-gold">{status.rebateRate === null ? "個別協商" : "40% 標準返傭"}</p><p className="mt-4 text-xs leading-6 text-white/52">{status.minVolume === 50_000_000 ? "50M+ 30 日交易量里程碑" : status.minVolume === 200_000_000 ? "200M+ 30 日交易量里程碑" : status.isPartner ? "不依單純交易量自動取得" : "最近 30 日有效交易量未滿 50M"}</p><p className="mt-3 text-sm leading-7 text-secondary">{status.description}</p><ul className="mt-4 grid gap-2 text-xs leading-5 text-white/48">{status.benefits.map((benefit)=><li key={benefit}>— {benefit}</li>)}</ul></article>)}</div></div></section>
+    <section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="申請方式" title="三步完成返傭申請與開通"/><ol className="mt-10 grid gap-px bg-white/10 md:grid-cols-3">{steps.map(([n,title,copy])=><li key={n} className="bg-[#111] p-6"><span className="font-mono text-gold">{n}</span><h3 className="mt-4 font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-secondary">{copy}</p></li>)}</ol><div className="mt-8 border-l-2 border-gold bg-black/20 p-6 text-sm leading-7 text-secondary"><h3 className="font-semibold text-white">只有 BiBeck 綁定帳戶才會產生返傭</h3><p className="mt-3">只有使用成功開通並綁定於 BiBeck 推薦關係下的 Bybit 返傭帳戶進行符合條件的交易，才會產生 BiBeck 返傭；其他未綁定於 BiBeck 的 Bybit 帳戶不適用。</p><p className="mt-2">依帳戶功能及 Bybit 規定，部分使用者可能需要完成 KYC 或依 Bybit 官方流程處理身分轉移。KYC、資產、提領及帳戶限制由 Bybit 官方處理。</p></div><div className="mt-8 flex flex-col gap-3 sm:flex-row"><ExternalLink href={REBATE_APPLICATION_URL} sponsored>取得 Bybit 返傭帳號</ExternalLink><a className="button-secondary" href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("BiBeck Partner 合作洽談")}`}>洽談合作</a></div></div></section>
+    <section className="px-5 pb-20 sm:px-8"><div className="mx-auto max-w-7xl"><TrustNotice/></div></section>
   </SiteShell>;
 }
