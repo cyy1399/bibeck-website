@@ -10,8 +10,8 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "交易成本計算器｜VIP 費率與返傭試算",
-  description: "輸入最近 30 日交易量，比較 Bybit VIP 費率、BiBeck 返傭、返傭後實際成本與年度節省。",
+  title: "交易成本計算器｜Bybit VIP 與 40% 返傭試算",
+  description: "輸入最近 30 日交易量，比較一般費率、Bybit VIP 與 BiBeck 40% 返傭後的 30 日及年度交易成本。",
   path: "/calculator",
 });
 

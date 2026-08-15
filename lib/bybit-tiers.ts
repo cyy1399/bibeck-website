@@ -1,5 +1,4 @@
 import { BYBIT_VIP_TIERS, type BybitVipTier } from "../config/bybit-vip-tiers.ts";
-import { getBiBeckRebateTier, type BiBeckRebateTier } from "../config/bibeck-rebate-tiers.ts";
 
 function safeVolume(volume: number): number {
   return Number.isFinite(volume) && volume > 0 ? volume : 0;
@@ -8,10 +7,6 @@ function safeVolume(volume: number): number {
 export function estimateBybitVipTier(volume: number): BybitVipTier {
   const value = safeVolume(volume);
   return [...BYBIT_VIP_TIERS].reverse().find((tier) => value >= tier.minThirtyDayVolume) ?? BYBIT_VIP_TIERS[0];
-}
-
-export function recommendBiBeckTier(volume: number): BiBeckRebateTier {
-  return getBiBeckRebateTier(volume);
 }
 
 export function resolveBybitVipTier(mode: "auto" | "manual", volume: number, manualTierId: string): BybitVipTier {

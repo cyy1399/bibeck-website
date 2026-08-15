@@ -10,8 +10,8 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Bybit 返傭帳戶與級距常見問題",
-  description: "了解 BiBeck Bybit 返傭帳戶、推薦關係、KYC 身分轉移、公開級距與級距調整規則。",
+  title: "Bybit 40% 返傭、Trader Status 與帳戶常見問題",
+  description: "了解 BiBeck 40% 標準返傭、Trader Status、返傭帳戶、推薦關係、KYC 與安全界線。",
   path: "/faq",
 });
 
@@ -33,8 +33,8 @@ export default function FAQPage() {
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow">常見問題</p>
-          <h2 className="mt-4 text-3xl font-semibold text-white">Bybit 返傭帳戶與使用說明</h2>
-          <div className="mt-8"><FAQList items={generalFaqs} /></div>
+          <h2 className="mt-4 text-3xl font-semibold text-white">返傭、Trader Status 與帳戶說明</h2>
+          <div className="mt-8"><FAQList items={generalFaqs} grouped /></div>
         </div>
       </section>
       <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">

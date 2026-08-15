@@ -1,1 +1,3 @@
-export const BIBECK_BYBIT_REBATE_RATE: number | null = null;
+import { BIBECK_STANDARD_REBATE_RATE } from "@/lib/bibeck-rebate";
+
+export const BIBECK_BYBIT_REBATE_RATE = BIBECK_STANDARD_REBATE_RATE;
