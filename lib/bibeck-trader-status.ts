@@ -1,4 +1,4 @@
-import { BIBECK_STANDARD_REBATE_RATE } from "./bibeck-rebate.ts";
+import { BIBECK_STANDARD_REBATE_RATE, formatBibeckRebateRate } from "./bibeck-rebate.ts";
 
 export type TraderStatusId = "member" | "pro" | "black" | "partner";
 
@@ -16,7 +16,7 @@ export interface TraderStatus {
 }
 
 export const BIBECK_TRADER_STATUSES = [
-  { id: "member", name: "Member", minVolume: 0, maxVolume: 50_000_000, rebateRate: BIBECK_STANDARD_REBATE_RATE, description: "一般 BiBeck 返傭帳戶。", benefits: ["BiBeck 40% 標準返傭"], isPartner: false, requiresConfirmation: false, order: 1 },
+  { id: "member", name: "Member", minVolume: 0, maxVolume: 50_000_000, rebateRate: BIBECK_STANDARD_REBATE_RATE, description: "一般 BiBeck 返傭帳戶。", benefits: [`BiBeck ${formatBibeckRebateRate()} 標準返傭`], isPartner: false, requiresConfirmation: false, order: 1 },
   { id: "pro", name: "Pro", minVolume: 50_000_000, maxVolume: 200_000_000, rebateRate: BIBECK_STANDARD_REBATE_RATE, description: "高交易量交易者。", benefits: ["高交易量活動資格評估", "額外獎勵資格評估", "較高優先級客服"], isPartner: false, requiresConfirmation: true, order: 2 },
   { id: "black", name: "Black", minVolume: 200_000_000, maxVolume: null, rebateRate: BIBECK_STANDARD_REBATE_RATE, description: "BiBeck 核心高價值交易者。", benefits: ["高交易量活動優先評估", "額外交易量獎勵優先評估", "專屬合作方案評估", "優先客服"], isPartner: false, requiresConfirmation: true, order: 3 },
   { id: "partner", name: "Partner", minVolume: null, maxVolume: null, rebateRate: null, description: "適合社群、代理、團隊、KOL、Bot、量化與交易工具合作夥伴。", benefits: ["個別合作方案評估"], isPartner: true, requiresConfirmation: true, order: 4 },

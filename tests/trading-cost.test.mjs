@@ -3,7 +3,7 @@ import test from "node:test";
 import { calculateCostComparisonBars, calculateTradingCost, calculateTradingCostComparison, calculateTierProgress, compareAnnualCosts } from "../lib/trading-cost.ts";
 import { estimateBybitVipTier, negotiatedRebateRate, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
-import { BIBECK_STANDARD_REBATE_RATE, getStandardBibeckRebateRate } from "../lib/bibeck-rebate.ts";
+import { BIBECK_STANDARD_REBATE_RATE, calculateRebateFromEligibleFee, getStandardBibeckRebateRate } from "../lib/bibeck-rebate.ts";
 import { BIBECK_TRADER_STATUSES, getEstimatedTraderStatus, getTraderStatusProgress } from "../lib/bibeck-trader-status.ts";
 import { formatVolume } from "../lib/volume.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
@@ -66,17 +66,17 @@ test("手動 VIP 不會因交易量變更而被覆蓋", () => {
   assert.equal(resolveBybitVipTier("manual", 900_000_000, "vip-3").id, "vip-3");
 });
 
-test("任何交易量的 BiBeck 標準返傭都固定為 40%", () => {
-  assert.equal(BIBECK_STANDARD_REBATE_RATE, 0.4);
+test("任何交易量的 BiBeck 標準返傭都固定為 35%", () => {
+  assert.equal(BIBECK_STANDARD_REBATE_RATE, 0.35);
   for (const volume of [0, 1, 1_000_000, 10_000_000, 50_000_000, 100_000_000, 200_000_000, 500_000_000, 1_000_000_000]) {
-    assert.equal(getStandardBibeckRebateRate(volume), 0.4);
+    assert.equal(getStandardBibeckRebateRate(volume), 0.35);
   }
 });
 
-test("Trader Status 邊界與 40% 標準返傭完全分離", () => {
+test("Trader Status 邊界與 35% 標準返傭完全分離", () => {
   const cases = [[0,"member"],[49_999_999.99,"member"],[50_000_000,"pro"],[199_999_999.99,"pro"],[200_000_000,"black"],[500_000_000,"black"],[1_000_000_000,"black"]];
   for (const [volume,id] of cases) assert.equal(getEstimatedTraderStatus(volume).id,id);
-  assert.deepEqual(BIBECK_TRADER_STATUSES.slice(0,3).map((status)=>status.rebateRate),[0.4,0.4,0.4]);
+  assert.deepEqual(BIBECK_TRADER_STATUSES.slice(0,3).map((status)=>status.rebateRate),[0.35,0.35,0.35]);
   assert.equal(BIBECK_TRADER_STATUSES.at(-1).id,"partner");
   assert.equal(BIBECK_TRADER_STATUSES.at(-1).rebateRate,null);
 });
@@ -141,9 +141,15 @@ test("零交易量的水平成本比較條不產生 NaN 或 Infinity", () => {
   assert.ok(bars.every((bar) => bar.widthPercent === 0 && bar.reductionPercent === 0 && Number.isFinite(bar.cost)));
 });
 
-test("40% 返傭以 VIP 後費用為基礎", () => {
-  const result=calculateTradingCostComparison({thirtyDayVolume:1_000_000,baselineFeeRate:.001,vipFeeRate:.0005,rebateRate:.4});
-  assert.equal(result.vipFee,500); assert.equal(result.rebateAmount,200); assert.equal(result.netTradingCost,300);
+test("35% 返傭以 VIP 後費用為基礎", () => {
+  const result=calculateTradingCostComparison({thirtyDayVolume:1_000_000,baselineFeeRate:.001,vipFeeRate:.0005,rebateRate:BIBECK_STANDARD_REBATE_RATE});
+  assert.equal(result.baselineFee,1000); assert.equal(result.vipFee,500); assert.equal(result.rebateAmount,175); assert.equal(result.netTradingCost,325);
+});
+
+test("符合資格手續費共用 35% 返傭函數", () => {
+  assert.equal(calculateRebateFromEligibleFee(1_000),350);
+  assert.equal(calculateRebateFromEligibleFee(10_000),3_500);
+  assert.equal(calculateRebateFromEligibleFee(0),0);
 });
 
 test("交易所選單狀態只由點擊切換並可統一關閉", () => {

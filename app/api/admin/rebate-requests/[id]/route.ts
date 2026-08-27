@@ -26,6 +26,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const code = error instanceof Error ? error.message : "UPDATE_FAILED"; const messages: Record<string, string> = { CASE_NOT_FOUND: "找不到案件。", ALREADY_COMPLETED: "案件已完成，不可重複完成。", INVALID_STATUS_TRANSITION: "不允許此狀態轉換。", COMPLETION_CONFIRMATION_REQUIRED: "請先確認已在外部返傭後台完成 40% 設定。", PUBLIC_MESSAGE_REQUIRED: "補件時必須填寫使用者公開說明。", NO_COMPLETION_NOTIFICATION: "只有已完成案件可以重送完成通知。", EMAIL_FAILED: "通知仍寄送失敗，案件完成紀錄不受影響。" }; return NextResponse.json({ error: messages[code] || "案件更新失敗" }, { status: 400 });
+    const code = error instanceof Error ? error.message : "UPDATE_FAILED"; const messages: Record<string, string> = { CASE_NOT_FOUND: "找不到案件。", ALREADY_COMPLETED: "案件已完成，不可重複完成。", INVALID_STATUS_TRANSITION: "不允許此狀態轉換。", COMPLETION_CONFIRMATION_REQUIRED: "請先確認已在外部返傭後台完成 35% 設定。", PUBLIC_MESSAGE_REQUIRED: "補件時必須填寫使用者公開說明。", NO_COMPLETION_NOTIFICATION: "只有已完成案件可以重送完成通知。", EMAIL_FAILED: "通知仍寄送失敗，案件完成紀錄不受影響。" }; return NextResponse.json({ error: messages[code] || "案件更新失敗" }, { status: 400 });
   }
 }
