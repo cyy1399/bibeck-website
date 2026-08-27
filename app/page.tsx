@@ -7,7 +7,7 @@ import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { createPageMetadata, siteDescription, siteTitle } from "@/config/seo";
-import { REBATE_APPLICATION_URL } from "@/config/links";
+import { HIGH_VOLUME_MAILTO, REBATE_APPLICATION_URL } from "@/config/links";
 import { TranslatedText } from "@/components/TranslatedText";
 import { calculateRebateFromEligibleFee, formatBibeckRebateRate } from "@/lib/bibeck-rebate";
 
@@ -19,7 +19,7 @@ const helpItems = [
   ["03", "追蹤節省金額", "使用計算工具估算節省金額，並從返傭後台查看可用紀錄。"],
 ];
 
-const audiences = [["高頻合約交易者","頻繁進出場，交易手續費容易累積。"],["Bot / 量化交易者","策略 Edge 可能受到交易費與滑價影響。"],["高交易量交易者","即使費率很低，絕對交易成本仍可能非常高。"],["社群／交易團隊","有大量交易者，可洽談 Partner 合作。"]] as const;
+const audiences = [["高頻合約交易者","頻繁進出場，交易手續費容易累積。"],["Bot / 量化交易者","策略優勢可能受到交易費與滑價影響。"],["高交易量交易者","即使費率很低，絕對交易成本仍可能非常高。"],["社群／交易團隊","有大量交易者，可洽談合作夥伴方案。"]] as const;
 const rebateExamples = [100, 1_000, 10_000].map((fee) => ({ fee, rebate: calculateRebateFromEligibleFee(fee) }));
 const optimizationSteps = [["Calculate", "計算交易成本"], ["Compare", "比較 VIP、Maker / Taker 與成本結構"], ["Reduce", "透過返傭降低有效交易成本"], ["Optimize", "持續最佳化交易成本"]] as const;
 const formatUsdt = (value: number) => `${value.toLocaleString("en-US")} USDT`;
@@ -60,7 +60,7 @@ export default function Home() {
 
       <section className="px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="適合哪些交易者" title="交易越頻繁，越需要看清真實成本。"/><div className="mt-12 grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-4">{audiences.map(([title,copy])=><article key={title} className="bg-[#111] p-6"><h3 className="font-semibold">{title}</h3><p className="mt-4 text-sm leading-7 text-secondary">{copy}</p></article>)}</div><Link href="/calculator" className="button-secondary mt-8">計算我的交易成本</Link></div></section>
 
-      <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="High Volume & Partner" title="交易規模與合作需求不同，下一步也不同。" copy="BiBeck Standard 35% 是正式標準產品；高交易量與商務合作則依真實交易結構及合作需求個別評估。"/><div className="mt-10 grid gap-6 lg:grid-cols-2"><article className="border border-gold/40 bg-gold/[0.04] p-6 sm:p-8"><p className="eyebrow">高交易量 / 專業交易</p><h3 className="mt-4 text-2xl font-semibold">交易量越高，越值得重新檢視你的交易成本。</h3><p className="mt-4 text-sm leading-7 text-secondary">若你有較高交易量、Quant、Bot、做市或其他專業交易需求，可申請高交易量合作條件評估。實際條件由 BiBeck 個別確認。</p><Link href="/partners#high-volume" className="button-secondary mt-6">洽談高交易量方案</Link></article><article className="border border-white/12 bg-[#111] p-6 sm:p-8"><p className="eyebrow">Business Partnership</p><h3 className="mt-4 text-2xl font-semibold">有交易者受眾、社群或產品？</h3><p className="mt-4 text-sm leading-7 text-secondary">KOL、Creator、交易社群、量化團隊與交易工具可洽談追蹤、內容、Campaign、Landing Page 與其他客製合作。</p><Link href="/partners" className="button-secondary mt-6">查看合作方案</Link></article></div></div></section>
+      <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="高交易量與商務合作" title="交易規模與合作需求不同，下一步也不同。" copy="BiBeck 35% 標準返傭是正式標準產品；高交易量與商務合作則依真實交易結構及合作需求個別評估。"/><div className="mt-10 grid gap-6 lg:grid-cols-2"><article className="border border-gold/40 bg-gold/[0.04] p-6 sm:p-8"><p className="eyebrow">高交易量 / 專業交易</p><h3 className="mt-4 text-2xl font-semibold">交易量越高，越值得重新檢視你的交易成本。</h3><p className="mt-4 text-sm leading-7 text-secondary">若你有較高交易量、Quant、Bot、做市或其他專業交易需求，可申請高交易量合作條件評估。實際條件由 BiBeck 個別確認。</p><a href={HIGH_VOLUME_MAILTO} className="cta-button button-secondary mt-6">洽談高交易量方案</a></article><article className="border border-white/12 bg-[#111] p-6 sm:p-8"><p className="eyebrow">商務合作</p><h3 className="mt-4 text-2xl font-semibold">有交易者受眾、社群或產品？</h3><p className="mt-4 text-sm leading-7 text-secondary">KOL、內容創作者、交易社群、量化團隊與交易工具可洽談追蹤、聯名內容、活動及專屬合作頁面等客製合作。</p><Link href="/partners" className="button-secondary mt-6">查看合作方案</Link></article></div></div></section>
 
       <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="Trading Cost Optimization" title="降低每一筆交易成本。" copy="BiBeck 不只顯示一個返傭比例，而是把 Fee、VIP、Rebate 與有效交易成本整理成可以比較的數字。"/><ol className="mt-10 grid gap-px bg-white/10 md:grid-cols-4">{optimizationSteps.map(([english,chinese],index)=><li key={english} className="bg-[#111] p-6"><span className="font-mono text-xs text-gold">0{index+1}</span><h3 className="mt-4 text-xl font-semibold">{english}</h3><p className="mt-3 text-sm leading-7 text-secondary">{chinese}</p></li>)}</ol></div></section>
 
