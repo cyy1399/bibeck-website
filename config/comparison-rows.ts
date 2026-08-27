@@ -1,7 +1,6 @@
 export const COMPARISON_ROWS = [
   { key: "plan", label: "方案" },
   { key: "vipTier", label: "VIP 等級" },
-  { key: "bibeckTier", label: "推估 Trader Status" },
   { key: "feeRate", label: "手續費率" },
   { key: "vipSavings", label: "VIP 節省" },
   { key: "rebateRate", label: "BiBeck 返傭比例" },

@@ -3,6 +3,7 @@ export const REBATE_LOGIN = "https://bybackoffice.com/user-login";
 export const REBATE_APPLICATION_URL = process.env.NEXT_PUBLIC_BIBECK_REBATE_APPLICATION_URL ?? "https://docs.google.com/forms/d/e/1FAIpQLScPAwgBuIVlaJ_0dM5JXF1_QhEgCwygM9PBZRFItiQF6AQ74Q/viewform?usp=dialog";
 export const REBATE_BACKOFFICE_URL = process.env.NEXT_PUBLIC_REBATE_BACKOFFICE_URL ?? REBATE_LOGIN;
 export const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? brandConfig.publicEmails.support;
+export const BUSINESS_EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL ?? brandConfig.internalEmails.business;
 export const BYBIT_KYC_TRANSFER = "https://www.bybit.com/zh-TW/help-center/article/How-to-Transfer-Your-Identity-to-Another-Account";
 export const BYBIT_ACCOUNT_SUPPORT = "https://www.bybit.com/zh-TW/help-center/";
 export const BYBIT_FEE_STRUCTURE = "https://www.bybit.com/zh-TW/help-center/article/Trading-Fee-Structure";

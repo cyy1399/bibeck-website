@@ -18,6 +18,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     { href: localizePath("/", locale), label: t("nav.home") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
     { href: localizePath("/rebate", locale), label: t("nav.rebate") },
+    { href: localizePath("/partners", locale), label: "合作夥伴" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: localizePath("/contact", locale), label: t("nav.contact") },
   ];
@@ -25,6 +26,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     { href: localizePath("/platforms", locale), label: t("nav.exchanges") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
     { href: localizePath("/rebate", locale), label: t("nav.rebate") },
+    { href: localizePath("/partners", locale), label: "合作夥伴" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: "/privacy", label: "隱私權政策" },
     { href: "/terms", label: "使用條款" },
@@ -46,6 +48,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <DesktopExchangeMenu />
             <Link href={localizePath("/calculator", locale)} className="nav-link">{t("nav.calculator")}</Link>
             <Link href={localizePath("/rebate", locale)} className="nav-link">{t("nav.rebate")}</Link>
+            <Link href={localizePath("/partners", locale)} className="nav-link">合作夥伴</Link>
             <Link href={localizePath("/faq", locale)} className="nav-link">{t("nav.faq")}</Link>
             <SettingsMenu />
           </nav>
