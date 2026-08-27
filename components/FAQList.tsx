@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BYBIT_ACCOUNT_SUPPORT, BYBIT_KYC_TRANSFER, REBATE_APPLICATION_URL, SUPPORT_EMAIL } from "@/config/links";
+import { BYBIT_ACCOUNT_SUPPORT, BYBIT_KYC_TRANSFER, HIGH_VOLUME_MAILTO, REBATE_APPLICATION_URL, SUPPORT_EMAIL } from "@/config/links";
 
 type FAQLink = { href: string; label: string; external?: boolean; sponsored?: boolean };
 export type FAQItem = { question: string; answer: string; links?: FAQLink[]; category?: string };
@@ -18,10 +18,10 @@ export const generalFaqs: FAQItem[] = [
   { category:"帳戶與申請", question:"只完成 Bybit 註冊就會自動取得返傭嗎？", answer:"不會。完成註冊不代表返傭已生效；仍需提交必要資料、完成帳戶與推薦關係核對，並收到返傭開通完成通知。" },
   { category:"帳戶與申請", question:"返傭多久生效？", answer:"實際生效時間取決於資料完整度、帳戶核對與外部返傭設定。完成設定前請勿假設返傭已生效；最終以完成通知及返傭後台紀錄為準。" },
   { category:"帳戶與申請", question:"Email 有什麼用途？", answer:"Email 用於返傭申請聯絡、開通與狀態通知，以及返傭後台相關說明。請勿透過 Email 提供密碼、驗證碼、API Secret、私鑰或助記詞。" },
-  { category:"高交易量與合作", question:"交易量越高，返傭比例會自動提高嗎？", answer:"不會。BiBeck 一般符合資格帳戶採標準 35% 返傭。若你有較高交易量或專業交易需求，可另外申請高交易量合作條件評估，實際合作條件由 BiBeck 個別確認。", links:[{href:"/partners#high-volume",label:"洽談高交易量方案"}] },
+  { category:"高交易量與合作", question:"交易量越高，返傭比例會自動提高嗎？", answer:"不會。BiBeck 一般符合資格帳戶採標準 35% 返傭。若你有較高交易量或專業交易需求，可另外申請高交易量合作條件評估，實際合作條件由 BiBeck 個別確認。", links:[{href:HIGH_VOLUME_MAILTO,label:"洽談高交易量方案"}] },
   { category:"高交易量與合作", question:"什麼情況適合洽談高交易量方案？", answer:"如果你有較高的 30 日交易量，或使用量化、Bot、做市等高頻或專業交易方式，可以聯繫 BiBeck 進一步評估 VIP、Maker / Taker、有效費率與整體交易成本。", links:[{href:"/partners#high-volume",label:"查看高交易量合作說明"}] },
   { category:"高交易量與合作", question:"高交易量方案一定會有高於 35% 的返傭嗎？", answer:"不一定。35% 是 BiBeck 一般符合資格帳戶的標準返傭。高交易量方案屬於個別合作評估，實際條件依交易量、交易結構與合作需求確認。" },
-  { category:"高交易量與合作", question:"Partner 是交易者等級嗎？", answer:"不是。Partner 是 BiBeck 與 KOL、Creator、交易社群、量化團隊、Bot、TradingView Creator 或交易工具等建立的商務合作關係，與一般交易者的返傭資格分開。", links:[{href:"/partners",label:"查看合作方案"}] },
+  { category:"高交易量與合作", question:"合作夥伴方案適合哪些對象？", answer:"BiBeck 可與 KOL、內容創作者、交易社群、量化團隊、交易 Bot、TradingView 創作者或交易工具服務商，依實際導入、交易活動與合作模式評估商務合作方案。", links:[{href:"/partners",label:"查看合作方案"}] },
   { category:"Existing Account / KYC", question:"我已經有 Bybit 帳戶怎麼辦？", answer:"既有帳戶通常不能直接新增或更換為 BiBeck 推薦關係。請先查閱 Bybit 最新帳戶規則，再由 BiBeck 指定流程建立符合條件的返傭帳戶。", links:[{href:BYBIT_ACCOUNT_SUPPORT,label:"查看 Bybit 官方帳戶說明",external:true}] },
   { category:"Existing Account / KYC", question:"舊帳戶可以直接套用 BiBeck 嗎？", answer:"通常不可以。BiBeck 返傭只適用於成功建立 BiBeck 推薦關係並完成返傭開通的帳戶，實際推薦關係限制以 Bybit 最新官方規則為準。" },
   { category:"Existing Account / KYC", question:"新的 BiBeck 返傭帳戶需要 KYC 怎麼辦？", answer:"若身分已驗證於另一個 Bybit 帳戶，可依 Bybit 官方身分轉移規則確認資格。KYC 身分轉移不等於推薦關係、資產、Email 或手機號碼轉移。", links:[{href:BYBIT_KYC_TRANSFER,label:"查看 Bybit 官方 KYC 身分轉移說明",external:true}] },

@@ -1,9 +1,32 @@
+import { brandConfig } from "@/config/brand";
+
 export const BYBIT_REGISTER = "https://partner.bybit.com/b/t00000016";
 export const REBATE_LOGIN = "https://bybackoffice.com/user-login";
 export const REBATE_APPLICATION_URL = process.env.NEXT_PUBLIC_BIBECK_REBATE_APPLICATION_URL ?? "https://docs.google.com/forms/d/e/1FAIpQLScPAwgBuIVlaJ_0dM5JXF1_QhEgCwygM9PBZRFItiQF6AQ74Q/viewform?usp=dialog";
 export const REBATE_BACKOFFICE_URL = process.env.NEXT_PUBLIC_REBATE_BACKOFFICE_URL ?? REBATE_LOGIN;
 export const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? brandConfig.publicEmails.support;
 export const BUSINESS_EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL ?? brandConfig.internalEmails.business;
+const businessMailto = (subject: string, body: string) => `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+export const HIGH_VOLUME_MAILTO = businessMailto("BiBeck｜高交易量方案洽談", `您好，我想了解 BiBeck 高交易量方案。
+
+最近 30 日交易量：
+主要交易產品：
+目前 VIP 等級：
+Maker / Taker 使用情況：
+其他需求：`);
+export const BUSINESS_PARTNERSHIP_MAILTO = businessMailto("BiBeck｜商務合作洽談", `您好，我想了解 BiBeck 商務合作方案。
+
+合作類型：
+□ KOL / 內容創作者
+□ 交易社群
+□ 量化團隊
+□ 交易 Bot
+□ TradingView 創作者
+□ 交易工具／服務
+□ 其他
+
+簡單介紹：
+預計合作方式：`);
 export const BYBIT_KYC_TRANSFER = "https://www.bybit.com/zh-TW/help-center/article/How-to-Transfer-Your-Identity-to-Another-Account";
 export const BYBIT_ACCOUNT_SUPPORT = "https://www.bybit.com/zh-TW/help-center/";
 export const BYBIT_FEE_STRUCTURE = "https://www.bybit.com/zh-TW/help-center/article/Trading-Fee-Structure";
@@ -36,4 +59,3 @@ export function externalDestinationFor(href: string): { serviceName: string; dom
   const domain = new URL(href).hostname.toLowerCase();
   return { serviceName: externalServices[domain] ?? "外部服務", domain };
 }
-import { brandConfig } from "@/config/brand";
