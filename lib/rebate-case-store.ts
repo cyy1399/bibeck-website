@@ -89,6 +89,6 @@ export async function updateActivationCase(id: string, update: AdminUpdate) {
   });
 }
 
-// Trader Status and partner opportunities remain separate from the standard 35% activation.
+// High-volume and partner opportunities remain separate from the standard 35% activation.
 export async function saveHighVolumePreReview(caseNumber: string, data: Record<string, unknown>) { const [saved] = await getDb().insert(highVolumePreReviewCases).values({ caseNumber, exchange: "bybit", displayName: String(data.name ?? ""), contactEmail: String(data.email ?? ""), currentUid: String(data.currentUid ?? "") || null, applicationData: data }).returning(); return saved; }
 export async function recordHighVolumeNotificationError(id: string, message: string | null) { await getDb().update(highVolumePreReviewCases).set({ notificationError: message?.slice(0, 500) ?? null, updatedAt: new Date() }).where(eq(highVolumePreReviewCases.id, id)); }

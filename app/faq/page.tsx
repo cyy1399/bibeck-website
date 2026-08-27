@@ -10,8 +10,8 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "BiBeck 35% 返傭、Trader Status 與帳戶常見問題",
-  description: "了解 BiBeck 35% 標準返傭、Trader Status、返傭帳戶、推薦關係、KYC 與安全界線。",
+  title: "BiBeck 35% 返傭、高交易量與帳戶常見問題",
+  description: "了解 BiBeck 35% 標準返傭、高交易量合作評估、返傭帳戶、推薦關係、KYC 與安全界線。",
   path: "/faq",
 });
 
@@ -33,7 +33,7 @@ export default function FAQPage() {
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow">常見問題</p>
-          <h2 className="mt-4 text-3xl font-semibold text-white">返傭、Trader Status 與帳戶說明</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-white">返傭、高交易量合作與帳戶說明</h2>
           <div className="mt-8"><FAQList items={generalFaqs} grouped /></div>
         </div>
       </section>

@@ -4,7 +4,7 @@ import { calculateCostComparisonBars, calculateTradingCost, calculateTradingCost
 import { estimateBybitVipTier, negotiatedRebateRate, resolveBybitVipTier } from "../lib/bybit-tiers.ts";
 import { BYBIT_VIP_TIERS } from "../config/bybit-vip-tiers.ts";
 import { BIBECK_STANDARD_REBATE_RATE, calculateRebateFromEligibleFee, getStandardBibeckRebateRate } from "../lib/bibeck-rebate.ts";
-import { BIBECK_TRADER_STATUSES, getEstimatedTraderStatus, getTraderStatusProgress } from "../lib/bibeck-trader-status.ts";
+import { HIGH_VOLUME_LEAD_THRESHOLD_USDT, isHighVolumeLead } from "../lib/high-volume.ts";
 import { formatVolume } from "../lib/volume.ts";
 import { formatNumberInput, parseNumberInput } from "../lib/number-input.ts";
 import { navigationMenuReducer } from "../lib/navigation-menu.ts";
@@ -73,12 +73,11 @@ test("任何交易量的 BiBeck 標準返傭都固定為 35%", () => {
   }
 });
 
-test("Trader Status 邊界與 35% 標準返傭完全分離", () => {
-  const cases = [[0,"member"],[49_999_999.99,"member"],[50_000_000,"pro"],[199_999_999.99,"pro"],[200_000_000,"black"],[500_000_000,"black"],[1_000_000_000,"black"]];
-  for (const [volume,id] of cases) assert.equal(getEstimatedTraderStatus(volume).id,id);
-  assert.deepEqual(BIBECK_TRADER_STATUSES.slice(0,3).map((status)=>status.rebateRate),[0.35,0.35,0.35]);
-  assert.equal(BIBECK_TRADER_STATUSES.at(-1).id,"partner");
-  assert.equal(BIBECK_TRADER_STATUSES.at(-1).rebateRate,null);
+test("高交易量商務引導從 50M 開始且不建立等級", () => {
+  assert.equal(HIGH_VOLUME_LEAD_THRESHOLD_USDT, 50_000_000);
+  assert.equal(isHighVolumeLead(49_999_999), false);
+  assert.equal(isHighVolumeLead(50_000_000), true);
+  assert.equal(isHighVolumeLead(200_000_000), true);
 });
 
 test("交易量 M/B 格式一致", () => { assert.equal(formatVolume(49_990_000), "49.99M"); assert.equal(formatVolume(200_000_000), "200M"); assert.equal(formatVolume(1_000_000_000), "1B"); });
@@ -98,11 +97,6 @@ test("自訂情境比例限制在 0% 至 100%", () => {
 test("級距進度正確處理一般與最高級距", () => {
   assert.deepEqual(calculateTierProgress(15, 10, 20), { percentage: 50, remaining: 5, isHighest: false });
   assert.deepEqual(calculateTierProgress(500, 100, null), { percentage: 100, remaining: 0, isHighest: true });
-});
-
-test("Trader Status 進度符合 Member、Pro、Black 里程碑", () => {
-  const cases = [[0,0],[25_000_000,50],[50_000_000,0],[125_000_000,50],[200_000_000,100],[500_000_000,100]];
-  for (const [volume,percentage] of cases) assert.equal(getTraderStatusProgress(volume).percentage,percentage);
 });
 
 test("交易量輸入顯示千分位且保留純數值", () => {

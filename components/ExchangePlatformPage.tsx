@@ -10,7 +10,6 @@ import { EXCHANGES, formatFeeRate, type ExchangeData } from "@/config/exchanges"
 import { getExchangeActionLabels } from "@/config/actions";
 import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 import { brandConfig } from "@/config/brand";
-import { BIBECK_TRADER_STATUSES } from "@/lib/bibeck-trader-status";
 
 const costFactors = [
   ["01", "基礎手續費", "交易所公開的掛單與吃單費率，是計算交易成本的起點。"],
@@ -191,28 +190,13 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
       {isBybit ? (
         <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionTitle label="BiBeck 返傭方案" title="標準 35% 返傭與 Trader Status" copy="Member、Pro 與 Black 的 BiBeck 標準返傭皆為 35%；交易量里程碑只影響 Trader Status 與額外資格評估，不會改變基礎返傭比例。" />
-            <div className="mt-10 border-l-2 border-gold bg-[#101010] p-6 sm:p-8">
-              <h3 className="text-2xl font-semibold text-white">BiBeck Bybit 返傭</h3>
-              <div className="mt-5 grid gap-3 text-sm leading-7 text-secondary">
-                <p>BiBeck 標準返傭比例為 35%，返傭依成功開通並符合返傭條件的 BiBeck Bybit 帳戶實際產生的符合資格交易手續費計算。</p>
-                <p>計算器只會依輸入交易量推估 Trader Status，不代表網站已同步帳戶資料或完成正式身分確認。</p>
-              </div>
-              <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
-                <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{actionLabels.rebateSignup}</ExternalLink>
-                <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary" aria-label="登入外部 Bybit 返傭後台">{actionLabels.rebateDashboard}</ExternalLink>
-                <Link href="/calculator" className="cta-button button-secondary">使用交易成本計算器</Link>
-              </div>
+            <SectionTitle label="BiBeck 返傭方案" title="不同交易量，都值得把成本算清楚。" copy="一般交易者可使用 BiBeck 標準 35% 返傭。如果你有較高交易量、量化策略、Bot 或專業交易需求，BiBeck 可進一步協助評估交易成本與合作條件。" />
+            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              <article className="border border-white/12 bg-[#101010] p-6 sm:p-8"><p className="eyebrow">一般交易者</p><h3 className="mt-4 text-3xl font-semibold text-white">35% 標準返傭</h3><p className="mt-5 text-sm leading-7 text-secondary">符合資格的交易手續費 × 35%，就是 BiBeck 標準返傭的計算基礎。</p><div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-y border-white/10 py-5 text-center"><div><strong className="font-mono text-xl">1,000 USDT</strong><span className="mt-1 block text-xs text-white/44">符合資格手續費</span></div><span className="text-gold">→</span><div><strong className="font-mono text-2xl text-gold">350 USDT</strong><span className="mt-1 block text-xs text-white/44">標準返傭</span></div></div><ExternalLink href={REBATE_APPLICATION_URL} sponsored className="mt-6">{actionLabels.rebateSignup}</ExternalLink></article>
+              <article className="border border-gold/40 bg-gold/[0.04] p-6 sm:p-8"><p className="eyebrow">高交易量 / 專業交易</p><h3 className="mt-4 text-3xl font-semibold text-white">交易量越大，越值得重新檢視交易成本。</h3><p className="mt-5 text-sm leading-7 text-secondary">如果你有較高交易量、Quant、Bot、做市或其他專業交易需求，BiBeck 可依實際交易結構進一步評估。</p><ul className="mt-5 grid gap-2 text-sm text-white/68">{["VIP 與費率結構","Maker / Taker 成本","實際有效費率","高交易量合作需求","專屬條件評估"].map((item)=><li key={item}>— {item}</li>)}</ul><Link href="/partners#high-volume" className="button-secondary mt-6">洽談高交易量方案</Link></article>
             </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row"><ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary" aria-label="登入外部 Bybit 返傭後台">{actionLabels.rebateDashboard}</ExternalLink><Link href="/calculator" className="cta-button button-secondary">使用交易成本計算器</Link></div>
             <aside className="mt-6 border-l-2 border-gold bg-[#101010] p-6 text-sm leading-7 text-secondary"><h3 className="font-semibold text-white">請使用 BiBeck 返傭帳戶進行交易</h3><p className="mt-3">只有透過 BiBeck 指定申請流程註冊，並成功綁定於 BiBeck 推薦關係下的 Bybit 返傭帳戶，使用該帳戶交易時才能獲得 BiBeck 返傭。</p><p className="mt-2">原有 Bybit 帳戶若未綁定於 BiBeck，即使已有交易量、VIP 等級或完成 KYC，也無法直接套用 BiBeck 返傭。KYC 身分轉移不等於推薦關係、資產、Email 或手機號碼轉移。</p></aside>
-            <div className="mt-10 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 xl:grid-cols-3">
-              {BIBECK_TRADER_STATUSES.map((status) => (
-                <article key={status.id} className={"min-w-0 bg-[#141414] p-6 " + (status.id === "black" ? "ring-1 ring-inset ring-gold/45" : "")}>
-                  <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{status.isPartner ? "個別協商" : "Trader Status"}</p>
-                  <h3 className="text-lg font-semibold text-white">{status.name}</h3><p className="mt-5 font-mono text-xl text-gold">{status.rebateRate === null ? "合作方案" : "35% 標準返傭"}</p><p className="mt-3 text-sm leading-6 text-secondary">{status.description}</p>
-                </article>
-              ))}
-            </div>
           </div>
         </section>
       ) : null}
