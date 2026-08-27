@@ -11,7 +11,7 @@ export type ExchangeActionConfig = {
 
 export function getExchangeActionLabels(exchange: Pick<ExchangeActionConfig, "name">) {
   return {
-    rebateSignup: `取得 ${exchange.name} 返傭帳號`,
+    rebateSignup: exchange.name === "Bybit" ? "取得 35% 返傭帳戶" : `取得 ${exchange.name} 返傭帳號`,
     rebateDashboard: `登入 ${exchange.name} 返傭後台`,
     costCalculator: "交易成本計算器",
   } as const;

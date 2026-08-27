@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ExternalLink } from "@/components/ExternalLink";
 import { FAQList, homeFaqs } from "@/components/FAQList";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
 import { TrustNotice } from "@/components/TrustNotice";
 import { createPageMetadata, siteDescription, siteTitle } from "@/config/seo";
+import { REBATE_APPLICATION_URL } from "@/config/links";
 import { TranslatedText } from "@/components/TranslatedText";
-import { BIBECK_TRADER_STATUSES } from "@/lib/bibeck-trader-status";
+import { calculateRebateFromEligibleFee, formatBibeckRebateRate } from "@/lib/bibeck-rebate";
 
 export const metadata: Metadata = createPageMetadata({ title: siteTitle, description: siteDescription, path: "/", absoluteTitle: true });
 
@@ -18,22 +20,21 @@ const helpItems = [
 ];
 
 const audiences = [["高頻合約交易者","頻繁進出場，交易手續費容易累積。"],["Bot / 量化交易者","策略 Edge 可能受到交易費與滑價影響。"],["高交易量交易者","即使費率很低，絕對交易成本仍可能非常高。"],["社群／交易團隊","有大量交易者，可洽談 Partner 合作。"]] as const;
-const applicationSteps = [["01","建立返傭帳戶"],["02","提交資料完成開通"],["03","使用綁定帳戶交易"]] as const;
+const rebateExamples = [100, 1_000, 10_000].map((fee) => ({ fee, rebate: calculateRebateFromEligibleFee(fee) }));
+const optimizationSteps = [["Calculate", "計算交易成本"], ["Compare", "比較 VIP、Maker / Taker 與成本結構"], ["Reduce", "透過返傭降低有效交易成本"], ["Optimize", "持續最佳化交易成本"]] as const;
+const formatUsdt = (value: number) => `${value.toLocaleString("en-US")} USDT`;
 
 export default function Home() {
   return (
     <SiteShell>
       <section className="home-hero relative px-5 pb-20 pt-36 sm:px-8 lg:pb-24 lg:pt-44">
-        <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center">
+        <div className="mx-auto grid min-h-[62vh] max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="relative z-10 max-w-4xl">
-            <p className="reveal eyebrow"><TranslatedText message="home.eyebrow" /></p>
-            <h1 className="reveal mt-7 max-w-4xl text-balance text-5xl font-semibold leading-[1.06] text-white sm:text-7xl lg:text-[5.2rem]">
-              <TranslatedText message="home.title" />
-            </h1>
-            <p className="reveal mt-7 max-w-2xl text-lg leading-9 text-secondary">
-              <TranslatedText message="home.description" />
-            </p>
-            <div className="reveal mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"><Link href="/calculator" className="cta-button button-primary">免費計算交易成本</Link><Link href="/rebate" className="text-link">了解 40% 返傭 <span aria-hidden="true">→</span></Link></div>
+            <p className="reveal eyebrow">交易成本最佳化平台</p>
+            <h1 className="reveal mt-7 max-w-4xl text-balance text-5xl font-semibold leading-[1.06] text-white sm:text-7xl lg:text-[4.7rem]">把你付出去的手續費，拿回 <span className="text-gold">{formatBibeckRebateRate()}</span>。</h1>
+            <p className="reveal mt-7 max-w-2xl text-lg leading-9 text-secondary">產生 1,000 USDT 符合資格的 Bybit 交易手續費，BiBeck 標準 {formatBibeckRebateRate()} 返傭就是 {formatUsdt(calculateRebateFromEligibleFee(1_000))}。</p>
+            <p className="reveal mt-4 max-w-2xl text-base leading-8 text-white/70">你的交易量，應該為你降低成本，而不只是替別人創造佣金。先算清楚你的交易成本，再決定你願意付多少。</p>
+            <div className="reveal mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center"><Link href="/calculator" className="cta-button button-primary">算算我能拿回多少</Link><ExternalLink href={REBATE_APPLICATION_URL} sponsored variant="secondary">取得 {formatBibeckRebateRate()} 返傭帳戶</ExternalLink></div>
             <p className="reveal mt-6 max-w-2xl text-xs leading-6 text-white/38">
               <TranslatedText message="home.disclosure" />
             </p>
@@ -41,8 +42,11 @@ export default function Home() {
               {["不保管使用者資產", "不要求密碼或驗證碼", "費率來源可查證", "使用計算工具不另收費"].map((item) => <li key={item} className="border-l border-gold/55 py-1 pl-3">{item}</li>)}
             </ul>
           </div>
+          <div className="relative z-10 border border-gold/35 bg-[#14130e] p-6 sm:p-8" aria-label="BiBeck 標準返傭計算示例"><p className="eyebrow">符合資格手續費</p><div className="mt-6 grid items-center gap-5 text-center sm:grid-cols-[1fr_auto_1fr_auto_1fr] lg:grid-cols-1"><div><strong className="font-mono text-3xl">1,000</strong><span className="mt-1 block text-xs text-white/48">USDT 交易手續費</span></div><span className="text-gold" aria-hidden="true">×</span><div><strong className="font-mono text-5xl text-gold">{formatBibeckRebateRate()}</strong><span className="mt-1 block text-xs text-white/48">BiBeck 標準返傭</span></div><span className="text-gold" aria-hidden="true">＝</span><div><strong className="font-mono text-3xl text-gold">{calculateRebateFromEligibleFee(1_000)}</strong><span className="mt-1 block text-xs text-white/48">USDT 返傭金額</span></div></div><p className="mt-6 text-xs leading-6 text-white/44">實際返傭依帳戶資格、有效交易手續費與系統紀錄為準。</p></div>
         </div>
       </section>
+
+      <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="Fee to Rebate" title="你的手續費，可以拿回多少？" copy={`以下以 BiBeck 標準 ${formatBibeckRebateRate()} 返傭試算；返傭基礎是符合資格的實際交易手續費，不是交易量。`}/><div className="mt-10 grid gap-px bg-white/10 sm:grid-cols-3">{rebateExamples.map(({fee,rebate})=><article key={fee} className="bg-[#111] p-6"><p className="font-mono text-xl">{formatUsdt(fee)} 手續費</p><p className="my-4 text-gold" aria-hidden="true">↓</p><p className="font-mono text-3xl font-semibold text-gold">{formatUsdt(rebate)}</p><p className="mt-2 text-xs text-white/48">標準返傭試算</p></article>)}</div><p className="mt-6 text-xs leading-6 text-white/44">實際返傭依帳戶資格、有效交易手續費與系統紀錄為準。</p><Link href="/calculator" className="button-secondary mt-7">輸入我的交易量試算</Link></div></section>
 
       <section className="scroll-mt-24 border-y border-white/10 px-5 py-20 sm:px-8" id="trading-cost-calculator">
         <div className="mx-auto max-w-7xl">
@@ -52,11 +56,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-muted border-y border-white/10 px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="Bybit 返傭" title="BiBeck 標準返傭就是 40%。" copy="所有成功開通並符合返傭條件的 BiBeck Bybit 帳戶，標準返傭比例相同；Trader Status 不會改變基礎返傭比例。"/><div className="mt-10 grid gap-6 lg:grid-cols-[18rem_1fr]"><div className="border border-gold/40 bg-[#16140e] p-7"><p className="font-mono text-6xl font-semibold text-gold">40%</p><p className="mt-4 font-semibold">標準交易手續費返傭</p></div><div className="grid gap-px bg-white/10 sm:grid-cols-3">{BIBECK_TRADER_STATUSES.filter((status)=>!status.isPartner).map((status)=><article key={status.id} className="bg-[#111] p-6"><h3 className="text-xl font-semibold">{status.name}</h3><p className="mt-3 text-sm text-gold">40% 標準返傭</p><p className="mt-3 text-xs leading-6 text-secondary">{status.description}</p></article>)}</div></div><Link href="/rebate" className="text-link mt-8">了解 40% 返傭與 Trader Status <span aria-hidden="true">→</span></Link></div></section>
+      <section className="section-muted border-y border-white/10 px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="交易成本，不只是費率" title="手續費不是小數點，是實際的交易成本。" copy="0.055% 看起來很小，但交易量放大後，就是實際的 USDT 支出。BiBeck 把費率轉換成你付了多少、可返多少，以及最後留下多少成本。"/><div className="mt-10 grid gap-px bg-white/10 sm:grid-cols-3">{[10_000_000,50_000_000,100_000_000].map((volume)=><article key={volume} className="bg-[#111] p-6"><p className="text-xs text-white/48">30 日交易量</p><strong className="mt-2 block font-mono text-xl">{formatUsdt(volume)}</strong><p className="mt-5 text-xs text-white/48">以 0.055% 示意手續費</p><strong className="mt-2 block font-mono text-2xl text-gold">{formatUsdt(volume * 0.00055)}</strong></article>)}</div><Link href="/calculator" className="button-secondary mt-7">不要猜，直接算</Link></div></section>
 
       <section className="px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="適合哪些交易者" title="交易越頻繁，越需要看清真實成本。"/><div className="mt-12 grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-4">{audiences.map(([title,copy])=><article key={title} className="bg-[#111] p-6"><h3 className="font-semibold">{title}</h3><p className="mt-4 text-sm leading-7 text-secondary">{copy}</p></article>)}</div><Link href="/calculator" className="button-secondary mt-8">計算我的交易成本</Link></div></section>
 
-      <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="申請流程" title="三步完成 Bybit 返傭開通。"/><ol className="mt-10 grid gap-px bg-white/10 md:grid-cols-3">{applicationSteps.map(([number,title])=><li key={number} className="bg-[#111] p-6"><span className="font-mono text-gold">{number}</span><h3 className="mt-4 font-semibold">{title}</h3></li>)}</ol><Link href="/rebate" className="text-link mt-7">查看申請與帳戶說明 <span aria-hidden="true">→</span></Link></div></section>
+      <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle label="Trading Cost Optimization" title="降低每一筆交易成本。" copy="BiBeck 不只顯示一個返傭比例，而是把 Fee、VIP、Rebate 與有效交易成本整理成可以比較的數字。"/><ol className="mt-10 grid gap-px bg-white/10 md:grid-cols-4">{optimizationSteps.map(([english,chinese],index)=><li key={english} className="bg-[#111] p-6"><span className="font-mono text-xs text-gold">0{index+1}</span><h3 className="mt-4 text-xl font-semibold">{english}</h3><p className="mt-3 text-sm leading-7 text-secondary">{chinese}</p></li>)}</ol></div></section>
 
       <section className="px-5 py-24 sm:px-8">
         <div className="mx-auto max-w-7xl">

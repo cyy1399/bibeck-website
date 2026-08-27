@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { brandConfig } from "@/config/brand";
 
-export const siteTitle = "交易成本計算器、交易所手續費比較與返傭｜BiBeck";
-export const siteDescription = "BiBeck 提供交易成本計算、VIP 費率比較與 Bybit 返傭工具，幫助交易者看懂並降低每一筆交易成本。";
+export const siteTitle = "把你付出去的交易手續費拿回 35%｜BiBeck";
+export const siteDescription = "輸入交易量，計算 Bybit 手續費、VIP 成本、BiBeck 35% 標準返傭與實際有效交易成本。";
 export const socialImage = {
   url: "/og-seo.png",
   width: 1200,
   height: 630,
-  alt: "BiBeck｜降低每一筆交易成本",
+  alt: "BiBeck｜交易成本計算、VIP 費率與 35% 標準返傭",
 } as const;
 
 export function createPageMetadata({ title, description, path, absoluteTitle = false }: { title: string; description: string; path: `/${string}` | "/"; absoluteTitle?: boolean }): Metadata {

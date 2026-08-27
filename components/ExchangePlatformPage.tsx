@@ -183,19 +183,19 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
 
       <section id="trading-cost-calculator" className="scroll-mt-24 px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle label="交易成本計算器" title={isBybit ? "使用你的交易量計算 Bybit 實際成本" : "計算你的實際交易成本"} copy={isBybit ? "完整計算器集中於單一入口，可比較一般費率、Bybit VIP 與 BiBeck 40% 標準返傭後的 30 日與年度成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
-          <div className="mt-10">{isBybit ? <Link href="/calculator" className="button-primary">免費計算交易成本</Link> : <PlatformFeeCalculator exchange={exchange} />}</div>
+          <SectionTitle label="交易成本計算器" title={isBybit ? "使用你的交易量計算 Bybit 實際成本" : "計算你的實際交易成本"} copy={isBybit ? "完整計算器集中於單一入口，可比較一般費率、Bybit VIP 與 BiBeck 35% 標準返傭後的 30 日與年度成本。" : "選擇商品、下單方式與 VIP 等級，再輸入每月交易量與適用返傭比例。"} />
+          <div className="mt-10">{isBybit ? <Link href="/calculator" className="button-primary">算算我能拿回多少</Link> : <PlatformFeeCalculator exchange={exchange} />}</div>
         </div>
       </section>
 
       {isBybit ? (
         <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionTitle label="BiBeck 返傭方案" title="標準 40% 返傭與 Trader Status" copy="Member、Pro 與 Black 的 BiBeck 標準返傭皆為 40%；交易量里程碑只影響 Trader Status 與額外資格評估，不會改變基礎返傭比例。" />
+            <SectionTitle label="BiBeck 返傭方案" title="標準 35% 返傭與 Trader Status" copy="Member、Pro 與 Black 的 BiBeck 標準返傭皆為 35%；交易量里程碑只影響 Trader Status 與額外資格評估，不會改變基礎返傭比例。" />
             <div className="mt-10 border-l-2 border-gold bg-[#101010] p-6 sm:p-8">
               <h3 className="text-2xl font-semibold text-white">BiBeck Bybit 返傭</h3>
               <div className="mt-5 grid gap-3 text-sm leading-7 text-secondary">
-                <p>BiBeck 標準返傭比例為 40%，返傭依成功開通並符合返傭條件的 BiBeck Bybit 帳戶實際產生的符合條件交易手續費計算。</p>
+                <p>BiBeck 標準返傭比例為 35%，返傭依成功開通並符合返傭條件的 BiBeck Bybit 帳戶實際產生的符合資格交易手續費計算。</p>
                 <p>計算器只會依輸入交易量推估 Trader Status，不代表網站已同步帳戶資料或完成正式身分確認。</p>
               </div>
               <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
@@ -209,7 +209,7 @@ export function ExchangePlatformPage({ exchange }: { exchange: ExchangeData }) {
               {BIBECK_TRADER_STATUSES.map((status) => (
                 <article key={status.id} className={"min-w-0 bg-[#141414] p-6 " + (status.id === "black" ? "ring-1 ring-inset ring-gold/45" : "")}>
                   <p className="mb-4 w-fit border border-gold/35 px-2 py-1 text-[0.68rem] text-gold">{status.isPartner ? "個別協商" : "Trader Status"}</p>
-                  <h3 className="text-lg font-semibold text-white">{status.name}</h3><p className="mt-5 font-mono text-xl text-gold">{status.rebateRate === null ? "合作方案" : "40% 標準返傭"}</p><p className="mt-3 text-sm leading-6 text-secondary">{status.description}</p>
+                  <h3 className="text-lg font-semibold text-white">{status.name}</h3><p className="mt-5 font-mono text-xl text-gold">{status.rebateRate === null ? "合作方案" : "35% 標準返傭"}</p><p className="mt-3 text-sm leading-6 text-secondary">{status.description}</p>
                 </article>
               ))}
             </div>

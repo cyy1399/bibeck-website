@@ -10,8 +10,8 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Bybit 40% 返傭、Trader Status 與帳戶常見問題",
-  description: "了解 BiBeck 40% 標準返傭、Trader Status、返傭帳戶、推薦關係、KYC 與安全界線。",
+  title: "BiBeck 35% 返傭、Trader Status 與帳戶常見問題",
+  description: "了解 BiBeck 35% 標準返傭、Trader Status、返傭帳戶、推薦關係、KYC 與安全界線。",
   path: "/faq",
 });
 
