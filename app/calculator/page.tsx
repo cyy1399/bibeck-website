@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ExternalLink } from "@/components/ExternalLink";
+import Link from "next/link";
 import { BybitCostCalculator } from "@/components/BybitCostCalculator";
 import { SectionTitle } from "@/components/Sections";
 import { LocalizedPageHero } from "@/components/TranslatedText";
@@ -10,7 +10,7 @@ import { bybitActionLabels } from "@/config/actions";
 import { createPageMetadata } from "@/config/seo";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "交易成本計算器｜Bybit VIP 與 35% 返傭試算",
+  title: "交易成本計算器｜Bybit VIP 與返傭試算",
   description: "輸入最近 30 日交易量，比較一般費率、Bybit VIP 與 BiBeck 35% 返傭後的 30 日及年度交易成本。",
   path: "/calculator",
 });
@@ -25,7 +25,7 @@ export default function CalculatorPage() {
       <section className="section-muted border-y border-white/10 px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
           <SectionTitle label="降低實際成本" title="看見數字後，下一步是建立符合資格的返傭關係。" copy="計算器不會改變費率；返傭服務的目的，是在合作規則允許的範圍內降低部分實際交易成本。" />
-          <ExternalLink href={REBATE_APPLICATION_URL} sponsored aria-label="前往 BiBeck Bybit 返傭申請頁">{bybitActionLabels.rebateSignup}</ExternalLink>
+          <Link href={REBATE_APPLICATION_URL} className="cta-button button-primary" aria-label="前往 BiBeck Bybit 返傭申請頁">{bybitActionLabels.rebateSignup}</Link>
         </div>
       </section>
       <section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><TrustNotice /></div></section>

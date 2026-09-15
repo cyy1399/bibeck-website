@@ -648,6 +648,27 @@ summary {
   color: #f5f5f5;
 }
 
+.application-field {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+  color: #f5f5f5;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.application-field > span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.application-field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
 @media (min-width: 768px) {
   .table-scroll-hint {
     display: none;

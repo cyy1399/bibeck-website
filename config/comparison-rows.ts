@@ -3,7 +3,7 @@ export const COMPARISON_ROWS = [
   { key: "vipTier", label: "VIP 等級" },
   { key: "feeRate", label: "手續費率" },
   { key: "vipSavings", label: "VIP 節省" },
-  { key: "rebateRate", label: "BiBeck 返傭比例" },
+  { key: "rebateRate", label: "返傭比例" },
   { key: "rebateAmount", label: "30 日返傭金額" },
   { key: "actualCost", label: "30 日實際交易成本" },
   { key: "totalSavings", label: "30 日合計節省" },

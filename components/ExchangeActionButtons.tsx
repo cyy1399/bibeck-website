@@ -11,7 +11,7 @@ export function ExchangeActionButtons({ exchangeSlug, calculatorHref }: { exchan
     <div>
       <div className="grid gap-3 sm:flex sm:flex-wrap">
         {exchange.registrationUrl ? (
-          <ExternalLink href={exchange.registrationUrl} sponsored className="w-full sm:w-auto">{labels.rebateSignup}</ExternalLink>
+          <Link href={exchange.registrationUrl} className="cta-button button-primary w-full sm:w-auto">{labels.rebateSignup}</Link>
         ) : (
           <button type="button" disabled title="此交易所的 BiBeck 返傭服務尚未開放" className="cta-button button-primary w-full cursor-not-allowed opacity-40 sm:w-auto">{labels.rebateSignup}</button>
         )}

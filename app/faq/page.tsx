@@ -44,7 +44,7 @@ export default function FAQPage() {
             <h2 className="mt-4 text-3xl font-semibold text-white">準備好降低交易成本？</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{bybitActionLabels.rebateSignup}</ExternalLink>
+            <Link href={REBATE_APPLICATION_URL} className="cta-button button-primary">{bybitActionLabels.rebateSignup}</Link>
             <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary">{bybitActionLabels.rebateDashboard}</ExternalLink>
             <Link href="/calculator" className="cta-button button-secondary">{bybitActionLabels.costCalculator}</Link>
           </div>

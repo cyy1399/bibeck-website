@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { REBATE_APPLICATION_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 import { ExternalLink } from "./ExternalLink";
 import { bybitActionLabels } from "@/config/actions";
@@ -31,7 +32,7 @@ export function PageHero({
 export function CTAGroup() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
-      <ExternalLink href={REBATE_APPLICATION_URL} sponsored>{bybitActionLabels.rebateSignup}</ExternalLink>
+      <Link href={REBATE_APPLICATION_URL} className="cta-button button-primary">{bybitActionLabels.rebateSignup}</Link>
       <ExternalLink href={REBATE_BACKOFFICE_URL} variant="secondary">
         {bybitActionLabels.rebateDashboard}
       </ExternalLink>
