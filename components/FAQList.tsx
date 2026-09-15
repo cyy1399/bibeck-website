@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BYBIT_ACCOUNT_SUPPORT, HIGH_VOLUME_MAILTO, REBATE_APPLICATION_URL } from "@/config/links";
+import { BYBIT_ACCOUNT_SUPPORT, LINE_OFFICIAL_URL, REBATE_APPLICATION_URL } from "@/config/links";
 
 type FAQLink = { href: string; label: string; external?: boolean; sponsored?: boolean };
 export type FAQItem = { question: string; answer: string; links?: FAQLink[]; category?: string };
@@ -11,8 +11,11 @@ export const generalFaqs: FAQItem[] = [
   { category:"安全與信任", question:"BiBeck 是 Bybit 官方平台嗎？", answer:"不是。BiBeck 為獨立第三方交易成本與返傭資訊平台，並非 Bybit 官方網站、關係企業或代表。" },
   { category:"安全與信任", question:"BiBeck 會要求我的密碼或驗證碼嗎？", answer:"不會。BiBeck 不會要求 Bybit 密碼、2FA 驗證碼、API Key、API Secret、私鑰、助記詞或資產轉移。" },
   { category:"帳戶與申請", question:"原本已有 Bybit 帳戶怎麼辦？", answer:"是否能建立 BiBeck 推薦關係，需依 Bybit 帳戶狀態與官方規則確認。KYC 身分轉移不等於推薦關係轉移。", links:[{href:BYBIT_ACCOUNT_SUPPORT,label:"查看 Bybit 官方帳戶說明",external:true}] },
-  { category:"高交易量與合作", question:"高交易量可以談其他條件嗎？", answer:"可以。若你有較高交易量、量化、Bot、做市或其他專業交易需求，可進一步洽談返傭、VIP 與專屬費率條件，實際條件依個別方案確認。", links:[{href:HIGH_VOLUME_MAILTO,label:"洽談高交易量方案"}] },
-  { category:"帳戶與申請", question:"如何申請 BiBeck 35% 返傭？", answer:"請在 BiBeck 官網原生申請頁提交名稱、Email、Bybit UID、申請類型與交易量區間。資料會由伺服器驗證並交由 BiBeck 人工核對。", links:[{href:REBATE_APPLICATION_URL,label:"開始申請"}] },
+  { category:"高交易量與合作", question:"高交易量可以談其他條件嗎？", answer:"可以。若你有較高交易量、量化、Bot、做市或其他專業交易需求，可透過 LINE 洽談返傭、VIP 與專屬費率條件，實際條件依個別方案確認。", links:[{href:LINE_OFFICIAL_URL,label:"LINE 洽談高交易量方案",external:true}] },
+  { category:"帳戶與申請", question:"如何申請 BiBeck 35% 返傭？", answer:"請先透過 BiBeck 指定連結註冊 Bybit 帳號，再於官網提交名稱、Email、Bybit UID 與交易量區間，最後等待 BiBeck 核對並透過 Email 通知結果。", links:[{href:REBATE_APPLICATION_URL,label:"開始申請"}] },
+  { category:"帳戶與申請", question:"申請 BiBeck 返傭需要哪些步驟？", answer:"1. 透過 BiBeck 指定連結註冊 Bybit 帳號。2. 在 BiBeck 官網填寫返傭申請。3. 等待 BiBeck 核對帳戶推薦關係並透過 Email 通知結果。" },
+  { category:"帳戶與申請", question:"我可以直接填原本的 Bybit UID 嗎？", answer:"只有成功建立 BiBeck 推薦關係並符合返傭資格的 Bybit 帳戶，才能取得 BiBeck 返傭。原有帳戶是否能建立推薦關係，需依 Bybit 官方規則與帳戶狀態確認。" },
+  { category:"高交易量與合作", question:"高交易量、KOL 或代理要填一般返傭表單嗎？", answer:"若主要需求為高交易量、KOL、社群、量化、Bot 或代理合作，請直接透過 BiBeck LINE 官方帳號洽談，不需要先填一般返傭申請。", links:[{href:LINE_OFFICIAL_URL,label:"LINE 洽談合作",external:true}] },
 ];
 
 export const homeFaqs = generalFaqs.slice(0, 5);

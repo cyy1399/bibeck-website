@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
-import { REBATE_BACKOFFICE_URL } from "@/config/links";
+import { LINE_OFFICIAL_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
 import { bybitActionLabels } from "@/config/actions";
 import { SettingsMenu } from "@/components/SettingsMenu";
@@ -15,7 +15,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const localizedMobileNavItems = [
     { href: localizePath("/", locale), label: t("nav.home") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: localizePath("/rebate", locale), label: "35% 返傭" },
+    { href: localizePath("/rebate", locale), label: "返傭說明" },
+    { href: localizePath("/apply/bybit", locale), label: "申請返傭" },
     { href: localizePath("/partners", locale), label: "高交易量與合作" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: localizePath("/contact", locale), label: t("nav.contact") },
@@ -23,7 +24,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const localizedFooterNavItems = [
     { href: localizePath("/", locale), label: "首頁" },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: localizePath("/rebate", locale), label: "35% 返傭" },
+    { href: localizePath("/rebate", locale), label: "返傭說明" },
+    { href: localizePath("/apply/bybit", locale), label: "申請返傭" },
     { href: localizePath("/partners", locale), label: "高交易量與合作" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: localizePath("/contact", locale), label: "聯絡" },
@@ -45,7 +47,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
             <Link href={localizePath("/", locale)} className="nav-link">{t("nav.home")}</Link>
             <Link href={localizePath("/calculator", locale)} className="nav-link">{t("nav.calculator")}</Link>
-            <Link href={localizePath("/rebate", locale)} className="nav-link">35% 返傭</Link>
+            <Link href={localizePath("/rebate", locale)} className="nav-link">返傭說明</Link>
+            <Link href={localizePath("/apply/bybit", locale)} className="nav-link">申請返傭</Link>
             <Link href={localizePath("/partners", locale)} className="nav-link">高交易量與合作</Link>
             <Link href={localizePath("/faq", locale)} className="nav-link">{t("nav.faq")}</Link>
             <Link href={localizePath("/contact", locale)} className="nav-link">聯絡</Link>
@@ -84,6 +87,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               {localizedFooterNavItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-gold">{item.label}</Link>)}
             </div>
             <address className="mt-7 grid gap-2 not-italic text-sm text-white/54">
+              <a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-gold">LINE 官方帳號</a>
               <a href={contactMailto} className="break-all hover:text-gold">{t("footer.contact")}：{brandConfig.publicEmails.contact}</a>
               <a href={supportMailto} className="break-all hover:text-gold">{t("footer.support")}：{brandConfig.publicEmails.support}</a>
             </address>
