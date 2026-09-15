@@ -2,7 +2,7 @@ import { brandConfig } from "@/config/brand";
 
 export const BYBIT_REGISTER = "https://partner.bybit.com/b/t00000016";
 export const REBATE_LOGIN = "https://bybackoffice.com/user-login";
-export const REBATE_APPLICATION_URL = process.env.NEXT_PUBLIC_BIBECK_REBATE_APPLICATION_URL ?? "https://docs.google.com/forms/d/e/1FAIpQLScPAwgBuIVlaJ_0dM5JXF1_QhEgCwygM9PBZRFItiQF6AQ74Q/viewform?usp=dialog";
+export const REBATE_APPLICATION_URL = "/apply/bybit";
 export const REBATE_BACKOFFICE_URL = process.env.NEXT_PUBLIC_REBATE_BACKOFFICE_URL ?? REBATE_LOGIN;
 export const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? brandConfig.publicEmails.support;
 export const BUSINESS_EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL ?? brandConfig.internalEmails.business;

@@ -1,4 +1,5 @@
 export const BIBECK_STANDARD_REBATE_RATE = 0.35;
+export const BIBECK_BASE_UPSTREAM_COMMISSION_RATE = 0.40;
 
 export function getStandardBibeckRebateRate(): number {
   return BIBECK_STANDARD_REBATE_RATE;

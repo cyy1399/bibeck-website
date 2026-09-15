@@ -7,6 +7,9 @@ export type RebateActivationInput = {
   displayName: string;
   uid: string;
   contactEmail: string;
+  applicationType: "standard" | "high-volume" | "quant-bot" | "community-partner" | "other";
+  volumeRange: "under-10m" | "10m-50m" | "50m-200m" | "over-200m" | "uncertain";
+  message: string | null;
   consent: true;
   turnstileToken: string;
   source: string;
@@ -21,7 +24,11 @@ const activationSchema = z.object({
   displayName: z.string().trim().min(2).max(50),
   uid: z.string().trim().regex(/^\d{4,24}$/),
   contactEmail: z.string().trim().toLowerCase().max(254).email(),
-  consent: z.literal(true),
+  applicationType: z.enum(["standard", "high-volume", "quant-bot", "community-partner", "other"]),
+  volumeRange: z.enum(["under-10m", "10m-50m", "50m-200m", "over-200m", "uncertain"]),
+  message: z.string().trim().max(2_000).nullable(),
+  accuracyConfirmed: z.literal(true),
+  privacyConsent: z.literal(true),
   turnstileToken: z.string().min(1).max(2_048),
 });
 
@@ -45,7 +52,11 @@ export function validateRebateActivation(form: FormData): ActivationValidation {
     displayName: value(form, "displayName", 51),
     uid: normalizeUid(value(form, "uid", 32)),
     contactEmail: normalizeEmail(value(form, "contactEmail", 255)),
-    consent: value(form, "consent") === "true",
+    applicationType: value(form, "applicationType"),
+    volumeRange: value(form, "volumeRange"),
+    message: value(form, "message", 2_001) || null,
+    accuracyConfirmed: value(form, "accuracyConfirmed") === "true",
+    privacyConsent: value(form, "privacyConsent") === "true",
     turnstileToken: value(form, "cf-turnstile-response", 2_048),
   });
   if (!parsed.success) {
@@ -55,12 +66,16 @@ export function validateRebateActivation(form: FormData): ActivationValidation {
       displayName: "名稱或稱呼需為 2 至 50 個字元。",
       uid: "Bybit UID 必須是 4 至 24 位數字。",
       contactEmail: "請輸入有效的聯絡 Email。",
-      consent: "請先閱讀並同意隱私權政策、使用條款及個人資料蒐集告知。",
+      applicationType: "請選擇有效的申請類型。",
+      volumeRange: "請選擇最近 30 日交易量區間。",
+      message: "補充說明不得超過 2,000 個字元。",
+      accuracyConfirmed: "請確認申請資料正確。",
+      privacyConsent: "請先閱讀並同意隱私權政策與個人資料蒐集告知。",
       turnstileToken: "請完成人機驗證。",
     };
     return { ok: false, error: errors[String(field)] || "申請資料格式不正確。" };
   }
-  return { ok: true, data: { ...parsed.data, consent: true, source: value(form, "source", 80) || "website", utmSource: value(form, "utmSource", 100) || null, utmMedium: value(form, "utmMedium", 100) || null, utmCampaign: value(form, "utmCampaign", 100) || null } };
+  return { ok: true, data: { exchange: parsed.data.exchange, displayName: parsed.data.displayName, uid: parsed.data.uid, contactEmail: parsed.data.contactEmail, applicationType: parsed.data.applicationType, volumeRange: parsed.data.volumeRange, message: parsed.data.message, consent: true, turnstileToken: parsed.data.turnstileToken, source: value(form, "source", 80) || "website", utmSource: value(form, "utmSource", 100) || null, utmMedium: value(form, "utmMedium", 100) || null, utmCampaign: value(form, "utmCampaign", 100) || null } };
 }
 
 export async function verifyTurnstile(token: string, remoteIp: string | null, fetcher: typeof fetch = fetch): Promise<boolean> {

@@ -4,9 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
 import { REBATE_BACKOFFICE_URL } from "@/config/links";
-import { PLATFORM_DIRECTORY } from "@/config/platforms";
 import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
-import { DesktopExchangeMenu } from "@/components/DesktopExchangeMenu";
 import { bybitActionLabels } from "@/config/actions";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { usePreferences } from "@/components/PreferencesProvider";
@@ -17,17 +15,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const localizedMobileNavItems = [
     { href: localizePath("/", locale), label: t("nav.home") },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: localizePath("/rebate", locale), label: t("nav.rebate") },
-    { href: localizePath("/partners", locale), label: "合作夥伴" },
+    { href: localizePath("/rebate", locale), label: "35% 返傭" },
+    { href: localizePath("/partners", locale), label: "高交易量與合作" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
     { href: localizePath("/contact", locale), label: t("nav.contact") },
   ];
   const localizedFooterNavItems = [
-    { href: localizePath("/platforms", locale), label: t("nav.exchanges") },
+    { href: localizePath("/", locale), label: "首頁" },
     { href: localizePath("/calculator", locale), label: t("nav.calculator") },
-    { href: localizePath("/rebate", locale), label: t("nav.rebate") },
-    { href: localizePath("/partners", locale), label: "合作夥伴" },
+    { href: localizePath("/rebate", locale), label: "35% 返傭" },
+    { href: localizePath("/partners", locale), label: "高交易量與合作" },
     { href: localizePath("/faq", locale), label: t("nav.faq") },
+    { href: localizePath("/contact", locale), label: "聯絡" },
     { href: "/privacy", label: "隱私權政策" },
     { href: "/terms", label: "使用條款" },
     { href: "/affiliate-disclosure", label: "合作連結與佣金揭露" },
@@ -45,15 +44,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
           <nav aria-label="主要導覽" className="hidden items-center gap-6 lg:flex">
             <Link href={localizePath("/", locale)} className="nav-link">{t("nav.home")}</Link>
-            <DesktopExchangeMenu />
             <Link href={localizePath("/calculator", locale)} className="nav-link">{t("nav.calculator")}</Link>
-            <Link href={localizePath("/rebate", locale)} className="nav-link">{t("nav.rebate")}</Link>
-            <Link href={localizePath("/partners", locale)} className="nav-link">合作夥伴</Link>
+            <Link href={localizePath("/rebate", locale)} className="nav-link">35% 返傭</Link>
+            <Link href={localizePath("/partners", locale)} className="nav-link">高交易量與合作</Link>
             <Link href={localizePath("/faq", locale)} className="nav-link">{t("nav.faq")}</Link>
+            <Link href={localizePath("/contact", locale)} className="nav-link">聯絡</Link>
             <SettingsMenu />
           </nav>
 
-          <ExternalLink href={REBATE_BACKOFFICE_URL} className="ml-auto hidden !min-h-11 !px-5 !text-xs sm:inline-flex lg:ml-0" aria-label="登入外部 Bybit 返傭後台">
+          <ExternalLink href={REBATE_BACKOFFICE_URL} className="ml-auto !hidden !min-h-11 !px-5 !text-xs sm:!inline-flex lg:ml-0" aria-label="登入外部 Bybit 返傭後台">
             {bybitActionLabels.rebateDashboard}
           </ExternalLink>
 
@@ -63,23 +62,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </summary>
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-2 shadow-2xl">
               <Link href="/" className="mobile-nav-link">{t("nav.home")}</Link>
-              <div className="border-b border-white/8 px-4 py-3">
-                <Link href={localizePath("/platforms", locale)} className="block text-xs font-medium text-white/58 hover:text-gold">{t("nav.exchanges")}</Link>
-                <div className="mt-3 grid gap-3">
-                  {PLATFORM_DIRECTORY.map((platform) => (
-                    <Link key={platform.href} href={localizePath(platform.href, locale)} className={"border-l pl-3 text-sm font-medium text-white hover:text-gold " + (platform.supported ? "border-gold" : "border-white/15")}>
-                      <span className="flex items-center justify-between gap-3">
-                        {platform.name}
-                        <span className={"text-[0.68rem] font-normal " + (platform.supported ? "text-gold" : "text-white/38")}>{platform.status}</span>
-                      </span>
-                      {!platform.supported ? <span className="mt-1 block text-[0.68rem] font-normal text-white/28">暫無 BiBeck 返傭</span> : null}
-                    </Link>
-                  ))}
-                </div>
-              </div>
               {localizedMobileNavItems.slice(1).map((item) => <Link key={item.href} href={item.href} className="mobile-nav-link">{item.label}</Link>)}
               <SettingsMenu mobile />
-              <ExternalLink href={REBATE_BACKOFFICE_URL} className="mt-2 w-full sm:hidden" aria-label="登入外部 Bybit 返傭後台">{bybitActionLabels.rebateDashboard}</ExternalLink>
+              <ExternalLink href={REBATE_BACKOFFICE_URL} className="mt-2 w-full sm:!hidden" aria-label="登入外部 Bybit 返傭後台">{bybitActionLabels.rebateDashboard}</ExternalLink>
             </nav>
           </details>
         </header>

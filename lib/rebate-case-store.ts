@@ -16,7 +16,7 @@ export async function createActivationCase(input: RebateActivationInput): Promis
       if (existing[0]) return { kind: "duplicate", status: existing[0].status };
       for (let attempt = 0; attempt < 3; attempt += 1) {
         try {
-          const [created] = await tx.insert(rebateActivationCases).values({ caseNumber: createCaseNumber(), exchange: "bybit", displayName: input.displayName, uid: input.uid, normalizedUid, contactEmail: input.contactEmail, normalizedEmail, status: "PENDING", rebateRate: STANDARD_REBATE_RATE, notificationStatus: "PENDING", consentVersion: REBATE_CONSENT_VERSION, consentedAt: new Date(), source: input.source, utmSource: input.utmSource, utmMedium: input.utmMedium, utmCampaign: input.utmCampaign }).returning();
+          const [created] = await tx.insert(rebateActivationCases).values({ caseNumber: createCaseNumber(), exchange: "bybit", displayName: input.displayName, uid: input.uid, normalizedUid, contactEmail: input.contactEmail, normalizedEmail, applicationType: input.applicationType, volumeRange: input.volumeRange, applicantMessage: input.message, status: "PENDING", rebateRate: STANDARD_REBATE_RATE, notificationStatus: "PENDING", consentVersion: REBATE_CONSENT_VERSION, consentedAt: new Date(), source: input.source, utmSource: input.utmSource, utmMedium: input.utmMedium, utmCampaign: input.utmCampaign }).returning();
           await tx.insert(rebateCaseEvents).values({ caseId: created.id, eventType: "REQUEST_CREATED", newStatus: "PENDING", actorEmail: "applicant", publicMessage: "Bybit 返傭開通申請已送出。" });
           return { kind: "created", caseData: created };
         } catch (error) {

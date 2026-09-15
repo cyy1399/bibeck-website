@@ -25,7 +25,7 @@ export async function sendActivationReceipt(caseData: RebateActivationCase) {
 export async function sendAdminNewRequest(caseData: RebateActivationCase) {
   const to = process.env.REBATE_ADMIN_EMAIL;
   if (!to) throw new Error("REBATE_ADMIN_EMAIL_NOT_CONFIGURED");
-  await sendTransactionalEmail({ to, replyTo: caseData.contactEmail, subject: `[BiBeck 營運] 新 Bybit 返傭開通申請｜${caseData.caseNumber}`, idempotencyKey: `activation-admin-${caseData.id}`, html: emailLayout("新 Bybit 返傭開通申請", [`請登入 BiBeck 管理後台核對 UID，並在外部返傭後台完成 ${standardRate} 設定。`], [["案件編號", caseData.caseNumber], ["名稱", caseData.displayName], ["UID", caseData.uid], ["Email", caseData.contactEmail]]) });
+  await sendTransactionalEmail({ to, replyTo: caseData.contactEmail, subject: `[BiBeck 營運] 新 Bybit 返傭開通申請｜${caseData.caseNumber}`, idempotencyKey: `activation-admin-${caseData.id}`, html: emailLayout("新 Bybit 返傭開通申請", [`請登入 BiBeck 管理後台核對 UID，並在外部返傭後台完成 ${standardRate} 設定。`, caseData.applicantMessage ? `申請人補充：${caseData.applicantMessage}` : "申請人未提供補充說明。"], [["案件編號", caseData.caseNumber], ["名稱", caseData.displayName], ["UID", caseData.uid], ["Email", caseData.contactEmail], ["申請類型", caseData.applicationType], ["30 日交易量區間", caseData.volumeRange]]) });
 }
 
 export async function sendCompletionEmail(caseData: RebateActivationCase, retry = false) {

@@ -18,7 +18,7 @@ export const statusTransitions: Record<RebateActivationStatus, readonly RebateAc
 };
 
 export const REBATE_CONSENT_VERSION = "2026-08-01-mvp";
-export const STANDARD_REBATE_RATE = 20;
+export const STANDARD_REBATE_RATE = 35;
 const requiredProductionSettings = ["DATABASE_URL", "EMAIL_PROVIDER_API_KEY", "AUTH_SECRET", "AUTH_GOOGLE_ID", "AUTH_GOOGLE_SECRET", "ADMIN_EMAIL_ALLOWLIST", "NEXT_PUBLIC_TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"] as const;
 
 export function rebateActivationReadiness() {

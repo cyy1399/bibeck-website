@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { brandConfig } from "@/config/brand";
 
-export const siteTitle = "把你付出去的交易手續費拿回 35%｜BiBeck";
-export const siteDescription = "輸入交易量，計算 Bybit 手續費、VIP 成本、BiBeck 35% 標準返傭與實際有效交易成本。";
+export const siteTitle = "交易成本最佳化、Bybit VIP 與 35% 返傭｜BiBeck";
+export const siteDescription = "BiBeck 提供 Bybit Maker/Taker 手續費、VIP 與 35% 標準返傭試算，協助交易者核對並降低實際交易成本。";
 export const socialImage = {
   url: "/og-seo.png",
   width: 1200,
