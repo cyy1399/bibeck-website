@@ -36,9 +36,9 @@ export function BybitApplicationForm() {
     <label className="application-field">補充說明（選填）<textarea className="calculator-input" name="message" rows={5} maxLength={2_000}/></label>
     <label className="hidden" aria-hidden="true">網站<input name="website" tabIndex={-1} autoComplete="off"/></label>
     <label className="flex items-start gap-3 text-sm leading-6 text-secondary"><input type="checkbox" name="accuracyConfirmed" value="true" required className="mt-1 accent-[var(--gold)]"/>我確認以上資料正確。</label>
-    <label className="flex items-start gap-3 text-sm leading-6 text-secondary"><input type="checkbox" name="privacyConsent" value="true" required className="mt-1 accent-[var(--gold)]"/><span>我已閱讀並同意 <Link className="text-link inline" href="/privacy">隱私權政策</Link>與<Link className="text-link inline" href="/personal-data-notice">個人資料蒐集告知</Link>。</span></label>
+    <label className="flex items-start gap-3 text-sm leading-6 text-secondary"><input type="checkbox" name="privacyConsent" value="true" required className="mt-1 accent-[var(--gold)]"/><span>我已閱讀並瞭解<Link className="text-link mx-1 inline" href="/personal-data-notice" target="_blank" rel="noopener noreferrer">《個人資料蒐集告知》</Link>及<Link className="text-link mx-1 inline" href="/privacy" target="_blank" rel="noopener noreferrer">《隱私權政策》</Link>，並同意 BiBeck 依其內容蒐集、處理及利用我所提供的資料。</span></label>
     {siteKey ? <><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive"/><div className="cf-turnstile" data-sitekey={siteKey}/></> : <input type="hidden" name="cf-turnstile-response" value="test-turnstile-token"/>}
-    {state.status === "error" ? <p className="text-sm text-red-300" role="alert">{state.message}</p> : null}
+    {state.status === "error" ? <div className="grid gap-3" role="alert"><p className="text-sm text-red-300">{state.message}</p><a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="text-link text-sm">LINE 聯絡 BiBeck</a></div> : null}
     <button className="button-primary w-full" disabled={state.status === "submitting"} type="submit">{state.status === "submitting" ? "送出中…" : "送出 35% 返傭申請"}</button>
     <p className="text-xs leading-6 text-white/44">BiBeck 不會要求交易密碼、2FA 驗證碼、API Key、API Secret、私鑰、助記詞或資產轉移。</p>
   </form>;

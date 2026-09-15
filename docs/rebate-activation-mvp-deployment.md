@@ -55,7 +55,7 @@ pnpm db:migrate
 2. 確認未授權與非 allowlist 帳號無法進入 `/admin/rebate-requests`。
 3. 在外部後台完成測試 UID 設定後，再勾選確認並完成案件。
 4. 確認完成時間、完成者、audit event 與 Email 時間戳。
-5. 模擬 Email 失敗，確認案件仍為 COMPLETED 且可單獨重送。
+5. 模擬 Email 失敗，確認案件仍為 ACTIVATED 且可單獨重送。
 6. 檢查 375px、390px、1440px、console、hydration、robots 與 sitemap。
 
 ## 9. 開啟功能
