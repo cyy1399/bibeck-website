@@ -1,19 +1,22 @@
 import { brandConfig } from "@/config/brand";
 
-export const BYBIT_REGISTER = "https://partner.bybit.com/b/t00000016";
+export const BYBIT_REGISTER = process.env.NEXT_PUBLIC_BYBIT_REFERRAL_URL ?? "https://partner.bybit.com/b/t00000016";
+export const LINE_OFFICIAL_URL = process.env.NEXT_PUBLIC_LINE_OFFICIAL_URL ?? "https://lin.ee/6y7TnUP";
 export const REBATE_LOGIN = "https://bybackoffice.com/user-login";
 export const REBATE_APPLICATION_URL = "/apply/bybit";
 export const REBATE_BACKOFFICE_URL = process.env.NEXT_PUBLIC_REBATE_BACKOFFICE_URL ?? REBATE_LOGIN;
 export const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? brandConfig.publicEmails.support;
 export const BUSINESS_EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL ?? brandConfig.internalEmails.business;
 const businessMailto = (subject: string, body: string) => `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-export const HIGH_VOLUME_MAILTO = businessMailto("BiBeck｜高交易量方案洽談", `您好，我想了解 BiBeck 高交易量方案。
+export const HIGH_VOLUME_EMAIL_MAILTO = businessMailto("BiBeck｜高交易量方案洽談", `您好，我想了解 BiBeck 高交易量方案。
 
 最近 30 日交易量：
 主要交易產品：
 目前 VIP 等級：
 Maker / Taker 使用情況：
 其他需求：`);
+/** @deprecated Use LINE_OFFICIAL_URL for primary high-volume contact. */
+export const HIGH_VOLUME_MAILTO = LINE_OFFICIAL_URL;
 export const BUSINESS_PARTNERSHIP_MAILTO = businessMailto("BiBeck｜商務合作洽談", `您好，我想了解 BiBeck 商務合作方案。
 
 合作類型：

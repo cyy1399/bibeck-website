@@ -1,29 +1,18 @@
 import type { Metadata } from "next";
+import { PageHero } from "@/components/Sections";
 import { SiteShell } from "@/components/SiteShell";
-import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
+import { brandConfig, mailto } from "@/config/brand";
+import { BUSINESS_EMAIL, LINE_OFFICIAL_URL } from "@/config/links";
 import { createPageMetadata } from "@/config/seo";
-import { TranslatedText } from "@/components/TranslatedText";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "聯絡 BiBeck",
-  description: "聯絡 BiBeck 一般服務、網站內容與返傭客服支援窗口。",
-  path: "/contact",
-});
-
-const contacts = [
-  { label: "一般聯絡", description: "網站內容、品牌合作、媒體與其他一般問題", email: brandConfig.publicEmails.contact, href: contactMailto, action: "寄送一般詢問" },
-  { label: "客服支援", description: "返傭帳戶、綁定、註冊、身分驗證、返傭後台與計算器問題", email: brandConfig.publicEmails.support, href: supportMailto, action: "聯絡客服支援" },
-] as const;
+export const metadata: Metadata = createPageMetadata({ title: "聯絡 BiBeck", description: "透過 BiBeck LINE 官方帳號聯絡返傭客服、高交易量或商務合作；Email 保留作正式紀錄與備用聯絡。", path: "/contact" });
 
 export default function ContactPage() {
-  return (
-    <SiteShell>
-      <section className="page-hero relative border-b border-white/10 px-5 pb-16 pt-36 sm:px-8 lg:pt-44">
-        <div className="mx-auto max-w-7xl"><p className="eyebrow"><TranslatedText message="nav.contact" /></p><h1 className="mt-6 text-4xl font-semibold text-white sm:text-6xl"><TranslatedText message="page.contactTitle" /></h1><p className="mt-6 max-w-2xl text-base leading-8 text-secondary"><TranslatedText message="page.contactDescription" /></p></div>
-      </section>
-      <section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-5xl"><div className="grid gap-5 md:grid-cols-2">
-        {contacts.map((contact) => <article key={contact.email} className="min-w-0 border border-white/10 bg-[#141414] p-7"><p className="eyebrow">{contact.label}</p><h2 className="mt-6 text-xl font-semibold text-white">{contact.description}</h2><a href={contact.href} className="mt-6 block break-all text-base font-semibold text-gold hover:text-[var(--gold-soft)]">{contact.email}</a><a href={contact.href} className="button-secondary mt-7 w-full">{contact.action}</a></article>)}
-      </div></div></section>
-    </SiteShell>
-  );
+  return <SiteShell>
+    <PageHero eyebrow="聯絡" title="聯絡 BiBeck" copy="返傭問題、高交易量需求或商務合作，都可以直接透過 LINE 聯絡 BiBeck。" actions={<a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="cta-button button-primary">加入 LINE 官方帳號</a>}/>
+    <section className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+      <article className="border border-gold/40 bg-gold/[0.04] p-7 sm:p-8"><p className="eyebrow">主要聯絡渠道</p><h2 className="mt-5 text-2xl font-semibold">LINE 官方帳號</h2><p className="mt-4 text-sm leading-7 text-secondary">返傭問題、帳戶開通、高交易量與合作洽談。</p><a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="cta-button button-primary mt-7 w-full">加入 LINE 官方帳號</a></article>
+      <article className="border border-white/12 bg-[#111] p-7 sm:p-8"><p className="eyebrow">正式紀錄與備用聯絡</p><h2 className="mt-5 text-2xl font-semibold">Email</h2><p className="mt-4 text-sm leading-7 text-secondary">正式審核、開通通知及商務文件仍使用 Email。</p><div className="mt-6 grid gap-3 text-sm"><a href={mailto(brandConfig.publicEmails.support, "BiBeck 客服支援")} className="text-link break-all">客服：{brandConfig.publicEmails.support}</a><a href={mailto(BUSINESS_EMAIL, "BiBeck 商務合作")} className="text-link break-all">商務：{BUSINESS_EMAIL}</a></div></article>
+    </div></section>
+  </SiteShell>;
 }

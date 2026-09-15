@@ -9,7 +9,6 @@ function validForm(overrides = {}) {
     displayName: "測試交易者",
     contactEmail: "trader@example.com",
     uid: "12345678",
-    applicationType: "standard",
     volumeRange: "under-10m",
     message: "",
     accuracyConfirmed: "true",
