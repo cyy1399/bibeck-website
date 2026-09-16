@@ -25,6 +25,7 @@ export function googleAdminProvider(
     type: "oauth",
     clientId: credentials.clientId,
     clientSecret: credentials.clientSecret,
+    issuer: "https://accounts.google.com",
     authorization: {
       url: "https://accounts.google.com/o/oauth2/v2/auth",
       params: { scope: "openid email profile", prompt: "select_account" },
