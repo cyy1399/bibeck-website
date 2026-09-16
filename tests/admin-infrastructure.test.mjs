@@ -6,6 +6,7 @@ import { isDatabaseConfigured } from "../lib/database-config.ts";
 test("Google 管理員 OAuth 使用明確端點並保留 PKCE 與 state", () => {
   const provider = googleAdminProvider({ clientId: "client-id", clientSecret: "client-secret" });
   assert.equal(provider.type, "oauth");
+  assert.equal(provider.issuer, "https://accounts.google.com");
   assert.equal(provider.authorization.url, "https://accounts.google.com/o/oauth2/v2/auth");
   assert.equal(provider.token, "https://oauth2.googleapis.com/token");
   assert.equal(provider.userinfo, "https://openidconnect.googleapis.com/v1/userinfo");
