@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyButton } from "@/components/AdminCaseActions";
+import { AdminDatabaseSetup } from "@/components/AdminDatabaseSetup";
 import { rebateActivationStatuses, rebateStatusLabels, type RebateActivationStatus } from "@/config/rebate-activation";
 import { requireAdmin } from "@/lib/admin-auth";
 import { listActivationCases } from "@/lib/rebate-case-store";
 import { formatBibeckRebateRate } from "@/lib/bibeck-rebate";
+import { isDatabaseConfigured } from "@/lib/database-config";
 
 export const metadata: Metadata = { title: "Bybit 返傭開通申請｜BiBeck Operations", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminRequestsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   await requireAdmin("/admin/rebate-requests");
+  if (!isDatabaseConfigured()) return <AdminDatabaseSetup />;
   const params = await searchParams;
   const status = rebateActivationStatuses.includes(params.status as RebateActivationStatus) ? params.status as RebateActivationStatus : undefined;
   const page = Math.max(1, Number(params.page) || 1);

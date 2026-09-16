@@ -6,7 +6,9 @@
 
 ## 1. PostgreSQL 與 DATABASE_URL
 
-在正式 Vercel Project 連接受管理 PostgreSQL（建議透過 Vercel Marketplace 的 Neon），取得 pooled TLS `DATABASE_URL`。不要將連線密碼提交至 Git。
+在正式 Vercel Project 的 **Storage / Marketplace** 新增 Neon Postgres，並選擇連接目前的 BiBeck Production Project。Vercel 會將連線資訊注入部署環境；完成後請在 **Settings → Environment Variables** 確認 Production 已有 `DATABASE_URL`。不要複製連線密碼到原始碼或提交至 Git。
+
+環境變數新增後必須重新部署。此時管理頁會顯示「資料庫尚未連接」，直到 Production deployment 實際取得 `DATABASE_URL`。
 
 ## 2. Migration
 
@@ -16,14 +18,14 @@
 pnpm db:migrate
 ```
 
-確認已套用 `0000_chemical_banshee.sql` 與 `0001_bybit_activation_mvp.sql`，並確認 `exchange + normalized_uid` 唯一索引存在。
+確認已依序套用 `drizzle/0000` 至目前最新 migration，並確認 `exchange + normalized_uid` 唯一索引存在。Migration 只需對同一正式資料庫執行一次；不要在 Vercel Build Command 每次自動執行。
 
 ## 3. Google OAuth 與 Auth.js
 
 在 Google Cloud Console 建立 Web OAuth Client：
 
-- Origin：`https://bibeck.com`
-- Redirect URI：`https://bibeck.com/api/auth/callback/google`
+- Origin：`https://www.bibeck.com`
+- Redirect URI：`https://www.bibeck.com/api/auth/callback/google`
 - Vercel：設定 `AUTH_SECRET`、`AUTH_GOOGLE_ID`、`AUTH_GOOGLE_SECRET`
 - Allowlist：`ADMIN_EMAIL_ALLOWLIST=hello@bibeck.com`
 
