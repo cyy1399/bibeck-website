@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
-    title: "BiBeck｜降低每一筆交易成本",
-    description: "比較交易所手續費、取得返傭、降低交易成本。",
+    title: siteTitle,
+    description: siteDescription,
     url: brandConfig.websiteUrl,
     siteName: "BiBeck",
     locale: "zh_TW",
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BiBeck",
-    description: "交易成本計算器與返傭平台",
+    title: siteTitle,
+    description: siteDescription,
     images: [socialImage.url],
   },
   icons: {
