@@ -87,14 +87,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-3 shadow-2xl">
               <Link href={localized("/")} className="mobile-nav-link">Home</Link>
               {navigation.map((group) => (
-                <div key={group.label} className="mobile-nav-group">
-                  <p>{group.label}</p>
+                <details key={group.label} className="mobile-nav-group">
+                  <summary>{group.label}</summary>
                   {group.items.map((item) => item.external ? (
                     <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="mobile-nav-link">{item.label}<span aria-hidden="true">↗</span></a>
                   ) : (
                     <Link key={item.href} href={localized(item.href)} className="mobile-nav-link">{item.label}</Link>
                   ))}
-                </div>
+                </details>
               ))}
               <SettingsMenu mobile />
             </nav>
@@ -126,10 +126,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </address>
           </div>
           <div className="max-w-3xl text-sm leading-7 text-white/48">
-            <p className="text-white/72">BiBeck 提供金錢、投資、加密資產與交易成本相關的知識與工具，內容僅供資訊與教育用途。</p>
-            <p className="mt-3">BiBeck 不提供投資建議、不保證任何獲利，也不保管使用者資產。交易涉及風險，使用者應自行評估並閱讀相關服務條款。</p>
-            <p className="mt-3">BiBeck 為獨立第三方平台，並非由任何交易所擁有、營運或官方背書。部分連結可能為合作夥伴連結，合作關係不會提高使用者原本適用的交易所手續費。</p>
-            <p className="mt-3">各交易所名稱與商標均屬其各自權利人所有。© 2026 BiBeck.</p>
+            <p className="text-white/72">BiBeck 提供金錢、投資、加密資產與交易成本知識及工具，內容僅供資訊與教育用途，不構成投資建議、報酬保證或交易訊號。</p>
+            <p className="mt-3">BiBeck 為獨立第三方平台，不保管資產，也非任何交易所官方。部分連結可能為合作夥伴連結；詳情請參閱揭露與服務條款。© 2026 BiBeck.</p>
           </div>
         </div>
       </footer>

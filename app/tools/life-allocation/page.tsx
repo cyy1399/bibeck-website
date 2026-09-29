@@ -1,9 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JourneyFlow, SectionHeader } from "@/components/Editorial";
 import { PageHero } from "@/components/Sections";
-import { SectionHeader } from "@/components/Editorial";
 import { SiteShell } from "@/components/SiteShell";
 import { createPageMetadata } from "@/config/seo";
-export const metadata: Metadata=createPageMetadata({title:"人生資本配置｜預覽",description:"整理收入、支出、資產、負債與人生狀態，理解下一筆資金可能需要優先完成的任務。",path:"/tools/life-allocation"});
-const groups=[{title:"Facts",items:["月收入與穩定度","必要／非必要支出","現金、存款與投資資產","負債、APR 與每月付款","扶養人口與工作型態"]},{title:"Calculated Results",items:["Financial Runway","流動性狀態","負債負擔","緊急預備金範圍"]},{title:"Model Assumptions",items:["收入中斷情境","必要支出範圍","時間跨度與安全邊際"]},{title:"Personal Choices",items:["風險承受感受","家庭責任與未來計畫","願意接受的波動與取捨"]}] as const;
-export default function LifeAllocationPage(){return <SiteShell><PageHero eyebrow="LIFE ALLOCATION · PREVIEW" title="你的下一筆錢，應該先完成什麼任務？" copy="這是 Phase 1 的產品框架，不會用年齡套公式，也不會輸出特定股票、Crypto 或假精準投資比例。"/><section className="px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><SectionHeader eyebrow="ANALYSIS FRAMEWORK" title="先把事實、計算、假設與選擇分開。"/><div className="mt-10 grid gap-px bg-white/10 md:grid-cols-2">{groups.map(group=><article key={group.title} className="bg-[#111] p-6 sm:p-8"><p className="eyebrow">{group.title}</p><ul className="mt-5 grid gap-3 text-sm leading-7 text-secondary">{group.items.map(item=><li key={item} className="border-l border-white/14 pl-4">{item}</li>)}</ul></article>)}</div><aside className="mt-10 border-l-2 border-gold bg-gold/[0.04] p-6"><h2 className="text-xl font-semibold text-white">目前只是 scaffold</h2><p className="mt-3 max-w-3xl text-sm leading-7 text-secondary">本階段不收集資料、不儲存資料，也不產生個人化投資建議。下一階段會先建立可解釋的模型與邊界測試，再決定互動形式。</p><Link href="/learn/money" className="button-secondary mt-6">先理解 Money 基礎</Link></aside></div></section></SiteShell>}
+
+export const metadata: Metadata = createPageMetadata({ title: "人生資本配置｜預覽", description: "整理收入、支出、資產、負債與人生狀態，理解下一筆資金可能需要優先完成的任務。", path: "/tools/life-allocation" });
+
+const groups = [
+  { title: "Facts", items: ["月收入與穩定度", "必要／非必要支出", "現金、存款與投資資產", "負債、APR 與每月付款", "扶養人口與工作型態"] },
+  { title: "Calculated Results", items: ["Financial Runway", "流動性狀態", "負債負擔", "緊急預備金範圍"] },
+  { title: "Model Assumptions", items: ["收入中斷情境", "必要支出範圍", "時間跨度與安全邊際"] },
+  { title: "Personal Choices", items: ["風險承受感受", "家庭責任與未來計畫", "願意接受的波動與取捨"] },
+] as const;
+
+export default function LifeAllocationPage() {
+  return <SiteShell>
+    <PageHero eyebrow="LIFE ALLOCATION · PREVIEW" title="你的下一筆錢，應該先完成什麼任務？" copy="這是 Phase 1 的教育與分析工具概念，不會用年齡套公式，也不會輸出特定股票、Crypto 或假精準投資比例。"/>
+    <section className="px-5 py-16 sm:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader eyebrow="HOW IT WILL WORK" title="從輸入，到可以解釋的財務優先順序。" copy="工具會先整理可確認的資訊，再分開呈現計算結果、模型假設與個人選擇；不是直接吐出一個看似精準的答案。"/>
+        <JourneyFlow steps={["Inputs", "Analysis", "Financial priorities", "Allocation framework"]}/>
+        <div className="mt-16"><SectionHeader eyebrow="ANALYSIS FRAMEWORK" title="先把事實、計算、假設與選擇分開。"/></div>
+        <div className="mt-10 grid gap-px bg-white/10 md:grid-cols-2">
+          {groups.map((group) => <article key={group.title} className="bg-[#111] p-6 sm:p-8"><p className="eyebrow">{group.title}</p><ul className="mt-5 grid gap-3 text-sm leading-7 text-secondary">{group.items.map((item) => <li key={item} className="border-l border-white/14 pl-4">{item}</li>)}</ul></article>)}
+        </div>
+        <aside className="mt-10 border-l-2 border-gold bg-gold/[0.04] p-6"><h2 className="text-xl font-semibold text-white">目前只是 scaffold</h2><p className="mt-3 max-w-3xl text-sm leading-7 text-secondary">本階段不收集資料、不儲存資料，也不產生個人化投資建議。下一階段會先建立可解釋的模型與邊界測試，再決定互動形式。</p><Link href="/learn/money" className="button-secondary mt-6">先理解 Money 基礎</Link></aside>
+      </div>
+    </section>
+  </SiteShell>;
+}
