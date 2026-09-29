@@ -27,7 +27,7 @@ export function TopicGrid({ topics }: { topics: readonly { title: string; copy: 
 }
 
 export function JourneyFlow({ steps }: { steps: readonly string[] }) {
-  return <ol className="journey-flow mt-12" aria-label="BiBeck 金錢理解路徑">{steps.map((step, index) => <li key={step}><span className="font-mono text-[0.68rem] text-gold">{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></li>)}</ol>;
+  return <ol className={`journey-flow mt-12 ${steps.length <= 4 ? "journey-flow-compact" : ""}`} aria-label="BiBeck 金錢理解路徑">{steps.map((step, index) => <li key={step}><span className="font-mono text-[0.68rem] text-gold">{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></li>)}</ol>;
 }
 
 export function CTASection({ eyebrow, title, copy, children }: { eyebrow: string; title: string; copy: string; children: ReactNode }) {

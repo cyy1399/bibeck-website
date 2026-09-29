@@ -105,29 +105,40 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1}>{children}</main>
 
       <footer className="border-t border-white/10 bg-[#080808]">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.1fr_0.7fr_0.9fr_1.5fr] lg:gap-12">
           <div>
             <div className="flex items-center gap-4"><BrandMark size="large" /><div className="brand-wordmark text-xl font-semibold text-white">BiBeck</div></div>
             <p className="mt-4 max-w-sm text-sm leading-7 text-white/58">理解金錢，做更好的選擇。<br /><span className="text-white/36">Understand money. Make better decisions.</span></p>
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm text-white/54">
+          </div>
+          <nav aria-label="頁尾導覽">
+            <p className="eyebrow">NAVIGATION</p>
+            <div className="mt-5 grid gap-3 text-sm text-white/54">
               <Link href={localized("/learn")} className="hover:text-gold">Learn</Link>
               <Link href={localized("/tools")} className="hover:text-gold">Tools</Link>
               <Link href={localized("/bybit")} className="hover:text-gold">Bybit</Link>
               <Link href={localized("/philosophy")} className="hover:text-gold">About</Link>
-              <Link href="/privacy" className="hover:text-gold">隱私權政策</Link>
-              <Link href="/terms" className="hover:text-gold">使用條款</Link>
-              <Link href="/affiliate-disclosure" className="hover:text-gold">合作連結與佣金揭露</Link>
-              <Link href="/personal-data-notice" className="hover:text-gold">個人資料蒐集告知</Link>
             </div>
-            <address className="mt-7 grid gap-2 not-italic text-sm text-white/54">
+          </nav>
+          <div>
+            <p className="eyebrow">CONTACT</p>
+            <address className="mt-5 grid gap-3 not-italic text-sm text-white/54">
               <a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-gold">LINE 官方帳號</a>
               <a href={contactMailto} className="break-all hover:text-gold">聯絡：{brandConfig.publicEmails.contact}</a>
               <a href={supportMailto} className="break-all hover:text-gold">支援：{brandConfig.publicEmails.support}</a>
             </address>
           </div>
-          <div className="max-w-3xl text-sm leading-7 text-white/48">
-            <p className="text-white/72">BiBeck 提供金錢、投資、加密資產與交易成本知識及工具，內容僅供資訊與教育用途，不構成投資建議、報酬保證或交易訊號。</p>
-            <p className="mt-3">BiBeck 為獨立第三方平台，不保管資產，也非任何交易所官方。部分連結可能為合作夥伴連結；詳情請參閱揭露與服務條款。© 2026 BiBeck.</p>
+          <div>
+            <p className="eyebrow">LEGAL · RISK</p>
+            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/45">
+              <Link href="/privacy" className="hover:text-gold">隱私權政策</Link>
+              <Link href="/terms" className="hover:text-gold">使用條款</Link>
+              <Link href="/affiliate-disclosure" className="hover:text-gold">合作連結與佣金揭露</Link>
+              <Link href="/personal-data-notice" className="hover:text-gold">個人資料蒐集告知</Link>
+            </div>
+            <div className="mt-6 max-w-3xl text-xs leading-6 text-white/42">
+              <p className="text-white/62">BiBeck 提供金錢、投資、加密資產與交易成本知識及工具，內容僅供資訊與教育用途，不構成投資建議、報酬保證或交易訊號。</p>
+              <p className="mt-3">BiBeck 為獨立第三方平台，不保管資產，也非任何交易所官方。部分連結可能為合作夥伴連結；詳情請參閱揭露與服務條款。© 2026 BiBeck.</p>
+            </div>
           </div>
         </div>
       </footer>

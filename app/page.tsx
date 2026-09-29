@@ -8,8 +8,8 @@ export const metadata: Metadata = createPageMetadata({ title: siteTitle, descrip
 
 export default function Home() {
   return <SiteShell>
-    <section className="home-hero relative px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-36 lg:pb-24 lg:pt-40">
-      <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center">
+    <section className="home-hero relative px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-36 lg:pb-20 lg:pt-32">
+      <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center lg:min-h-[48vh]">
         <div className="relative z-10 max-w-4xl">
           <p className="eyebrow">MONEY · INVESTING · CRYPTO</p>
           <h1 className="mt-7 text-balance text-5xl font-semibold leading-[1.04] text-white sm:text-7xl lg:text-[5.2rem]">理解你的錢，<br/>再決定它要去哪裡。</h1>
