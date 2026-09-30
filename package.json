@@ -11,7 +11,8 @@
         "start": "next start",
         "build:sites": "vinext build",
         "test": "pnpm build && pnpm build:sites && node --experimental-strip-types --test tests/*.test.mjs",
-        "lint": "eslint app components config lib db auth.ts --max-warnings=0",
+        "lint": "eslint app components config lib db auth.ts docs/money-model --max-warnings=0",
+        "spec:validate": "node --experimental-strip-types docs/money-model/validation/run-validation.ts",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
         "typecheck": "tsc --noEmit"
