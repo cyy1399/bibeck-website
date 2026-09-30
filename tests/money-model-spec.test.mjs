@@ -3,6 +3,8 @@ import test from "node:test";
 import { validateMoneyModelSpecification } from "../docs/money-model/validation/validate-spec.ts";
 import { syntheticCases } from "../docs/money-model/tests/synthetic-cases.ts";
 import { priorityCollisions } from "../docs/money-model/tests/priority-collisions.ts";
+import { adversarialCases } from "../docs/money-model/tests/adversarial-cases.ts";
+import { auditFindings } from "../docs/money-model/audits/findings.ts";
 
 test("Money Model V1 registries and references are valid", () => assert.deepEqual(validateMoneyModelSpecification(), []));
 test("all 24 synthetic cases preserve every pass/fail dimension", () => {
@@ -12,4 +14,10 @@ test("all 24 synthetic cases preserve every pass/fail dimension", () => {
 test("all four priority collisions include negative assertions", () => {
   assert.equal(priorityCollisions.length, 4);
   for (const item of priorityCollisions) assert.ok(item.expected.forbiddenAllocations.length && item.expected.forbiddenOutputs.length);
+});
+test("adversarial audit exposes real gaps without pretending they are engine passes", () => {
+  assert.equal(adversarialCases.length, 15);
+  assert.ok(adversarialCases.every((item) => item.whyExistingSuiteWasInsufficient && item.forbiddenOutputs.length));
+  assert.equal(auditFindings.filter((item) => item.classification === "BLOCKER").length, 5);
+  assert.ok(auditFindings.filter((item) => item.classification === "BLOCKER").every((item) => item.status === "OPEN"));
 });

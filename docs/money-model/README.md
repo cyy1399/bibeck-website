@@ -72,3 +72,7 @@ pnpm test
 ```
 
 `schemas/` 定義資料合約；`registries/` 保存規則、模型、證據、假設與術語；`tests/` 保存 24 個合成案例與 4 個優先衝突案例；`validation/` 檢查 ID、參照、追溯、來源與資源不變量。
+
+## Adversarial audit status
+
+`ADVERSARIAL_AUDIT.md` 與 `audits/` 記錄 Freeze Blockers、coverage matrix 與 zh-TW 術語審查。15 個額外對抗案例是規格缺口測試，不是 Money Engine 已通過的執行測試。當前狀態明確為 **NOT READY TO FREEZE / NOT READY FOR PRODUCT IMPLEMENTATION**。

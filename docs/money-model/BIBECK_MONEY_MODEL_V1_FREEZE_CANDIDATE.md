@@ -1,6 +1,6 @@
 # BiBeck Money Model V1 Freeze Candidate
 
-狀態：**FREEZE CANDIDATE — 等待人類審閱，尚未成為已驗證財務模型。**
+狀態：**FREEZE CANDIDATE BASELINE — ADVERSARIAL AUDIT 發現 5 個 OPEN BLOCKERS；目前不得凍結或進入產品實作。**
 
 ## 建議凍結
 
@@ -39,4 +39,4 @@
 
 ## 凍結條件
 
-只有在人類產品、財務研究、台灣法遵與工程審閱完成，且所有 registry 狀態與測試追溯一致後，才可將此文件標記為 Frozen。`WORKING` 不等於 `VALIDATED`，`DRAFT` 術語不等於 `APPROVED`。
+除原條件外，必須先解決 `AUD-B001`～`AUD-B005`：可執行規則語意、獨立測試 oracle、resource lineage、claim 時間／來源合約，以及顯式規則排序與 override。只有在人類產品、財務研究、台灣法遵與工程審閱完成，且所有 registry 狀態與測試追溯一致後，才可將此文件標記為 Frozen。`WORKING` 不等於 `VALIDATED`，`DRAFT` 術語不等於 `APPROVED`。

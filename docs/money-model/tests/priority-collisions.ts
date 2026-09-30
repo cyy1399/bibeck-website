@@ -8,6 +8,7 @@ export interface PriorityCollisionFixture {
   expected:{ stage:Stage; severity:Severity; winner:string|null; allocationMode:string; requiredFlags:string[]; forbiddenAllocations:string[]; forbiddenOutputs:string[]; resourceInvariant:boolean; claimInvariant:boolean };
   ruleIds:string[];
 }
+export const collisionSuiteMetadata = { validationLevel:"STRUCTURE_ONLY" as const, requiresReferenceEvaluator:true };
 
 export const priorityCollisions: PriorityCollisionFixture[] = [
   { id:"COLLISION-001",description:"房租與債務加速",competingClaims:["必要房租","債務加速"],availableResources:30000,ruleIds:["R-002","R-003"],expected:{stage:"SURVIVAL",severity:"HIGH",winner:"必要房租",allocationMode:"HARD_CLAIM_FIRST",requiredFlags:["HARD_CLAIM_PRECEDENCE"],forbiddenAllocations:["不得先加速還債而讓必要房租失去資金"],forbiddenOutputs:["不得把房租描述為可選消費"],resourceInvariant:true,claimInvariant:true} },
