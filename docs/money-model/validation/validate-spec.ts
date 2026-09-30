@@ -10,6 +10,10 @@ import { adversarialCases } from "../tests/adversarial-cases.ts";
 import { auditFindings } from "../audits/findings.ts";
 import { ruleCoverage } from "../audits/rule-coverage.ts";
 import { terminologyAudit } from "../audits/terminology-audit.ts";
+import { executableRules } from "../registries/executable-rules.ts";
+import { modelCalculationContracts } from "../registries/model-calculation-contracts.ts";
+import { executableCases } from "../tests/executable-cases.ts";
+import { valueRefs, v1AssumptionConfig, type Condition, type ValueRef } from "../schemas/index.ts";
 
 const duplicates = (ids:string[]) => [...new Set(ids.filter((id,index) => ids.indexOf(id) !== index))];
 const hasHan = (value:string) => /[\u3400-\u9fff]/u.test(value);
@@ -27,7 +31,7 @@ export function validateMoneyModelSpecification(): string[] {
   const ruleIds = new Set(rules.map((item) => item.id));
   const modelIds = new Set(models.map((item) => item.id));
   const fixtures = [...syntheticCases, ...priorityCollisions];
-  const testIds = new Set([...fixtures, ...adversarialCases].map((item) => item.id));
+  const testIds = new Set([...fixtures, ...adversarialCases, ...executableCases].map((item) => item.id));
 
   for (const item of rules) {
     for (const id of item.evidenceIds) if (!evidenceIds.has(id)) issues.push(`${item.id}: invalid evidence ${id}`);
@@ -64,12 +68,11 @@ export function validateMoneyModelSpecification(): string[] {
 
   for (const fixture of syntheticCases) validateAllocations(fixture, issues);
   for (const fixture of syntheticCases) {
-    const validClaims = fixture.claims.every((claim) => claim.amount >= 0 && claim.fundedAmount >= 0 && (claim.fundingStatus === "OVERFUNDED" || claim.fundedAmount <= claim.amount));
+    const validClaims = fixture.claims.every((claim) => claim.amount.status !== "KNOWN" || claim.fundedAmount.status !== "KNOWN" || (claim.amount.data.value >= 0 && claim.fundedAmount.data.value >= 0 && (claim.fundingStatus === "OVERFUNDED" || claim.fundedAmount.data.value <= claim.amount.data.value)));
     if (validClaims !== fixture.expected.claimInvariant) issues.push(`${fixture.id}: claim invariant expectation does not match fixture`);
   }
   for (const output of decisionOutputExamples) {
-    const copy = [output.primaryBottleneck,...output.reasoning,...output.missingInformation,output.mainQuest?.title ?? "",output.mainQuest?.why ?? "",output.mainQuest?.action ?? "",output.mainQuest?.expectedImpact ?? "",output.mainQuest?.verificationMethod ?? ""].join(" ");
-    if (!hasHan(copy)) issues.push("DecisionOutput example user-facing copy must be zh-TW");
+    if (hasHan(JSON.stringify(output))) issues.push("DecisionOutput domain example must not contain raw zh-TW copy");
     if (output.sideMissions.length > 3) issues.push("DecisionOutput example exceeds side mission limit");
   }
   const findingIds = new Set(auditFindings.map((item) => item.id));
@@ -84,7 +87,7 @@ export function validateMoneyModelSpecification(): string[] {
     if (auditCase.ruleIds.length === 0 && auditCase.findingIds.length === 0) issues.push(`${auditCase.id}: must identify a rule or an explicit specification gap`);
   }
   for (const finding of auditFindings.filter((item) => item.classification === "BLOCKER")) {
-    if (finding.status !== "OPEN") issues.push(`${finding.id}: blocker must remain OPEN until actually resolved`);
+    if (finding.status !== "FIXED") issues.push(`${finding.id}: executable hardening blocker remains unresolved`);
     if (!finding.adversarialTests.some((id) => testIds.has(id))) issues.push(`${finding.id}: blocker lacks adversarial coverage`);
   }
   const coverageIds = new Set(ruleCoverage.map((item) => item.ruleId));
@@ -108,7 +111,30 @@ export function validateMoneyModelSpecification(): string[] {
   if (!assumptions.find((item) => item.id === "AS-001" && item.status === "RESEARCH_REQUIRED" && item.confidence === "LOW")) issues.push("AS-001 must remain LOW / RESEARCH_REQUIRED");
   if (JSON.stringify(rules).includes("8%")) issues.push("unverified universal 8% threshold is forbidden");
   for (const record of evidence) if (record.sourceUrl && record.requiresVerification) issues.push(`${record.id}: unverified URL must not be recorded as a citation`);
+  const executableIds=new Set(executableRules.map((item)=>item.id));
+  for (const id of ruleIds) if (!executableIds.has(id)) issues.push(`${id}: missing executable rule`);
+  for (const rule of executableRules) {
+    if (!ruleIds.has(rule.id)) issues.push(`${rule.id}: executable rule has no registry record`);
+    for (const ref of collectConditionRefs(rule.condition)) if (!valueRefs.includes(ref)) issues.push(`${rule.id}: invalid ValueRef ${ref}`);
+    if (hasHan(JSON.stringify(rule.result))) issues.push(`${rule.id}: executable result contains raw zh-TW copy`);
+    if (rule.evidenceIds.length+rule.assumptionIds.length===0) issues.push(`${rule.id}: executable rule lacks provenance`);
+  }
+  const activeModelIds=new Set(models.filter((item)=>item.active).map((item)=>item.id));
+  const contractIds=new Set(modelCalculationContracts.map((item)=>item.modelId));
+  for (const id of activeModelIds) if (!contractIds.has(id)) issues.push(`${id}: active model lacks calculation contract`);
+  for (const contract of modelCalculationContracts) {
+    if (!activeModelIds.has(contract.modelId)) issues.push(`${contract.modelId}: calculation contract is not an active model`);
+    if (!contract.inputs.length||!contract.outputs.length||!contract.calculationSemantics.length) issues.push(`${contract.modelId}: incomplete calculation contract`);
+  }
+  if (v1AssumptionConfig.minimumViableLiquidityMonths.assumptionId!=="AS-001"||v1AssumptionConfig.minimumViableLiquidityMonths.confidence!=="LOW"||v1AssumptionConfig.minimumViableLiquidityMonths.status!=="RESEARCH_REQUIRED") issues.push("AS-001 configuration provenance changed");
   return issues;
+}
+
+function collectConditionRefs(condition:Condition):ValueRef[] {
+  if (condition.kind==="exists"||condition.kind==="missing") return [condition.ref];
+  if (condition.kind==="not") return collectConditionRefs(condition.condition);
+  if (condition.kind==="logical") return condition.conditions.flatMap(collectConditionRefs);
+  return [condition.left,...(condition.right.kind==="ref"?[condition.right.ref]:[])];
 }
 
 function validateAllocations(fixture:MoneyModelFixture, issues:string[]) {
@@ -119,7 +145,7 @@ function validateAllocations(fixture:MoneyModelFixture, issues:string[]) {
     const resource = fixture.resources.find((item) => item.id === allocation.resourceId);
     if (!resource) { issues.push(`${fixture.id}: allocation references unknown resource`); valid = false; continue; }
     const total = allocations.filter((item) => item.resourceId === resource.id).reduce((sum,item) => sum + item.amount,0);
-    if (total > resource.amount) valid = false;
+    if (resource.amount.status !== "KNOWN" || total > resource.amount.data.value) valid = false;
     if (assigned.has(allocation.capitalAssignmentId)) valid = false;
     assigned.add(allocation.capitalAssignmentId);
   }

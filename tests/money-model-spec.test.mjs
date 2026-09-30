@@ -15,9 +15,9 @@ test("all four priority collisions include negative assertions", () => {
   assert.equal(priorityCollisions.length, 4);
   for (const item of priorityCollisions) assert.ok(item.expected.forbiddenAllocations.length && item.expected.forbiddenOutputs.length);
 });
-test("adversarial audit exposes real gaps without pretending they are engine passes", () => {
+test("adversarial audit findings remain traceable after executable hardening", () => {
   assert.equal(adversarialCases.length, 15);
   assert.ok(adversarialCases.every((item) => item.whyExistingSuiteWasInsufficient && item.forbiddenOutputs.length));
   assert.equal(auditFindings.filter((item) => item.classification === "BLOCKER").length, 5);
-  assert.ok(auditFindings.filter((item) => item.classification === "BLOCKER").every((item) => item.status === "OPEN"));
+  assert.ok(auditFindings.filter((item) => item.classification === "BLOCKER").every((item) => item.status === "FIXED"));
 });

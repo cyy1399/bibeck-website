@@ -1,6 +1,6 @@
 # BiBeck Money Model V1 Freeze Candidate
 
-狀態：**FREEZE CANDIDATE BASELINE — ADVERSARIAL AUDIT 發現 5 個 OPEN BLOCKERS；目前不得凍結或進入產品實作。**
+狀態：**READY FOR FREEZE CANDIDATE REVIEW — 5 個結構性 blockers 已由 executable specification hardening 解決；仍不是 production Money Engine。**
 
 ## 建議凍結
 
@@ -39,4 +39,4 @@
 
 ## 凍結條件
 
-除原條件外，必須先解決 `AUD-B001`～`AUD-B005`：可執行規則語意、獨立測試 oracle、resource lineage、claim 時間／來源合約，以及顯式規則排序與 override。只有在人類產品、財務研究、台灣法遵與工程審閱完成，且所有 registry 狀態與測試追溯一致後，才可將此文件標記為 Frozen。`WORKING` 不等於 `VALIDATED`，`DRAFT` 術語不等於 `APPROVED`。
+`AUD-B001`～`AUD-B005` 已分別由 typed predicate AST、獨立 expected fixtures/reference evaluator、resource lineage validator、hardened claim contract，以及 phase/order/override/merge contract 解決。下一步是人類 Freeze Candidate review；只有產品、財務研究、台灣法遵與工程審閱完成後，才可標記為 Frozen。`WORKING` 不等於 `VALIDATED`，`DRAFT` 術語不等於 `APPROVED`，Research Required thresholds 仍不得變成財務事實。

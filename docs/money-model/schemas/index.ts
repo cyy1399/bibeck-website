@@ -9,3 +9,8 @@ export * from "./evidence-record.schema.ts";
 export * from "./assumption-record.schema.ts";
 export * from "./decision-rule.schema.ts";
 export * from "./terminology.schema.ts";
+export * from "./domain-value.schema.ts";
+export * from "./predicate.schema.ts";
+export * from "./executable-rule.schema.ts";
+export * from "./normalized-context.schema.ts";
+export * from "./reference-output.schema.ts";

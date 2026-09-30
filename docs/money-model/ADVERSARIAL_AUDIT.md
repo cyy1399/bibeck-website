@@ -1,7 +1,9 @@
 # BiBeck Money Model V1 Adversarial Audit
 
 日期：2026-09-30
-結論：**NOT READY TO FREEZE / NOT READY FOR PRODUCT IMPLEMENTATION**
+原始結論：**NOT READY TO FREEZE / NOT READY FOR PRODUCT IMPLEMENTATION**
+
+後續狀態：`EXECUTION_CONTRACT.md` 所述 executable hardening 已解決 `AUD-B001`～`AUD-B005` 的結構性問題。此文件保留原始 adversarial findings；目前重新評估為 **READY FOR FREEZE CANDIDATE REVIEW**，但仍未 Frozen，也不是 production implementation。
 
 本審查刻意嘗試破壞 `FinancialProfile → Metrics → Resources → Claims → Rules → Bottleneck → Priority → Mission`。目前規格能描述這條路徑，但還不能確定性執行整條路徑。
 
@@ -93,6 +95,6 @@ AS-001、AS-004 保持 Research Required。AS-005、AS-006 是 UX 約束；AS-00
 
 目前 schemas/registries 未依賴 React，基本 domain portability 良好。但 raw zh-TW 字串直接進入 DecisionOutput／Mission，且規則仍是自然語言字串。若照此實作，web、iOS、Android 會各自重寫規則判斷或 copy mapping。實作前應凍結 platform-neutral predicate AST/decision table、copy key/parameters、serialization version 與 deterministic output contract。
 
-## Freeze decision
+## Original freeze decision
 
-Freeze Candidate 可保留作為設計基線，但不可升級為 Frozen。必須先解決 `AUD-B001`～`AUD-B005`；Research Required 項目不得用猜測補齊。完成後才應建立最小 reference evaluator，讓 valid fixtures 真正執行並讓 invalid fixtures 只以預期原因失敗。
+原審查要求先解決 `AUD-B001`～`AUD-B005`；目前已建立 typed predicates、deterministic resolver、獨立 reference evaluator、lineage/assignment invariants 與 semantic output。Research Required 項目仍未以猜測補齊，必須在 Freeze review 中保持隔離。

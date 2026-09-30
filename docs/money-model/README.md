@@ -75,4 +75,4 @@ pnpm test
 
 ## Adversarial audit status
 
-`ADVERSARIAL_AUDIT.md` 與 `audits/` 記錄 Freeze Blockers、coverage matrix 與 zh-TW 術語審查。15 個額外對抗案例是規格缺口測試，不是 Money Engine 已通過的執行測試。當前狀態明確為 **NOT READY TO FREEZE / NOT READY FOR PRODUCT IMPLEMENTATION**。
+`ADVERSARIAL_AUDIT.md` 與 `audits/` 保留 Freeze Blockers、coverage matrix 與 zh-TW 術語審查歷史。Executable hardening 已加入 predicate AST、reference evaluator、resource lineage、hardened claims、semantic output 與獨立 expected fixtures。當前狀態為 **READY FOR FREEZE CANDIDATE REVIEW**，不是 production Money Engine，也未授權產品實作。
