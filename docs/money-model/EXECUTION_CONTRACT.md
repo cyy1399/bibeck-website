@@ -2,6 +2,8 @@
 
 此合約只供規格驗證，不接入網站或 production runtime。
 
+2026-10-01 正式審閱狀態：**REJECT FREEZE**。下列 pipeline／override／merge 描述是候選要求，不代表 reference implementation 已完整做到。實際缺口與最小修復見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md` 的 FR-B001～FR-B005。
+
 ## Evaluation pipeline
 
 1. Profile normalization produces explicit `DomainValue<T>` values and lineage-aware resources/claims.
@@ -34,7 +36,7 @@ Matched results 不互相覆蓋資料：findings、flags、blockers、missing in
 
 ## Stage and severity
 
-Stage 取自 ordered primary candidate，表示最高優先未解決問題領域。Side-only finding 不單獨建立 stage。`NO_MISSION` 可合法產生 `OPTIONALITY`。
+Stage 取自 ordered primary candidate，表示最高優先未解決問題領域。Side-only finding 不單獨建立 stage。現有 reference 的 `NO_MISSION → OPTIONALITY` 僅為未驗證 mapping，不能由「沒有任務」證明 Optionality；FR-B001 要求完整性／衝突檢查，Optionality 資格仍為 Research Required。
 
 Severity 從所有 matched findings 獨立取最高語意級別：`CRITICAL > HIGH > MEDIUM > LOW > NONE`。它不由資產、Stage 或社會地位推導。
 

@@ -75,4 +75,4 @@ pnpm test
 
 ## Adversarial audit status
 
-`ADVERSARIAL_AUDIT.md` 與 `audits/` 保留 Freeze Blockers、coverage matrix 與 zh-TW 術語審查歷史。Executable hardening 已加入 predicate AST、reference evaluator、resource lineage、hardened claims、semantic output 與獨立 expected fixtures。當前狀態為 **READY FOR FREEZE CANDIDATE REVIEW**，不是 production Money Engine，也未授權產品實作。
+`ADVERSARIAL_AUDIT.md` 與 `audits/` 保留原始審查歷史。Executable hardening 已加入 predicate AST、reference evaluator、resource lineage、claims 與獨立 expected fixtures，但不能由既有測試通過推定全部 blockers 已解決。2026-10-01 正式結論為 **REJECT FREEZE**；見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md` 的 FR-B001～FR-B005。完整 domain contract 尚未 Frozen，不授權產品實作、merge 或部署。

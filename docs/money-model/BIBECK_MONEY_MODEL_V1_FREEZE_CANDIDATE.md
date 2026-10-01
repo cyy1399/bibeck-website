@@ -1,8 +1,10 @@
 # BiBeck Money Model V1 Freeze Candidate
 
-狀態：**READY FOR FREEZE CANDIDATE REVIEW — 5 個結構性 blockers 已由 executable specification hardening 解決；仍不是 production Money Engine。**
+狀態：**REJECT FREEZE — 完整 Money Model v1 domain contract 尚有 FR-B001～FR-B005 結構性 blockers，不得開始 MVP implementation。**
 
-## 建議凍結
+正式結論與逐項分類見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md`。下列歷史「建議凍結」不是核准清單；實際僅凍結 review 所列的狹窄 primitives／fixture format。財務研究、台灣法規與產品實作均未因此完成。
+
+## 原始建議凍結範圍（未獲完整核准）
 
 - 五層架構與 MVP 系統邊界。
 - Financial Profile 核心 schema 與 `DataPoint<T>` 來源追蹤。
@@ -39,4 +41,4 @@
 
 ## 凍結條件
 
-`AUD-B001`～`AUD-B005` 已分別由 typed predicate AST、獨立 expected fixtures/reference evaluator、resource lineage validator、hardened claim contract，以及 phase/order/override/merge contract 解決。下一步是人類 Freeze Candidate review；只有產品、財務研究、台灣法遵與工程審閱完成後，才可標記為 Frozen。`WORKING` 不等於 `VALIDATED`，`DRAFT` 術語不等於 `APPROVED`，Research Required thresholds 仍不得變成財務事實。
+`969e43a` 已加入 typed predicate AST、獨立 fixtures/reference evaluator、resource validator、claim shape 與 execution contract。正式 review 仍重現 no-mission 清空修復任務、未知資料 HIGH confidence、無效資源與不一致 funding 被接受等問題；有限 lifecycle／DecisionOutput `1.0` 補強不足以批准 freeze。須以 executable evidence 關閉 FR-B001～FR-B005 後重新審閱。`WORKING` 不等於 `VALIDATED`，`DRAFT` 不等於 `APPROVED`，Research Required 仍不得變成財務事實。

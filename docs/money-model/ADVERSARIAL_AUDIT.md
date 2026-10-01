@@ -3,7 +3,7 @@
 日期：2026-09-30
 原始結論：**NOT READY TO FREEZE / NOT READY FOR PRODUCT IMPLEMENTATION**
 
-後續狀態：`EXECUTION_CONTRACT.md` 所述 executable hardening 已解決 `AUD-B001`～`AUD-B005` 的結構性問題。此文件保留原始 adversarial findings；目前重新評估為 **READY FOR FREEZE CANDIDATE REVIEW**，但仍未 Frozen，也不是 production implementation。
+後續狀態：`969e43a` 的 executable hardening 將原始 `AUD-B001`～`AUD-B005` 標記為已處理。此文件保留當時的 adversarial findings；2026-10-01 正式 Freeze Review 重現額外結構性反例，因此最新結論為 **REJECT FREEZE**。見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md` 的 FR-B001～FR-B005；歷史 FIXED 標記不是完整契約已通過 freeze 的證明。
 
 本審查刻意嘗試破壞 `FinancialProfile → Metrics → Resources → Claims → Rules → Bottleneck → Priority → Mission`。目前規格能描述這條路徑，但還不能確定性執行整條路徑。
 

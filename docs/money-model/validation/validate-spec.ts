@@ -14,6 +14,7 @@ import { executableRules } from "../registries/executable-rules.ts";
 import { modelCalculationContracts } from "../registries/model-calculation-contracts.ts";
 import { executableCases } from "../tests/executable-cases.ts";
 import { valueRefs, v1AssumptionConfig, type Condition, type ValueRef } from "../schemas/index.ts";
+import { validateClaimLifecycle } from "../reference/claim-validator.ts";
 
 const duplicates = (ids:string[]) => [...new Set(ids.filter((id,index) => ids.indexOf(id) !== index))];
 const hasHan = (value:string) => /[\u3400-\u9fff]/u.test(value);
@@ -70,10 +71,16 @@ export function validateMoneyModelSpecification(): string[] {
   for (const fixture of syntheticCases) {
     const validClaims = fixture.claims.every((claim) => claim.amount.status !== "KNOWN" || claim.fundedAmount.status !== "KNOWN" || (claim.amount.data.value >= 0 && claim.fundedAmount.data.value >= 0 && (claim.fundingStatus === "OVERFUNDED" || claim.fundedAmount.data.value <= claim.amount.data.value)));
     if (validClaims !== fixture.expected.claimInvariant) issues.push(`${fixture.id}: claim invariant expectation does not match fixture`);
+    for (const claim of fixture.claims) for (const code of validateClaimLifecycle(claim).codes) issues.push(`${fixture.id}/${claim.id}: ${code}`);
   }
   for (const output of decisionOutputExamples) {
     if (hasHan(JSON.stringify(output))) issues.push("DecisionOutput domain example must not contain raw zh-TW copy");
     if (output.sideMissions.length > 3) issues.push("DecisionOutput example exceeds side mission limit");
+    if (output.decisionOutputVersion !== "1.0") issues.push("DecisionOutput version must be 1.0");
+    if (output.ruleIds.length === 0) issues.push("DecisionOutput provenance requires at least one rule ID");
+    for (const id of output.ruleIds) if (!ruleIds.has(id)) issues.push(`DecisionOutput references unknown rule ${id}`);
+    for (const id of output.evidenceIds) if (!evidenceIds.has(id)) issues.push(`DecisionOutput references unknown evidence ${id}`);
+    for (const id of output.assumptionIds) if (!assumptionIds.has(id)) issues.push(`DecisionOutput references unknown assumption ${id}`);
   }
   const findingIds = new Set(auditFindings.map((item) => item.id));
   for (const auditCase of adversarialCases) {
