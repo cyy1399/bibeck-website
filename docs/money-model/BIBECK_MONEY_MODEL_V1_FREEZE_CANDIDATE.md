@@ -1,6 +1,6 @@
 # BiBeck Money Model V1 Freeze Candidate
 
-狀態：**REJECT FREEZE — 完整 Money Model v1 domain contract 尚有 FR-B001～FR-B005 結構性 blockers，不得開始 MVP implementation。**
+狀態：本頁保留原始候選範圍；2026-10-01 review 為 **REJECT FREEZE**。最新結構性 blocker closure 重審見 `BIBECK_MONEY_MODEL_V1_FREEZE_BLOCKER_CLOSURE.md`；不得自行開始 MVP implementation。
 
 正式結論與逐項分類見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md`。下列歷史「建議凍結」不是核准清單；實際僅凍結 review 所列的狹窄 primitives／fixture format。財務研究、台灣法規與產品實作均未因此完成。
 

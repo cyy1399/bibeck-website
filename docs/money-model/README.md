@@ -75,4 +75,4 @@ pnpm test
 
 ## Adversarial audit status
 
-`ADVERSARIAL_AUDIT.md` 與 `audits/` 保留原始審查歷史。Executable hardening 已加入 predicate AST、reference evaluator、resource lineage、claims 與獨立 expected fixtures，但不能由既有測試通過推定全部 blockers 已解決。2026-10-01 正式結論為 **REJECT FREEZE**；見 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md` 的 FR-B001～FR-B005。完整 domain contract 尚未 Frozen，不授權產品實作、merge 或部署。
+`ADVERSARIAL_AUDIT.md`、`audits/` 與 `BIBECK_MONEY_MODEL_V1_FREEZE_REVIEW.md` 保留原始 REJECT FREEZE 審查歷史。本輪結構性 blocker closure 的合約、測試證據、三項明確的舊 fixture 修正與最新重審結論見 `BIBECK_MONEY_MODEL_V1_FREEZE_BLOCKER_CLOSURE.md`。Research Required 財務政策仍未凍結；不授權 UI／產品實作、merge 或部署。

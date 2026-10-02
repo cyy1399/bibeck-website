@@ -1,6 +1,6 @@
 import type { ModelRecord } from "../schemas/index.ts";
 const reviewed = "2026-09-30";
-const working = (id:string, purpose:string, dependencies:string[], rules:string[], assumptions:string[], evidence:string[]): ModelRecord => ({ id, name:id, version:"1.0.0", purpose, requiredInputs:["FinancialProfile"], optionalInputs:["verifiedData"], dependencies, calculations:[], rules, outputs:["DecisionOutput"], assumptions, evidence, jurisdiction:["GENERAL","TW"], confidence:"LOW", status:"WORKING", active:true, lastReviewed:reviewed });
+const working = (id:string, purpose:string, dependencies:string[], rules:string[], assumptions:string[], evidence:string[]): ModelRecord => ({ id, name:id, version:"1.1.0", purpose, requiredInputs:["FinancialProfile"], optionalInputs:["verifiedData"], dependencies, calculations:[], rules, outputs:["DecisionOutput"], assumptions, evidence, jurisdiction:["GENERAL","TW"], confidence:"LOW", status:"WORKING", active:true, lastReviewed:"2026-10-02" });
 export const models: ModelRecord[] = [
   working("cash_flow_v1","計算收入、核心流出與每月剩餘。",[],["R-003","R-015"],[],["EV-003"]),
   working("liquidity_v1","按 30/90/365 日義務計算可用安全流動性。",["cash_flow_v1"],["R-004","R-007"],["AS-001"],["EV-002"]),

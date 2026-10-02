@@ -1,3 +1,5 @@
-import type { Confidence, Severity, Stage } from "./common.ts";
+import type { Confidence } from "./common.ts";
 import type { SemanticRef } from "./executable-rule.schema.ts";
-export interface ReferenceDecisionOutput { decisionOutputVersion:"1.0"; currentStage:Stage | null; severity:Severity; primaryBottleneck:SemanticRef | null; mainQuest:SemanticRef | null; sideMissions:SemanticRef[]; findings:SemanticRef[]; flags:string[]; blockers:SemanticRef[]; missingInformation:SemanticRef[]; matchedRuleIds:string[]; evidenceIds:string[]; assumptionIds:string[]; modelConfidence:Confidence; halted:boolean }
+import type { DecisionOutput } from "./decision-output.schema.ts";
+/** The reference evaluator emits the full output, not a smaller UI-facing substitute. */
+export interface ReferenceDecisionOutput extends DecisionOutput { flags:string[]; blockers:SemanticRef[]; matchedRuleIds:string[]; /** Legacy rule-match confidence; complete confidence is confidenceAssessment. */ modelConfidence:Confidence; halted:boolean }

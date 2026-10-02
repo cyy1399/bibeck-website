@@ -2,6 +2,8 @@
 
 Review date: 2026-10-01
 
+Historical baseline review: retained unchanged below. The 2026-10-02 structural closure reassessment and current disposition are in BIBECK_MONEY_MODEL_V1_FREEZE_BLOCKER_CLOSURE.md; this record is not the current implementation report.
+
 Branch: `feature/bibeck-money-model-v1`
 
 Reviewed baseline: `969e43a`; history: `eff6894 → a37d876 → 969e43a`.

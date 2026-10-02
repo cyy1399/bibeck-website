@@ -1,9 +1,6 @@
-export const valueRefs = [
-  "metrics.netMonthlyIncome","metrics.coreMonthlyOutflow","metrics.coreCashFlow","metrics.monthlySurplus","metrics.netWorth","metrics.availableSafetyLiquidity30d","metrics.availableSafetyLiquidity90d","metrics.availableSafetyLiquidity365d","metrics.financialRunwayMonths","metrics.sustainableGoalCapital","metrics.totalGoalClaims","metrics.longTermInvestableCapital","metrics.reportedMonthlySavings",
-  "flags.hasMissingCriticalData","flags.hasDelinquentDebt","flags.hasImmediateFundingGap","flags.hasNegativeCoreCashFlow","flags.hasUnknownDebtCost","flags.hasHighCostDebt","flags.hasMinimumViableLiquidityGap","flags.hasCapitalAssignmentConflict","flags.hasReservedCapital","flags.hasGoalConflict","flags.hasGoalFundingClaim","flags.hasAllocationConflict","flags.hasNegativeNetWorth","flags.hasZeroIncome","flags.hasCashFlowContradiction","flags.hasUnresolvedPriorityClaim",
-  "counts.unresolvedPriorityClaims","config.minimumViableLiquidityMonths",
-] as const;
-export type ValueRef = typeof valueRefs[number];
+import { registeredValueRefs, type RegisteredValueRef } from "../registries/value-refs.ts";
+export const valueRefs = registeredValueRefs;
+export type ValueRef = RegisteredValueRef;
 export type LiteralValue = string | number | boolean | null;
 export type ComparisonOperator = "EQ" | "NE" | "GT" | "GTE" | "LT" | "LTE";
 export type Condition =
@@ -13,3 +10,5 @@ export type Condition =
   | { kind:"exists"; ref:ValueRef }
   | { kind:"missing"; ref:ValueRef };
 export type TruthValue = "TRUE" | "FALSE" | "UNKNOWN";
+export interface PredicateValidationIssue { code:string; path:string; message:string }
+export interface PredicateValidationResult { valid:boolean; errors:PredicateValidationIssue[] }

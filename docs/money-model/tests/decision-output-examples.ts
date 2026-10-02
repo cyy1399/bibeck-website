@@ -1,44 +1,14 @@
 import type { DecisionOutput } from "../schemas/index.ts";
-
-export const decisionOutputExamples: DecisionOutput[] = [
-  {
-    decisionOutputVersion:"1.0",
-    currentStage:"STABILITY",
-    primaryBottleneck:{code:"MISSING_NECESSARY_EXPENSES",params:{}},
-    severity:"MEDIUM",
-    confidence:"HIGH",
-    metrics:[],
-    mainQuest:{id:"mission-discover-expenses",type:"DISCOVER",code:"DISCOVER_NECESSARY_EXPENSES",params:{},whyCode:"WHY_EXPENSES_AFFECT_RUNWAY",actionCode:"ACTION_REVIEW_THREE_MONTHS_EXPENSES",impactCode:"IMPACT_ENABLE_CASH_FLOW_CALCULATION",verification:{type:"DOCUMENTED_VALUE",requirementCodes:["NECESSARY_MONTHLY_EXPENSE_AMOUNT","SOURCE_PERIOD"],evidenceRefs:[]},status:"TODO"},
-    sideMissions:[],
-    options:[],
-    explanationRefs:[{code:"UNKNOWN_VALUES_NOT_GUESSED",params:{}}],
-    ruleIds:["R-001"],
-    evidenceIds:["EV-004"],
-    assumptionIds:[],
-    missingInformation:[{code:"NECESSARY_MONTHLY_EXPENSE",params:{}}],
-    modelVersions:["cash_flow_v1@1.0.0","bottleneck_v1@1.0.0","mission_v1@1.0.0"],
-  },
-  {
-    decisionOutputVersion:"1.0",
-    currentStage:"OPTIONALITY",
-    primaryBottleneck:{code:"NO_UNRESOLVED_PRIORITY_CLAIM",params:{}},
-    severity:"NONE",
-    confidence:"HIGH",
-    metrics:[],
-    mainQuest:null,
-    sideMissions:[],
-    options:[],
-    explanationRefs:[{code:"NO_FINANCIAL_TASK_TODAY",params:{}}],
-    ruleIds:["R-014"],
-    evidenceIds:[],
-    assumptionIds:["AS-008"],
-    missingInformation:[],
-    modelVersions:["bottleneck_v1@1.0.0","mission_v1@1.0.0"],
-  },
+import { evaluateReference } from "../reference/reference-evaluator.ts";
+import { createContext, flag } from "../reference/context-builder.ts";
+import { executableCases } from "./executable-cases.ts";
+/** Rendering examples, not independent executable expected-result oracles. */
+export const decisionOutputExamples:DecisionOutput[]=[
+  evaluateReference(createContext({"flags.hasMissingCriticalData":flag(true)})),
+  evaluateReference(executableCases.find(item=>item.id==="EXEC-016")!.context),
 ];
-
-export const zhTWRenderingExamples:Record<string,string> = {
-  MISSING_NECESSARY_EXPENSES:"必要支出資料不足，暫時無法判斷可支撐期間。",
-  DISCOVER_NECESSARY_EXPENSES:"補齊必要支出",
+export const zhTWRenderingExamples:Record<string,string>={
+  MISSING_CRITICAL_DATA:"必要支出資料不足，暫時無法判斷可支撐期間。",
+  DISCOVER_MISSING_INFORMATION:"補齊必要資料",
   NO_FINANCIAL_TASK_TODAY:"今天沒有需要處理的財務任務。去生活。",
 };

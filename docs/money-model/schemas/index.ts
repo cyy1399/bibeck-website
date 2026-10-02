@@ -14,3 +14,4 @@ export * from "./predicate.schema.ts";
 export * from "./executable-rule.schema.ts";
 export * from "./normalized-context.schema.ts";
 export * from "./reference-output.schema.ts";
+export * from "./provenance.schema.ts";

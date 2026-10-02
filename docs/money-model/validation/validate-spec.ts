@@ -15,12 +15,17 @@ import { modelCalculationContracts } from "../registries/model-calculation-contr
 import { executableCases } from "../tests/executable-cases.ts";
 import { valueRefs, v1AssumptionConfig, type Condition, type ValueRef } from "../schemas/index.ts";
 import { validateClaimLifecycle } from "../reference/claim-validator.ts";
+import { validateCondition } from "../reference/predicate-evaluator.ts";
+import { validateDecisionOutput } from "../reference/output-validator.ts";
+import { evaluateReference } from "../reference/reference-evaluator.ts";
+import { valueRefRegistry } from "../registries/value-refs.ts";
 
 const duplicates = (ids:string[]) => [...new Set(ids.filter((id,index) => ids.indexOf(id) !== index))];
 const hasHan = (value:string) => /[\u3400-\u9fff]/u.test(value);
 
 export function validateMoneyModelSpecification(): string[] {
   const issues:string[] = [];
+  for(const record of [...evidence,...assumptions]) if(!Number.isInteger(record.revision)||record.revision<1)issues.push(`${record.id}: invalid record revision`);
   const collections = { rules, evidence, assumptions, models, terminology };
   for (const [name, records] of Object.entries(collections)) {
     const ids = records.map((record) => "id" in record ? record.id : record.key);
@@ -74,6 +79,7 @@ export function validateMoneyModelSpecification(): string[] {
     for (const claim of fixture.claims) for (const code of validateClaimLifecycle(claim).codes) issues.push(`${fixture.id}/${claim.id}: ${code}`);
   }
   for (const output of decisionOutputExamples) {
+    for(const code of validateDecisionOutput(output).codes) issues.push(`DecisionOutput: ${code}`);
     if (hasHan(JSON.stringify(output))) issues.push("DecisionOutput domain example must not contain raw zh-TW copy");
     if (output.sideMissions.length > 3) issues.push("DecisionOutput example exceeds side mission limit");
     if (output.decisionOutputVersion !== "1.0") issues.push("DecisionOutput version must be 1.0");
@@ -121,6 +127,10 @@ export function validateMoneyModelSpecification(): string[] {
   const executableIds=new Set(executableRules.map((item)=>item.id));
   for (const id of ruleIds) if (!executableIds.has(id)) issues.push(`${id}: missing executable rule`);
   for (const rule of executableRules) {
+    for(const error of validateCondition(rule.condition).errors) issues.push(`${rule.id}: ${error.code}`);
+    if(rule.discoveryCondition) for(const error of validateCondition(rule.discoveryCondition).errors) issues.push(`${rule.id}/discovery: ${error.code}`);
+    if(!rule.version||!Array.isArray(rule.requiredKnownInputs)) issues.push(`${rule.id}: mission requirement/version contract absent`);
+    if(rule.result.mainQuestCandidate&&!rule.result.mainQuestCandidate.code.startsWith("DISCOVER")&&rule.id!=="R-015"&&collectConditionRefs(rule.condition).some(ref=>!rule.requiredKnownInputs.includes(ref))) issues.push(`${rule.id}: missing mission-required input`);
     if (!ruleIds.has(rule.id)) issues.push(`${rule.id}: executable rule has no registry record`);
     for (const ref of collectConditionRefs(rule.condition)) if (!valueRefs.includes(ref)) issues.push(`${rule.id}: invalid ValueRef ${ref}`);
     if (hasHan(JSON.stringify(rule.result))) issues.push(`${rule.id}: executable result contains raw zh-TW copy`);
@@ -134,6 +144,11 @@ export function validateMoneyModelSpecification(): string[] {
     if (!contract.inputs.length||!contract.outputs.length||!contract.calculationSemantics.length) issues.push(`${contract.modelId}: incomplete calculation contract`);
   }
   if (v1AssumptionConfig.minimumViableLiquidityMonths.assumptionId!=="AS-001"||v1AssumptionConfig.minimumViableLiquidityMonths.confidence!=="LOW"||v1AssumptionConfig.minimumViableLiquidityMonths.status!=="RESEARCH_REQUIRED") issues.push("AS-001 configuration provenance changed");
+  for(const [ref,definition]of Object.entries(valueRefRegistry)) {
+    if(ref!==definition.key||!definition.unit||!definition.timeBasis||!definition.description)issues.push(`${ref}: incomplete ValueRef contract`);
+    if(definition.producerModel&&!modelIds.has(definition.producerModel))issues.push(`${ref}: unknown producer model`);
+  }
+  for(const fixture of executableCases) for(const code of validateDecisionOutput(evaluateReference(fixture.context)).codes)issues.push(`${fixture.id}/complete-output: ${code}`);
   return issues;
 }
 
