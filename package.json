@@ -15,7 +15,8 @@
         "spec:validate": "node --experimental-strip-types docs/money-model/validation/run-validation.ts",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "typecheck:money-model": "tsc --project tsconfig.money-model.json"
     },
     "dependencies": {
         "drizzle-orm": "0.45.2",
