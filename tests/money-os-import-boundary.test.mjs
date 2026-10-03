@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
+import { frozenFiles } from "./money-os/frozen-runtime-manifest.mjs";
 
 const root = fileURLToPath(new URL("../lib/money-model/", import.meta.url));
 const entry = path.join(root, "arithmetic", "decimal-arithmetic.ts");
@@ -41,12 +42,18 @@ function dependencies(sourceFile) {
 function forbiddenGlobals(sourceFile) {
   const forbidden = new Set([
     "React", "window", "document", "navigator", "localStorage", "sessionStorage",
-    "process", "Deno", "Bun", "Date", "performance", "fetch", "XMLHttpRequest",
+    "process", "Deno", "Bun", "performance", "fetch", "XMLHttpRequest",
     "crypto", "console", "setTimeout", "setInterval", "globalThis", "eval", "Function",
   ]);
   const found = [];
   const visit = (node) => {
     if (ts.isIdentifier(node) && forbidden.has(node.text)) found.push(node.text);
+    if (ts.isIdentifier(node) && node.text === "Date") {
+      const parent = node.parent;
+      const explicitParse = ts.isPropertyAccessExpression(parent) && parent.expression === node && parent.name.text === "parse";
+      const explicitDate = ts.isNewExpression(parent) && parent.expression === node && parent.arguments?.length === 1;
+      if (!explicitParse && !explicitDate) found.push("Date");
+    }
     if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) &&
       node.expression.text === "Math" && node.name.text === "random") found.push("Math.random");
     ts.forEachChild(node, visit);
@@ -66,10 +73,17 @@ test("S00: frozen arithmetic body is unchanged, independently of the wrapper", (
     "eaf8401c2a9987765ee6b44a19f1ed1f21e8322a93d9970d08d078457de15b40");
 });
 
-test("S00: every portable module and transitive dependency stays within the pure TS boundary", () => {
+test("S00/S01: every portable module and dependency stays inside the pure TS boundary", () => {
   const files = sourceFiles(root);
-  assert.deepEqual(files.map((file) => path.relative(root, file).split(path.sep).join("/")),
-    ["arithmetic/decimal-arithmetic.ts"], "S00 must not quietly start S01 or add another abstraction");
+  const migrated = frozenFiles.filter(({path}) => !path.includes("/reference/") || [
+    "profile-normalizer", "input-value", "resource-validator", "claim-validator", "claim-fulfillment",
+    "predicate-evaluator", "reference-evaluator", "output-validator",
+  ].some(name => path.endsWith("/" + name + ".ts"))).map(({path}) => path.replace("docs/money-model/", "").replace("schemas/", "contracts/").replace("reference/", "runtime/"));
+  assert.deepEqual(files.map(file => path.relative(root, file).split(path.sep).join("/")).sort(), [
+    ...migrated, "arithmetic/decimal-arithmetic.ts", "index.ts", "registries/runtime-bundle.ts",
+    "registries/baseline-manifest.ts", "runtime/context-seed.ts", "runtime/input-validation.ts",
+    "runtime/analyze-financial-profile.ts",
+  ].sort(), "Only the authorized S01 domain modules may join S00");
   const visited = new Set();
   const visit = (file) => {
     assert.ok(inside(file), "Outside portable domain: " + file);
@@ -101,6 +115,8 @@ test("S00: boundary scanner covers imports, re-exports, import types and dynamic
   assert.deepEqual(forbiddenGlobals(parse("guard.ts",
     "Date.now(); process.env.VALUE; window.location; Math.random();")),
   ["Date", "process", "window", "Math.random"]);
+  assert.deepEqual(forbiddenGlobals(parse("guard.ts", "new Date(); Date(); Date.UTC(2026, 0); const clock = Date;")), ["Date", "Date", "Date", "Date"]);
+  assert.deepEqual(forbiddenGlobals(parse("guard.ts", "Date.parse(asOf); new Date(calendar).toISOString();")), []);
 });
 
 test("S00: old reference file contains only the explicit compatibility re-export", () => {
@@ -134,8 +150,8 @@ test("S00: public API is only the two frozen number-based arithmetic functions",
 test("S00: targeted typecheck cannot inherit DOM, Node or Next ambient globals", () => {
   const config = JSON.parse(read(fileURLToPath(new URL("../tsconfig.money-model.json", import.meta.url))));
   assert.equal(config.extends, undefined);
-  assert.equal(config.compilerOptions.target, "ES2020");
-  assert.deepEqual(config.compilerOptions.lib, ["ES2020"]);
+  assert.equal(config.compilerOptions.target, "ES2022");
+  assert.deepEqual(config.compilerOptions.lib, ["ES2022"]);
   assert.deepEqual(config.compilerOptions.types, []);
   assert.equal(config.compilerOptions.strict, true);
   assert.equal(config.compilerOptions.noEmit, true);

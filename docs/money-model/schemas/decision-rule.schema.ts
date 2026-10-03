@@ -1,3 +1,2 @@
-import type { Confidence, Jurisdiction, Severity, Stage } from "./common.ts";
-import type { PriorityClass } from "./financial-claim.schema.ts";
-export interface DecisionRule { id: string; name: string; purpose: string; requiredInputs: string[]; conditions: string[]; priorityClass: PriorityClass; result: string; stageImpact: Stage; severityImpact: Severity; mainQuestCandidate: string | null; sideMissionCandidates: string[]; evidenceIds: string[]; assumptionIds: string[]; confidence: Confidence; jurisdiction: Jurisdiction[]; version: "1.0"; status: "WORKING" | "RESEARCH_REQUIRED"; priorityChanging: boolean; tests: string[] }
+/** Compatibility only: the portable domain owns this frozen contract. */
+export * from "../../../lib/money-model/contracts/decision-rule.schema.ts";
