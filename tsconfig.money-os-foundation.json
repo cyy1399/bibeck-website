@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.money-os.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": [
+    "lib/money-os/adapters/**/*.ts",
+    "lib/money-os/contracts/errors.ts",
+    "lib/money-os/contracts/source.ts",
+    "lib/money-os/contracts/producer-manifest.ts"
+  ]
+}

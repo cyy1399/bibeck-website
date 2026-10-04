@@ -17,7 +17,8 @@
         "db:migrate": "drizzle-kit migrate",
         "typecheck": "tsc --noEmit",
         "typecheck:money-model": "tsc --project tsconfig.money-model.json",
-        "typecheck:money-os": "tsc --project tsconfig.money-os.json"
+        "typecheck:money-os": "tsc --project tsconfig.money-os.json",
+        "typecheck:money-os-foundation": "tsc --project tsconfig.money-os-foundation.json"
     },
     "dependencies": {
         "drizzle-orm": "0.45.2",

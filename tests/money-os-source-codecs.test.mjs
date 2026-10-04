@@ -162,14 +162,19 @@ test("S02 S01 integration: all A–F decisions remain unchanged through scalar c
     assert.deepEqual(analyzeFinancialProfile(f.profile,f.options,moneyModelV1Bundle),before,id);
   }
 });
-test("S02 scope/import/compile guards: codecs plus explicitly authorized S03, no framework/logs",()=>{
+test("S02 foundation scope/import guards remain intact alongside explicitly authorized S04",()=>{
   const root=fileURLToPath(new URL("../lib/money-os/",import.meta.url));const list=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?list(path.join(dir,e.name)):[path.join(dir,e.name)]);
-  const files=list(root);assert.deepEqual(files.map(f=>path.relative(root,f).replaceAll("\\","/")).sort(),["adapters/claim-producer.ts","adapters/domain-value-codec.ts","adapters/money-codec.ts","adapters/producer-catalog.ts","adapters/profile-adapter.ts","adapters/resource-producer.ts","adapters/time-codec.ts","contracts/errors.ts","contracts/producer-manifest.ts","contracts/source.ts"]);
+  const foundation=["adapters/claim-producer.ts","adapters/domain-value-codec.ts","adapters/money-codec.ts","adapters/producer-catalog.ts","adapters/profile-adapter.ts","adapters/resource-producer.ts","adapters/time-codec.ts","contracts/errors.ts","contracts/producer-manifest.ts","contracts/source.ts"];
+  const files=list(root).filter(f=>foundation.includes(path.relative(root,f).replaceAll("\\","/")));
+  assert.deepEqual(files.map(f=>path.relative(root,f).replaceAll("\\","/")).sort(),foundation);
   assert.ok(Object.isFrozen(SOURCE_FIELDS));for(const fields of Object.values(SOURCE_FIELDS))assert.ok(Object.isFrozen(fields));
   for(const f of files){const ast=ts.createSourceFile(f,readFileSync(f,"utf8"),ts.ScriptTarget.ES2022,true);
     const visit=n=>{if(ts.isImportDeclaration(n)){assert.ok(n.moduleSpecifier.text.startsWith("."));assert.ok(!/docs|server|presentation|application/.test(n.moduleSpecifier.text));}
       if(ts.isCallExpression(n))assert.notEqual(n.expression.kind,ts.SyntaxKind.ImportKeyword);
       if(ts.isIdentifier(n))assert.ok(!["parseFloat","window","document","fetch","process","console","require","eval"].includes(n.text),f+":"+n.text);ts.forEachChild(n,visit);};visit(ast);}
-  const cfg=JSON.parse(readFileSync(new URL("../tsconfig.money-os.json",import.meta.url),"utf8"));assert.equal(cfg.compilerOptions.target,"ES2022");assert.deepEqual(cfg.compilerOptions.types,[]);assert.deepEqual(cfg.compilerOptions.lib,["ES2022","ES2022.Intl"]);
+  const cfg=JSON.parse(readFileSync(new URL("../tsconfig.money-os.json",import.meta.url),"utf8"));assert.equal(cfg.compilerOptions.target,"ES2022");assert.deepEqual(cfg.compilerOptions.types,["node"]);assert.deepEqual(cfg.compilerOptions.lib,["ES2022","ES2022.Intl"]);
   assert.ok(cfg.include.includes("lib/money-os/**/*.ts"));assert.ok(cfg.include.includes("messages/money-os/**/*.ts"));
+  const foundationCfg=JSON.parse(readFileSync(new URL("../tsconfig.money-os-foundation.json",import.meta.url),"utf8"));
+  assert.equal(foundationCfg.extends,"./tsconfig.money-os.json");assert.deepEqual(foundationCfg.compilerOptions.types,[]);
+  assert.ok(foundationCfg.include.includes("lib/money-os/adapters/**/*.ts"));assert.ok(!foundationCfg.include.includes("lib/money-os/application/**/*.ts"));
 });

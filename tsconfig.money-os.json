@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "ES2022.Intl"],
-    "types": [],
+    "types": ["node"],
     "strict": true,
     "noEmit": true,
     "module": "esnext",
