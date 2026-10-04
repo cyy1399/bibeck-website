@@ -27,7 +27,7 @@ function utf8Bytes(input: string): number {
 }
 
 /** Guard before serialization or reading any nested properties (including getters/toJSON). */
-function boundedJson(input: unknown): CodecResult<true> {
+export function boundedJson(input: unknown): CodecResult<true> {
   let nodes = 0, bytes = 0;
   const ancestors = new Set<object>();
   const visit = (value: unknown, depth: number): string | undefined => {

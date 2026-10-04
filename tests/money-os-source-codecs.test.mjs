@@ -162,9 +162,9 @@ test("S02 S01 integration: all A–F decisions remain unchanged through scalar c
     assert.deepEqual(analyzeFinancialProfile(f.profile,f.options,moneyModelV1Bundle),before,id);
   }
 });
-test("S02 scope/import/compile guards: no S03+, framework, logs or alternative arithmetic",()=>{
+test("S02 scope/import/compile guards: codecs plus explicitly authorized S03, no framework/logs",()=>{
   const root=fileURLToPath(new URL("../lib/money-os/",import.meta.url));const list=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?list(path.join(dir,e.name)):[path.join(dir,e.name)]);
-  const files=list(root);assert.deepEqual(files.map(f=>path.relative(root,f).replaceAll("\\","/")).sort(),["adapters/domain-value-codec.ts","adapters/money-codec.ts","adapters/time-codec.ts","contracts/errors.ts","contracts/source.ts"]);
+  const files=list(root);assert.deepEqual(files.map(f=>path.relative(root,f).replaceAll("\\","/")).sort(),["adapters/claim-producer.ts","adapters/domain-value-codec.ts","adapters/money-codec.ts","adapters/producer-catalog.ts","adapters/profile-adapter.ts","adapters/resource-producer.ts","adapters/time-codec.ts","contracts/errors.ts","contracts/producer-manifest.ts","contracts/source.ts"]);
   assert.ok(Object.isFrozen(SOURCE_FIELDS));for(const fields of Object.values(SOURCE_FIELDS))assert.ok(Object.isFrozen(fields));
   for(const f of files){const ast=ts.createSourceFile(f,readFileSync(f,"utf8"),ts.ScriptTarget.ES2022,true);
     const visit=n=>{if(ts.isImportDeclaration(n)){assert.ok(n.moduleSpecifier.text.startsWith("."));assert.ok(!/docs|server|presentation|application/.test(n.moduleSpecifier.text));}
