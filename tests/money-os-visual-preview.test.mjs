@@ -6,6 +6,7 @@ import { request } from "node:http";
 import { analyzeScenario, scenarios, findScenario } from "../preview/money-os-visual-v0/scenarios.ts";
 import { renderPreview, escapeHtml } from "../preview/money-os-visual-v0/render.ts";
 import { createReviewServer } from "../preview/money-os-visual-v0/server.mjs";
+import { buildReviewOutput } from "../preview/money-os-visual-v0/export-review.mjs";
 import { command, prepare } from "./money-os/service-fixtures.mjs";
 
 const visibleText = html => html.replace(/<[^>]*>/gu, " ");
@@ -30,6 +31,47 @@ for (const id of ["A", "B", "C", "D", "E", "F"]) {
 test("preview passes unmodified A-E fixtures through the S04 service", async () => {
   for (const id of ["A", "B", "C", "D", "E"]) assert.deepEqual(await analyzeScenario(id), await prepare(command(id)));
   assert.deepEqual(await analyzeScenario("F"), await analyzeScenario("F"));
+});
+test("desktop and mobile share one primary navigation with no gamified visible copy", async () => {
+  for (const scenario of scenarios) {
+    const html = renderPreview(await analyzeScenario(scenario.id), scenario);
+    assert.equal((html.match(/<nav\b/gu) ?? []).length, 1);
+    assert.match(html, /<nav aria-label="Money OS 導覽"><a class="brand" href="\/"/u);
+    assert.doesNotMatch(html, /sidebar|MainQuestCard/u);
+    assert.doesNotMatch(visibleText(html), /\b(?:main\s*quest|quest|quests|XP|level|achievement)\b/iu);
+  }
+  assert.match(renderPreview(await analyzeScenario("A"), findScenario("A")), /small-label">優先任務</u);
+});
+test("review date is the fixture-derived DTO basis, never a fabricated runtime update", async () => {
+  const result = await analyzeScenario("A");
+  const render = () => renderPreview(result, findScenario("A"));
+  const date = result.value.workspace.basis.asOf;
+  assert.ok(render().includes(`合成資料基準日 <time datetime="${date}">${date}</time>`));
+  result.value.workspace.basis.asOf = "2031-02-14";
+  assert.ok(render().includes('<time datetime="2031-02-14">2031-02-14</time>'));
+  assert.doesNotMatch(visibleText(render()), /最後更新|2025\/10\/05/u);
+});
+test("hosted review changes only the location disclaimer, not S04 financial output", async () => {
+  const result = await analyzeScenario("A");
+  const before = structuredClone(result);
+  const local = renderPreview(result, findScenario("A"));
+  const hosted = renderPreview(result, findScenario("A"), "HOSTED_REVIEW");
+  assert.equal(hosted, local.replace("僅限本機審閱", "僅供 Preview 審閱"));
+  assert.deepEqual(result, before);
+});
+test("static review exports only real synthetic projections and read-only asset routes", async () => {
+  const { files, config } = await buildReviewOutput();
+  assert.equal(files.size, 9);
+  assert.equal(config.version, 3);
+  assert.equal(config.functions, undefined);
+  for (const scenario of scenarios) {
+    assert.equal(files.get(`${scenario.id}.html`), renderPreview(await analyzeScenario(scenario.id), scenario, "HOSTED_REVIEW"));
+    assert.ok(config.routes.some(route => route.dest === `/${scenario.id}.html` && route.has?.[0].value === scenario.id));
+  }
+  assert.ok(config.routes.some(route => route.status === 405 && route.methods.includes("POST")));
+  assert.equal(config.routes.at(-1).status, 404);
+  assert.doesNotMatch(JSON.stringify(config), /api|functions|crons/u);
+  assert.deepEqual([...files.keys()].sort(), ["A.html", "B.html", "C.html", "D.html", "E.html", "F.html", "FAILURE.html", "interactions.js", "styles.css"]);
 });
 test("unknown APR renders as unknown, not zero, and exposes real Discover dependencies", async () => {
   const result = await analyzeScenario("C");
@@ -119,6 +161,9 @@ test("CLI refuses normal/production startup and preview introduces no production
     assert.notEqual(child.status, 0);
     assert.match(child.stderr, /Local review only; production is prohibited/u);
   }
+  const exporter = spawnSync(process.execPath, ["--experimental-strip-types", "preview/money-os-visual-v0/export-review.mjs", "--preview-review"], { env: { ...process.env, NODE_ENV: "production" }, encoding: "utf8", timeout: 5000 });
+  assert.notEqual(exporter.status, 0);
+  assert.match(exporter.stderr, /production is prohibited/u);
   const dir = new URL("../preview/money-os-visual-v0/", import.meta.url);
   for (const name of await readdir(dir)) {
     if (!/\.(?:ts|js|mjs)$/u.test(name)) continue;

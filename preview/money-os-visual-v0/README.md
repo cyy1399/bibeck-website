@@ -17,6 +17,15 @@ a manufactured HIGH_COST action. D/E do not imply universal financial health.
 FAILURE uses the existing partial-expenses runtime failure and shows safe diagnostics.
 All results remain unpublished. The current S04 copy is deliberately not rewritten.
 
+Founder polish: a single named header navigation is shared by desktop/mobile;
+there is no sidebar or second primary navigation in this actual V0 checkout.
+The render-only card is named PriorityTaskCard and visible ACTION wording is
+「優先任務」; the existing S04 mainQuest contract is unchanged.
+The displayed date is explicitly 「合成資料基準日」 from WorkspaceDto.basis.asOf,
+originating in tests/money-os/fixtures/golden-cases.ts (2026-10-02), not runtime
+today, a last-update clock, or a hardcoded 2025/10/05 UI string. Production routes
+never import this test harness. Changing the DTO date changes the rendered date.
+
 Verification: `pnpm typecheck:money-os-preview`, `pnpm lint:money-os-preview`,
 and `node --experimental-strip-types --test tests/money-os-visual-preview.test.mjs`.
 Production regression still uses the unchanged `pnpm test` build/test pipeline.
@@ -36,6 +45,17 @@ copy can repeat the title, and some producer-limit copy is still technical.
 The preview shows these DTO strings unchanged rather than hiding uncertainty or
 rewriting frozen conclusions. Product copy/policy review remains separate.
 
+Authorized hosted review is a separate static artifact, not a production route:
+`node --experimental-strip-types preview/money-os-visual-v0/export-review.mjs --preview-review`.
+This generates seven pages from the same S04 projections, CSS/JS, read-only routes,
+noindex/security headers, and a commit manifest under ignored `.artifacts/`.
+It refuses a production environment or a different branch. No secrets/env files,
+server functions, financial input endpoint, auth, or database are exported.
+Use the existing linked project with `vercel deploy --prebuilt --target preview`
+from `.artifacts/money-os-visual-v0/vercel-review`; never use `--prod`, promote,
+production aliases, or change project settings. Existing deployment protection
+remains enabled. The hosted banner says Preview review, not local-only review.
+
 Delete this directory, its preview test/config, and preview scripts to remove the
 milestone. S00–S04 and production routes remain unchanged. This preview does not
-complete or replace S05–S10, and grants no deployment or real-data access.
+complete or replace S05–S10, and grants no production deployment or real-data access.

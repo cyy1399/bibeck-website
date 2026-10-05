@@ -28,11 +28,20 @@ try {
       await page.locator("h1").waitFor();
       await page.evaluate(() => document.fonts.ready);
       assert.equal(await page.locator("h1").count(), 1);
+      assert.equal(await page.getByRole("navigation", { name: "Money OS 導覽" }).count(), 1);
+      assert.equal(await page.locator("nav a").count(), 1);
+      assert.equal(await page.locator(".sidebar").count(), 0);
+      assert.doesNotMatch(await page.locator("body").innerText(), /\b(?:main\s*quest|quest|XP|level|achievement)\b/iu);
+      if (scenario !== "FAILURE") {
+        const date = page.locator(".basis-note time");
+        assert.equal(await date.innerText(), await date.getAttribute("datetime"));
+        assert.match(await page.locator(".basis-note").innerText(), /合成資料基準日/u);
+      }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${scenario}/${width} overflow`);
       assert.equal(await page.evaluate(() => localStorage.length + sessionStorage.length), 0);
       assert.deepEqual(await context.cookies(), []);
       const heading = await page.locator("h1").innerText();
-      results.push({ scenario, width, heading, horizontalOverflow: false });
+      results.push({ scenario, width, heading, horizontalOverflow: false, primaryNavigations: 1, dateSource: scenario === "FAILURE" ? "not applicable" : "synthetic DTO basis" });
       await page.screenshot({ path: resolve(output, `${scenario}-${width}-full.png`), fullPage: true });
       if (scenario === "A") {
         await page.screenshot({ path: resolve(output, `A-${width}-viewport.png`) });
@@ -60,6 +69,8 @@ try {
       }
     }
     await page.goto(`${target.origin}/`);
+    await page.getByRole("link", { name: "BiBeck Money OS", exact: true }).focus();
+    assert.equal(await page.locator("nav a").evaluate(element => getComputedStyle(element).outlineStyle !== "none"), true);
     await page.locator("#scenario").focus();
     assert.equal(await page.locator("#scenario").evaluate(element => getComputedStyle(element).outlineStyle !== "none"), true);
     await page.locator("#scenario").selectOption("C");
