@@ -5,9 +5,6 @@ import { usePathname } from "next/navigation";
 import { currencies, type CurrencyCode } from "@/config/currencies";
 import { useCurrency } from "@/components/PreferencesProvider";
 
-const mobileCurrencyCodes = new Set(["USDT", "USDC", "USD", "TWD"]);
-const mobileCurrencies = currencies.filter((item) => mobileCurrencyCodes.has(item.code));
-
 export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -47,7 +44,7 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
       <details className="mobile-nav-group">
         <summary>設定</summary>
         <div className="grid grid-cols-2 gap-1 px-1 pb-2" role="radiogroup" aria-label="顯示貨幣">
-          {mobileCurrencies.map((item) => <Choice key={item.code} active={currency === item.code} label={item.code} detail={item.displayName} onClick={() => setCurrency(item.code as CurrencyCode)} />)}
+          {currencies.map((item) => <Choice key={item.code} active={currency === item.code} label={item.code} detail={item.displayName} onClick={() => setCurrency(item.code as CurrencyCode)} />)}
         </div>
       </details>
     );

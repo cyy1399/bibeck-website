@@ -20,6 +20,8 @@ export interface NormalizationOptions {
   resources?:FinancialResource[];
   assignments?:CapitalAssignment[];
   claims?:FinancialClaim[];
+  /** Source identities only; this does not certify unsupported FinancialClaim policy. */
+  claimOrigins?:{claimId:string;sourceCollection:"expenses"|"liabilities"|"obligations"|"goals";sourceId:string}[];
 }
 export interface NormalizationTrace {
   ref:ValueRef;
@@ -251,6 +253,9 @@ export function normalizeProfile(profile:FinancialProfile,options:NormalizationO
     claimPaths.push(`claims.${claim.id}.amount`,`claims.${claim.id}.fundedAmount`);
   }
   resourcePaths.push(...claimPaths);
+  for (const origin of options.claimOrigins??[]) {
+    for (const key of ["sourceCollection","sourceId"] as const) capture(`claimOrigins.${origin.claimId}.${key}`,origin[key],resourcePaths);
+  }
   const snapshotAssets=profile.assets.map((asset) => ({...asset,currentValue:readAtSnapshot(asset.currentValue),...(asset.availableEconomicValue === undefined?{}:{availableEconomicValue:readAtSnapshot(asset.availableEconomicValue)})}));
   const resourceValidation=validateResourceLineage(snapshotAssets,resources,assignments,{incomeIds:profile.income.map(({id}) => id),claims:options.claims,asOf:options.asOf});
   const unresolvedResourceCodes=new Set(["ASSET_VALUE_UNCALCULABLE","RESOURCE_AMOUNT_UNCALCULABLE","CAPITAL_ASSIGNMENT_AMOUNT_UNCALCULABLE","AVAILABLE_ECONOMIC_VALUE_UNCALCULABLE","JOINT_ASSET_ECONOMIC_SHARE_UNRESOLVED","RESOURCE_AVAILABILITY_DATE_UNRESOLVED","RESOURCE_AMOUNT_AGGREGATE_UNCALCULABLE","CAPITAL_ASSIGNMENT_AGGREGATE_UNCALCULABLE","RESOURCE_PARTITION_AMOUNT_UNCALCULABLE"]);
@@ -288,9 +293,13 @@ export function normalizeProfile(profile:FinancialProfile,options:NormalizationO
   for (const assignment of assignments) {
     if (!liquidAssetIds.has(assignment.assetId)) continue;
     if (assignment.amount.status !== "KNOWN") { liquidValid=false; continue; }
-    if (assignment.purpose === "UNASSIGNED" || assignment.purpose === "SAFETY" && !assignment.claimId) continue;
+    if ((assignment.purpose === "UNASSIGNED" || assignment.purpose === "SAFETY") && !assignment.claimId) continue;
     if (!excludedPartitionIds.has(assignment.id)) reservedTotal=decimalSum([reservedTotal,assignment.amount.data.value]);
-    if (assignment.claimId) claimReservations.set(assignment.claimId,decimalSum([claimReservations.get(assignment.claimId)??0,assignment.amount.data.value]));
+    if (assignment.claimId) {
+      const origin=options.claimOrigins?.find(item=>item.claimId === assignment.claimId);
+      const obligationId=origin?origin.sourceCollection === "obligations"?origin.sourceId:undefined:assignment.claimId;
+      if (obligationId) claimReservations.set(obligationId,decimalSum([claimReservations.get(obligationId)??0,assignment.amount.data.value]));
+    }
   }
   const horizonPaths=profile.obligations.filter((item) => item.required).flatMap((item) => [`obligations.${item.id}.amount`,`obligations.${item.id}.reservedAmount`,`obligations.${item.id}.economicPaymentId`,`obligations.${item.id}.recurrence`,`obligations.${item.id}.required`,`obligations.${item.id}.dueDate`]);
   function obligationsWithin(days:number):{required:number|null;uncovered:number|null} {

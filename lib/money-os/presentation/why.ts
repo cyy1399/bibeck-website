@@ -1,5 +1,5 @@
 import type { DecisionOutput, RuntimeBundle } from "../../money-model/index.ts";
-import type { ConfidenceAssessment, DecisionProvenance } from "../../money-model/contracts/provenance.schema.ts";
+import type { ConfidenceAssessment, DecisionProvenance, InputState } from "../../money-model/contracts/provenance.schema.ts";
 import type { MetricDto, WhyDto } from "../contracts/read-dto.ts";
 import type { SourceBasis } from "../contracts/source.ts";
 import type { Localizer } from "../../../messages/money-os/index.ts";
@@ -7,7 +7,7 @@ import type { MessageKey } from "../../../messages/money-os/keys.ts";
 import { zhTW } from "../../../messages/money-os/zh-TW.ts";
 import { displayInput, projectConfidence } from "./values.ts";
 
-const sourceDescriptor = (path: string, l: Localizer): { label: string; unit: string; mask: boolean } => {
+const sourceDescriptor = (path: string, l: Localizer, records: Record<string, InputState>): { label: string; unit: string; mask: boolean } => {
   const field = path.split(".").at(-1)!;
   const aliases: Record<string, string> = {
     primaryCurrency: "currency", country: "country", primaryCurrencyConfirmed: "currencyBasis", netMonthlyBasisConfirmed: "monthlyBasis",
@@ -18,7 +18,9 @@ const sourceDescriptor = (path: string, l: Localizer): { label: string; unit: st
   const key = ("moneyOs." + (aliases[field]?.startsWith("metric.") ? aliases[field] : "input." + (aliases[field] ?? field))) as MessageKey;
   const label = path.startsWith("completeness.") || path.startsWith("inventory.") ? l.text("moneyOs.input.coverage")
     : Object.hasOwn(zhTW, key) ? l.text(key) : l.text("moneyOs.input.classification");
-  const unit = ["averageMonthlyNetIncome", "minimumMonthlyPayment", "necessaryMonthly", "otherMonthlyRequired", "discretionaryMonthly", "reportedMonthlySavings"].includes(field) ? "MONEY_PER_MONTH"
+  const basis = records[path.replace(/\.amount$/u, ".timeBasis")];
+  const monthlyComponent = path.startsWith("expenses.components.") && field === "amount" && basis?.status === "KNOWN" && basis.value === "MONTHLY";
+  const unit = monthlyComponent || ["averageMonthlyNetIncome", "minimumMonthlyPayment", "necessaryMonthly", "otherMonthlyRequired", "discretionaryMonthly", "reportedMonthlySavings"].includes(field) ? "MONEY_PER_MONTH"
     : ["currentValue", "availableEconomicValue", "balance", "amount", "reservedAmount", "targetAmount", "currentFunding", "fundedAmount"].includes(field) ? "MONEY"
       : ["dueDate", "availableFrom", "targetDate"].includes(field) ? "DATE"
         : ["apr", "nominalRate", "promotionalRate"].includes(field) ? "APR_PERCENT"
@@ -30,7 +32,7 @@ export function projectWhy(output: DecisionOutput, p: DecisionProvenance, confid
   const records = output.evaluation.inputRecords ?? {};
   const allPaths = Object.keys(records);
   const sources = p.sourceInputRefs.map(path => {
-    const d = sourceDescriptor(path, l), state = records[path];
+    const d = sourceDescriptor(path, l, records), state = records[path];
     return { key: "source-" + allPaths.indexOf(path), label: d.label, value: displayInput(state, l, d.mask, path === "profile.primaryCurrency"),
       unit: l.text(("moneyOs.input.unit." + (d.unit === "BOOLEAN" && typeof state.value === "string" ? "CLASSIFICATION" : d.unit)) as MessageKey),
       timeBasis: l.text(d.unit === "MONEY_PER_MONTH" ? "moneyOs.input.basis.MONTHLY" : "moneyOs.input.basis.AS_OF"),

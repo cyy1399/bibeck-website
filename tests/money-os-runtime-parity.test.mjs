@@ -67,7 +67,7 @@ test("S01 parity: critical/scoped correction, tagged unknown and decimal bookkee
   }
 });
 
-test("S01: every migrated contract/registry/body matches pinned source plus explicit injection adapter only",()=>{
+test("S01: pinned contracts/registries/bodies match exactly plus injection and PR23 reservation bookkeeping corrections",()=>{
   const runtimeNames=["profile-normalizer","input-value","resource-validator","claim-validator","claim-fulfillment","predicate-evaluator","reference-evaluator","output-validator"];
   for (const {path} of frozenFiles) {
     if (path.includes("/reference/") && !runtimeNames.some(name=>path.endsWith("/"+name+".ts"))) continue;
@@ -77,6 +77,17 @@ test("S01: every migrated contract/registry/body matches pinned source plus expl
       .replace('import { createContext } from "./context-seed.ts";', 'import { createContext } from "./context-seed.ts";\nimport { assertRegisteredBundle, moneyModelV1Bundle, type RuntimeBundle } from "../registries/runtime-bundle.ts";')
       .replace("options:NormalizationOptions):NormalizationResult {","options:NormalizationOptions,bundle:RuntimeBundle=moneyModelV1Bundle):NormalizationResult {\n  assertRegisteredBundle(bundle);")
       .replace("const context=createContext();","const context=createContext(bundle.config);");
+    if (path.endsWith("/profile-normalizer.ts")) {
+      // Keep the independent frozen oracle/digest unchanged. Allow only these exact
+      // review-proven bookkeeping corrections; all other bytes and baseline outputs stay pinned.
+      const corrections = [
+        ['  claims?:FinancialClaim[];', '  claims?:FinancialClaim[];\n  /** Source identities only; this does not certify unsupported FinancialClaim policy. */\n  claimOrigins?:{claimId:string;sourceCollection:"expenses"|"liabilities"|"obligations"|"goals";sourceId:string}[];'],
+        ['  resourcePaths.push(...claimPaths);', '  resourcePaths.push(...claimPaths);\n  for (const origin of options.claimOrigins??[]) {\n    for (const key of ["sourceCollection","sourceId"] as const) capture(`claimOrigins.${origin.claimId}.${key}`,origin[key],resourcePaths);\n  }'],
+        ['    if (assignment.purpose === "UNASSIGNED" || assignment.purpose === "SAFETY" && !assignment.claimId) continue;', '    if ((assignment.purpose === "UNASSIGNED" || assignment.purpose === "SAFETY") && !assignment.claimId) continue;'],
+        ['    if (assignment.claimId) claimReservations.set(assignment.claimId,decimalSum([claimReservations.get(assignment.claimId)??0,assignment.amount.data.value]));', '    if (assignment.claimId) {\n      const origin=options.claimOrigins?.find(item=>item.claimId === assignment.claimId);\n      const obligationId=origin?origin.sourceCollection === "obligations"?origin.sourceId:undefined:assignment.claimId;\n      if (obligationId) claimReservations.set(obligationId,decimalSum([claimReservations.get(obligationId)??0,assignment.amount.data.value]));\n    }'],
+      ];
+      for (const [before, after] of corrections) { assert.equal(expected.split(before).length, 2, "Each approved correction has exactly one frozen anchor"); expected = expected.replace(before, after); }
+    }
     if (path.endsWith("/reference-evaluator.ts")) expected=expected
       .replace('import { assumptions } from "../registries/assumptions.ts";\nimport { evidence } from "../registries/evidence.ts";\nimport { models } from "../registries/models.ts";', 'import { assumptions as referenceAssumptions } from "../registries/assumptions.ts";\nimport { evidence as referenceEvidence } from "../registries/evidence.ts";\nimport { models as referenceModels } from "../registries/models.ts";\nimport { assertRegisteredBundle, type RuntimeBundle } from "../registries/runtime-bundle.ts";')
       .replace("rules:ExecutableDecisionRule[]=executableRules,metadata?:EvaluationMetadata):ReferenceDecisionOutput {","rules:readonly ExecutableDecisionRule[]=executableRules,metadata?:EvaluationMetadata,bundle?:RuntimeBundle):ReferenceDecisionOutput {\n  if (bundle !== undefined) assertRegisteredBundle(bundle);\n  // Omitted bundle exists only for the old reference API. Production always injects it.\n  const { models, evidence, assumptions }=bundle??{models:referenceModels,evidence:referenceEvidence,assumptions:referenceAssumptions};");

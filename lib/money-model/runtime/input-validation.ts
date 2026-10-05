@@ -43,7 +43,16 @@ export function validateAnalysisInput(profile:FinancialProfile,options:Normaliza
     return v as Record<string,unknown>[];
   };
   const closed=(v:Record<string,unknown>,keys:string[])=>Object.keys(v).every(key=>keys.includes(key));
-  if (!closed(p,["profile","income","expenses","assets","liabilities","obligations","goals","household","reportedMonthlySavings"]) || !closed(o,["snapshotId","asOf","monthlyPeriodId","primaryCurrencyConfirmed","netMonthlyBasisConfirmed","stockAsOfConfirmed","approvedMonthlyIncomeIds","complete","resources","assignments","claims"])) add("UNSUPPORTED_INPUT_FIELD");
+  if (!closed(p,["profile","income","expenses","assets","liabilities","obligations","goals","household","reportedMonthlySavings"]) || !closed(o,["snapshotId","asOf","monthlyPeriodId","primaryCurrencyConfirmed","netMonthlyBasisConfirmed","stockAsOfConfirmed","approvedMonthlyIncomeIds","complete","resources","assignments","claims","claimOrigins"])) add("UNSUPPORTED_INPUT_FIELD");
+  if (o.claimOrigins!==undefined) {
+    const ids=new Set<string>();
+    if (!Array.isArray(o.claimOrigins)) add("INVALID_CLAIM_ORIGINS");
+    else for (const origin of o.claimOrigins) {
+      if (!record(origin) || !closed(origin,["claimId","sourceCollection","sourceId"]) || !text(origin.claimId) || !text(origin.sourceId) || !oneOf(origin.sourceCollection,["expenses","liabilities","obligations","goals"]) || ids.has(origin.claimId as string)) { add("INVALID_CLAIM_ORIGINS"); continue; }
+      ids.add(origin.claimId as string);
+      if (origin.sourceCollection!=="expenses" && (!Array.isArray(p[origin.sourceCollection as string]) || !(p[origin.sourceCollection as string] as unknown[]).some(item=>record(item) && item.id===origin.sourceId))) add("INVALID_CLAIM_ORIGINS");
+    }
+  }
   if (!record(p.profile) || !text(p.profile.primaryCurrency) || !text(p.profile.country)) add("INVALID_PROFILE_IDENTITY");
   if (!text(o.snapshotId) || !text(o.monthlyPeriodId) || !validInputDate(o.asOf)) add("INVALID_OBSERVATION_BASIS");
   for (const field of ["primaryCurrencyConfirmed","netMonthlyBasisConfirmed","stockAsOfConfirmed"]) if (typeof o[field]!=="boolean") add("INVALID_BASIS_ATTESTATION:"+field);

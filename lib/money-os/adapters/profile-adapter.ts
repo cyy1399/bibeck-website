@@ -214,7 +214,9 @@ export function adaptSourceProfile(input: unknown, context: { snapshotId: string
   const options: NormalizationOptions = { snapshotId: context.snapshotId, asOf: basis.asOf, monthlyPeriodId: basis.monthlyPeriodId,
     primaryCurrencyConfirmed: basis.primaryCurrencyConfirmed, netMonthlyBasisConfirmed: basis.netMonthlyBasisConfirmed, stockAsOfConfirmed: basis.stockAsOfConfirmed,
     approvedMonthlyIncomeIds: profile.income.filter(record => source.facts.income![record.id].monthlyBasisConfirmed).map(record => record.id),
-    complete, resources: resources.resources, assignments: resources.assignments, ...(source.claimIntents?.length ? {} : { claims: claims.claims }) };
+    complete, resources: resources.resources, assignments: resources.assignments, ...(source.claimIntents?.length ? {
+      claimOrigins: source.claimIntents.map(({id,sourceCollection,sourceId})=>({claimId:id,sourceCollection,sourceId})),
+    } : { claims: claims.claims }) };
   const answerMetadata: AdaptedProfile["manifest"]["answerMetadata"] = [];
   for (const [collection, names] of Object.entries(SOURCE_FIELDS)) for (const record of collections[collection as keyof DomainCollections] ?? []) for (const name of Object.keys(names)) {
     answerMetadata.push({ fieldRef: `${collection}.${record.id}.${name}`, status: record.values[name]?.value.status ?? "UNANSWERED" });

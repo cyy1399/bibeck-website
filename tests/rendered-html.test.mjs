@@ -4,6 +4,23 @@ import test from "node:test";
 
 async function render(pathname="/") { const workerUrl=new URL("../dist/server/index.js",import.meta.url); workerUrl.searchParams.set("test",process.pid+Date.now()+pathname); const {default:worker}=await import(workerUrl.href); return worker.fetch(new Request("http://localhost"+pathname,{headers:{accept:"text/html"}}),{ASSETS:{fetch:async()=>new Response("Not found",{status:404})}},{waitUntil(){},passThroughOnException(){}}); }
 
+test("PR23: mobile Settings retains all canonical currencies and starts collapsed", async () => {
+  const { currencies } = await import("../config/currencies.ts");
+  const html = await (await render()).text();
+  const settings = html.match(/<details[^>]*>\s*<summary>設定<\/summary>([\s\S]*?)<\/details>/u);
+  assert.ok(settings); assert.doesNotMatch(settings[0].split(">", 1)[0], /\bopen\b/u);
+  assert.equal((settings[1].match(/role="radio"/gu) ?? []).length, currencies.length);
+  for (const { code } of currencies) assert.ok(settings[1].includes(">" + code + "<"), code);
+});
+test("PR23: promoted Learn routes are discoverable through existing site search", async () => {
+  for (const [query, route] of [["Money", "/learn/money"], ["Investing", "/learn/investing"], ["Crypto", "/learn/crypto"], ["Trading", "/learn/trading"], ["Funding Rate", "/learn/trading/funding-rate"], ["現金流", "/learn/money"], ["資金費率", "/learn/trading/funding-rate"]]) {
+    const html = await (await render("/search?q=" + encodeURIComponent(query))).text();
+    assert.match(html, new RegExp('<h2[^>]*>[\\s\\S]*?</h2>'));
+    const results = html.match(/<form[^>]*>[\s\S]*?<\/form>([\s\S]*?)<\/main>/u)?.[1] ?? "";
+    assert.ok(results.includes('href="' + route + '"'), query);
+  }
+});
+
 test("首頁以 Money、Investing、Crypto 與工具為品牌核心",async()=>{const html=await (await render()).text(); for(const text of ["理解你的錢","金錢不是一個數字","你的下一筆錢","Crypto 是資產世界的一部分","交易者到底要看什麼","如果你已經決定交易","BYBIT COST OPTIMIZATION"]) assert.match(html,new RegExp(text)); assert.ok(html.indexOf("理解你的錢") < html.indexOf("BYBIT COST OPTIMIZATION"));});
 test("舊首頁的 Bybit 返傭價值完整移至 Bybit 專區",async()=>{const html=await (await render("/bybit")).text(); for(const text of ["先算清楚成本","1,000 USDT","350 USDT","代理端返傭分潤","87.5%","三步完成","常見問題"]) assert.match(html,new RegExp(text)); assert.doesNotMatch(html,/400 USDT/);});
 test("Learn、Tools 與 Life Allocation 資訊架構可被獨立瀏覽",async()=>{const [learn,tools,allocation]=await Promise.all([render("/learn"),render("/tools"),render("/tools/life-allocation")]); const learnHtml=await learn.text(); const toolsHtml=await tools.text(); const allocationHtml=await allocation.text(); for(const text of ["把複雜拆開","Money","Investing","Crypto","Trading"]) assert.match(learnHtml,new RegExp(text)); assert.match(toolsHtml,/把問題拆成可以理解的輸入與結果/); for(const text of ["LIFE ALLOCATION","Facts","Calculated Results","Model Assumptions","Personal Choices","scaffold"]) assert.match(allocationHtml,new RegExp(text));});
