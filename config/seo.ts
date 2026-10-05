@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { brandConfig } from "@/config/brand";
 
-export const siteTitle = "理解金錢，做更好的選擇｜BiBeck";
-export const siteDescription = "BiBeck 把金錢、投資、Crypto 與交易成本拆解成能理解、能計算、能使用的知識與工具。";
+export const siteTitle = "把金錢變成可以持續升級的系統｜BiBeck";
+export const siteDescription = "BiBeck 以 Money OS 為核心，將日常財務紀錄轉成分析、等級、財務階段與下一步任務，並保留投資、加密資產、交易成本與 Bybit 工具。";
 export const socialImage = {
   url: "/og-seo.png",
   width: 1200,
   height: 630,
-  alt: "BiBeck｜理解金錢，做更好的選擇",
+  alt: "BiBeck｜把金錢變成可以持續升級的系統",
 } as const;
 
 export function createPageMetadata({ title, description, path, absoluteTitle = false }: { title: string; description: string; path: `/${string}` | "/"; absoluteTitle?: boolean }): Metadata {
