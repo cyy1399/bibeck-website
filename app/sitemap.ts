@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { brandConfig } from "@/config/brand";
 
 const publicRoutes = [
-  "", "/learn", "/learn/money", "/learn/investing", "/learn/crypto", "/learn/trading",
+  "", "/money-os", "/learn", "/learn/money", "/learn/investing", "/learn/crypto", "/learn/trading",
   "/learn/trading/funding-rate", "/tools", "/tools/life-allocation", "/bybit",
   "/platforms", "/calculator", "/rebate", "/apply/bybit", "/partners", "/faq", "/contact", "/philosophy",
   "/platform/bybit", "/privacy", "/terms", "/affiliate-disclosure", "/personal-data-notice",
@@ -11,7 +11,7 @@ const publicRoutes = [
 export default function sitemap(): MetadataRoute.Sitemap {
   return publicRoutes.map((route, index) => ({
     url: `${brandConfig.websiteUrl}${route}`,
-    changeFrequency: index === 0 ? "weekly" : "monthly",
-    priority: index === 0 ? 1 : route === "/calculator" || route === "/platform/bybit" ? 0.8 : 0.6,
+    changeFrequency: index === 0 || route === "/money-os" ? "weekly" : "monthly",
+    priority: index === 0 ? 1 : route === "/money-os" ? 0.9 : route === "/calculator" || route === "/platform/bybit" ? 0.8 : 0.6,
   }));
 }
