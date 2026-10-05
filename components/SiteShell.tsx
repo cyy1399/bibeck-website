@@ -12,21 +12,21 @@ type NavItem = { href: string; label: string; external?: boolean };
 
 const navigation = [
   {
-    label: "Learn",
+    label: "學習",
     items: [
       { href: "/learn", label: "學習總覽" },
-      { href: "/learn/money", label: "Money｜金錢系統" },
-      { href: "/learn/investing", label: "Investing｜投資" },
-      { href: "/learn/crypto", label: "Crypto｜加密資產" },
-      { href: "/learn/trading", label: "Trading｜交易" },
+      { href: "/learn/money", label: "金錢系統" },
+      { href: "/learn/investing", label: "投資" },
+      { href: "/learn/crypto", label: "加密資產" },
+      { href: "/learn/trading", label: "交易" },
     ],
   },
   {
-    label: "Tools",
+    label: "工具",
     items: [
       { href: "/tools", label: "工具總覽" },
-      { href: "/tools/life-allocation", label: "Life Allocation" },
-      { href: "/calculator", label: "交易成本計算機" },
+      { href: "/tools/life-allocation", label: "人生資本配置" },
+      { href: "/calculator", label: "交易成本計算器" },
     ],
   },
   {
@@ -40,7 +40,7 @@ const navigation = [
     ],
   },
   {
-    label: "About",
+    label: "關於",
     items: [
       { href: "/philosophy", label: "品牌理念" },
       { href: "/faq", label: "常見問題" },
@@ -64,7 +64,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
 
           <nav aria-label="主要導覽" className="hidden items-center gap-5 lg:flex">
-            <Link href={localized("/")} className="nav-link">Home</Link>
+            <Link href={localized("/")} className="nav-link">首頁</Link>
+            <Link href={localized("/money-os")} className="nav-link text-gold">Money OS</Link>
             {navigation.map((group) => (
               <details key={group.label} className="nav-group">
                 <summary className="nav-link focus-ring">{group.label}</summary>
@@ -85,7 +86,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="menu-icon" aria-hidden="true"><i /><i /><i /></span>
             </summary>
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-3 shadow-2xl">
-              <Link href={localized("/")} className="mobile-nav-link">Home</Link>
+              <Link href={localized("/")} className="mobile-nav-link">首頁</Link>
+              <Link href={localized("/money-os")} className="mobile-nav-link text-gold">Money OS</Link>
               {navigation.map((group) => (
                 <details key={group.label} className="mobile-nav-group">
                   <summary>{group.label}</summary>
@@ -108,19 +110,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.1fr_0.7fr_0.9fr_1.5fr] lg:gap-12">
           <div>
             <div className="flex items-center gap-4"><BrandMark size="large" /><div className="brand-wordmark text-xl font-semibold text-white">BiBeck</div></div>
-            <p className="mt-4 max-w-sm text-sm leading-7 text-white/58">理解金錢，做更好的選擇。<br /><span className="text-white/36">Understand money. Make better decisions.</span></p>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/58">理解金錢，建立系統，持續升級。</p>
           </div>
           <nav aria-label="頁尾導覽">
-            <p className="eyebrow">NAVIGATION</p>
+            <p className="eyebrow">導覽</p>
             <div className="mt-5 grid gap-3 text-sm text-white/54">
-              <Link href={localized("/learn")} className="hover:text-gold">Learn</Link>
-              <Link href={localized("/tools")} className="hover:text-gold">Tools</Link>
+              <Link href={localized("/money-os")} className="hover:text-gold">Money OS</Link>
+              <Link href={localized("/learn")} className="hover:text-gold">學習</Link>
+              <Link href={localized("/tools")} className="hover:text-gold">工具</Link>
               <Link href={localized("/bybit")} className="hover:text-gold">Bybit</Link>
-              <Link href={localized("/philosophy")} className="hover:text-gold">About</Link>
+              <Link href={localized("/philosophy")} className="hover:text-gold">關於 BiBeck</Link>
             </div>
           </nav>
           <div>
-            <p className="eyebrow">CONTACT</p>
+            <p className="eyebrow">聯絡</p>
             <address className="mt-5 grid gap-3 not-italic text-sm text-white/54">
               <a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-gold">LINE 官方帳號</a>
               <a href={contactMailto} className="break-all hover:text-gold">聯絡：{brandConfig.publicEmails.contact}</a>
@@ -128,7 +131,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </address>
           </div>
           <div>
-            <p className="eyebrow">LEGAL · RISK</p>
+            <p className="eyebrow">法律與風險</p>
             <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/45">
               <Link href="/privacy" className="hover:text-gold">隱私權政策</Link>
               <Link href="/terms" className="hover:text-gold">使用條款</Link>
