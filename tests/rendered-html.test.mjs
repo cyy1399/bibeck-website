@@ -4,7 +4,27 @@ import test from "node:test";
 
 async function render(pathname="/") { const workerUrl=new URL("../dist/server/index.js",import.meta.url); workerUrl.searchParams.set("test",process.pid+Date.now()+pathname); const {default:worker}=await import(workerUrl.href); return worker.fetch(new Request("http://localhost"+pathname,{headers:{accept:"text/html"}}),{ASSETS:{fetch:async()=>new Response("Not found",{status:404})}},{waitUntil(){},passThroughOnException(){}}); }
 
-test("首頁以 35% 具體返傭價值、透明分配與 Quick Calculator 為核心",async()=>{const html=await (await render()).text(); for(const text of ["把你付出去的交易手續費，拿回","1,000 USDT","350 USDT","算算我能拿回多少","代理端返傭分潤","87.5%"]) assert.match(html,new RegExp(text)); assert.doesNotMatch(html,/400 USDT/);});
+test("PR23: mobile Settings retains all canonical currencies and starts collapsed", async () => {
+  const { currencies } = await import("../config/currencies.ts");
+  const html = await (await render()).text();
+  const settings = html.match(/<details[^>]*>\s*<summary>設定<\/summary>([\s\S]*?)<\/details>/u);
+  assert.ok(settings); assert.doesNotMatch(settings[0].split(">", 1)[0], /\bopen\b/u);
+  assert.equal((settings[1].match(/role="radio"/gu) ?? []).length, currencies.length);
+  for (const { code } of currencies) assert.ok(settings[1].includes(">" + code + "<"), code);
+});
+test("PR23: promoted Learn routes are discoverable through existing site search", async () => {
+  for (const [query, route] of [["Money", "/learn/money"], ["Investing", "/learn/investing"], ["Crypto", "/learn/crypto"], ["Trading", "/learn/trading"], ["Funding Rate", "/learn/trading/funding-rate"], ["現金流", "/learn/money"], ["資金費率", "/learn/trading/funding-rate"]]) {
+    const html = await (await render("/search?q=" + encodeURIComponent(query))).text();
+    assert.match(html, new RegExp('<h2[^>]*>[\\s\\S]*?</h2>'));
+    const results = html.match(/<form[^>]*>[\s\S]*?<\/form>([\s\S]*?)<\/main>/u)?.[1] ?? "";
+    assert.ok(results.includes('href="' + route + '"'), query);
+  }
+});
+
+test("首頁以 Money、Investing、Crypto 與工具為品牌核心",async()=>{const html=await (await render()).text(); for(const text of ["理解你的錢","金錢不是一個數字","你的下一筆錢","Crypto 是資產世界的一部分","交易者到底要看什麼","如果你已經決定交易","BYBIT COST OPTIMIZATION"]) assert.match(html,new RegExp(text)); assert.ok(html.indexOf("理解你的錢") < html.indexOf("BYBIT COST OPTIMIZATION"));});
+test("舊首頁的 Bybit 返傭價值完整移至 Bybit 專區",async()=>{const html=await (await render("/bybit")).text(); for(const text of ["先算清楚成本","1,000 USDT","350 USDT","代理端返傭分潤","87.5%","三步完成","常見問題"]) assert.match(html,new RegExp(text)); assert.doesNotMatch(html,/400 USDT/);});
+test("Learn、Tools 與 Life Allocation 資訊架構可被獨立瀏覽",async()=>{const [learn,tools,allocation]=await Promise.all([render("/learn"),render("/tools"),render("/tools/life-allocation")]); const learnHtml=await learn.text(); const toolsHtml=await tools.text(); const allocationHtml=await allocation.text(); for(const text of ["把複雜拆開","Money","Investing","Crypto","Trading"]) assert.match(learnHtml,new RegExp(text)); assert.match(toolsHtml,/把問題拆成可以理解的輸入與結果/); for(const text of ["LIFE ALLOCATION","Facts","Calculated Results","Model Assumptions","Personal Choices","scaffold"]) assert.match(allocationHtml,new RegExp(text));});
+test("知識文章模板包含固定閱讀結構、來源與更新日期",async()=>{const html=await (await render("/learn/trading/funding-rate")).text(); for(const text of ["Funding Rate","這是什麼","為什麼要看","怎麼看","什麼時候特別重要","常見誤解","Sources","最後更新"]) assert.match(html,new RegExp(text));});
 test("Bybit 頁以 Standard 與高交易量合作取代公開等級",async()=>{const html=await (await render("/platform/bybit")).text(); for(const text of ["不同交易量，都值得把成本算清楚","35% 標準返傭","高交易量 / 專業交易","取得 35% 返傭帳戶","登入 Bybit 返傭後台","使用你的交易量計算 Bybit 實際成本"]) assert.match(html,new RegExp(text)); assert.doesNotMatch(html,/Trader Status|Member|Pro Status|Black Status/);});
 test("合作頁以 LINE 為主要洽談渠道並保留 Email",async()=>{const html=await (await render("/partners")).text(); for(const text of ["高交易量交易者","商務合作","KOL / 內容創作者","交易社群","量化團隊","交易 Bot","TradingView 創作者","交易工具／服務商","LINE 洽談高交易量方案","LINE 洽談合作","Email 聯絡","business@bibeck.com"]) assert.match(html,new RegExp(text)); assert.match(html,/https:\/\/lin\.ee\/6y7TnUP/); assert.match(html,/mailto:business@bibeck\.com/); assert.doesNotMatch(html,/HIGH VOLUME TRADER|BUSINESS PARTNERSHIP|Revenue Share|Campaign|Landing Page|Trading Community|Quant Team|Trading Tools/);});
 test("FAQ schema 含 35% 金額、收入透明與信任說明",async()=>{const html=await (await render("/faq")).text(); assert.match(html,/FAQPage/); for(const text of ["BiBeck 標準返傭是多少","如果我產生 1,000 USDT 手續費，可以拿回多少","BiBeck 怎麼賺錢","BiBeck 會要求我的密碼或驗證碼嗎"]) assert.match(html,new RegExp(text)); assert.match(html,/40%/);});

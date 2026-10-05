@@ -10,6 +10,12 @@ export const metadata: Metadata = {
 };
 
 const searchablePages = [
+  { href: "/learn", title: "Learn｜學習總覽", description: "Money、Investing、Crypto 與 Trading 的知識與判讀框架。" },
+  { href: "/learn/money", title: "Money｜現金流、財務安全與人生資本", description: "理解收入、支出、資產、負債、現金流與人生資本。" },
+  { href: "/learn/investing", title: "Investing｜投資", description: "理解風險、報酬、資產配置與長期投資選擇。" },
+  { href: "/learn/crypto", title: "Crypto｜加密資產", description: "理解加密資產、平台、保管、槓桿與市場結構。" },
+  { href: "/learn/trading", title: "Trading｜交易", description: "理解市場、執行數據與交易成本的判讀框架。" },
+  { href: "/learn/trading/funding-rate", title: "Funding Rate 是什麼？", description: "理解永續合約資金費率的用途、判讀方式與常見誤解。" },
   { href: "/calculator", title: "交易成本計算器", description: "比較 VIP 等級與 BiBeck 返傭後的實際交易成本。" },
   { href: "/platforms", title: "交易所手續費比較", description: "比較 Bybit、Binance、BingX、Bitget 與 OKX。" },
   { href: "/platform/bybit", title: "Bybit 手續費、VIP 與返傭", description: "查看 Bybit 費率、VIP 級距與 BiBeck 返傭方案。" },

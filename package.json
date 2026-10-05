@@ -11,10 +11,17 @@
         "start": "next start",
         "build:sites": "vinext build",
         "test": "pnpm build && pnpm build:sites && node --experimental-strip-types --test tests/*.test.mjs",
-        "lint": "eslint app components config lib db auth.ts --max-warnings=0",
+        "lint": "eslint app components config lib db auth.ts docs/money-model --max-warnings=0",
+        "spec:validate": "node --experimental-strip-types docs/money-model/validation/run-validation.ts",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "typecheck:money-model": "tsc --project tsconfig.money-model.json",
+        "typecheck:money-os": "tsc --project tsconfig.money-os.json",
+        "typecheck:money-os-foundation": "tsc --project tsconfig.money-os-foundation.json",
+        "preview:money-os": "node --experimental-strip-types preview/money-os-visual-v0/server.mjs --local-review",
+        "typecheck:money-os-preview": "tsc --project tsconfig.money-os-preview.json",
+        "lint:money-os-preview": "eslint preview/money-os-visual-v0 tests/money-os-visual-preview.test.mjs --max-warnings=0"
     },
     "dependencies": {
         "drizzle-orm": "0.45.2",

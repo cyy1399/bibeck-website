@@ -39,13 +39,24 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
     };
   }, [isOpen]);
 
+  if (mobile) {
+    return (
+      <details className="mobile-nav-group">
+        <summary>設定</summary>
+        <div className="grid grid-cols-2 gap-1 px-1 pb-2" role="radiogroup" aria-label="顯示貨幣">
+          {currencies.map((item) => <Choice key={item.code} active={currency === item.code} label={item.code} detail={item.displayName} onClick={() => setCurrency(item.code as CurrencyCode)} />)}
+        </div>
+      </details>
+    );
+  }
+
   return (
-    <div className={`relative ${mobile ? "w-full" : ""}`}>
-      <button ref={triggerRef} type="button" className={mobile ? "mobile-nav-link flex w-full items-center justify-between" : "nav-link whitespace-nowrap"} aria-label="開啟貨幣設定" aria-expanded={isOpen} aria-haspopup="dialog" aria-controls={mobile ? "mobile-currency-menu" : "desktop-currency-menu"} onClick={() => setIsOpen((value) => !value)}>
+    <div className="relative">
+      <button ref={triggerRef} type="button" className="nav-link whitespace-nowrap" aria-label="開啟貨幣設定" aria-expanded={isOpen} aria-haspopup="dialog" aria-controls="desktop-currency-menu" onClick={() => setIsOpen((value) => !value)}>
         設定
       </button>
       {isOpen ? (
-        <div ref={panelRef} id={mobile ? "mobile-currency-menu" : "desktop-currency-menu"} role="dialog" aria-label="貨幣設定" className={`${mobile ? "relative mt-1 w-full" : "absolute right-0 top-[calc(100%+12px)] z-[60] w-[22rem]"} max-w-[calc(100vw-2rem)] border border-white/12 bg-[#101010] p-3 shadow-2xl`}>
+        <div ref={panelRef} id="desktop-currency-menu" role="dialog" aria-label="貨幣設定" className="absolute right-0 top-[calc(100%+12px)] z-[60] w-[22rem] max-w-[calc(100vw-2rem)] border border-white/12 bg-[#101010] p-3 shadow-2xl">
           <p className="px-1 pb-3 text-sm font-semibold text-white">貨幣</p>
           <div className="grid max-h-72 grid-cols-2 gap-1 overflow-y-auto" role="radiogroup" aria-label="顯示貨幣">
             {currencies.map((item) => <Choice key={item.code} active={currency === item.code} label={item.code} detail={item.displayName} onClick={() => setCurrency(item.code as CurrencyCode)} />)}
