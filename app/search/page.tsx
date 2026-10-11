@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/Sections";
+import { moneyStages, stageHref } from "@/config/money-roadmap";
 import { notes, noteHref } from "@/config/notes";
 import { SiteShell } from "@/components/SiteShell";
 
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 const searchablePages = [
+  ...moneyStages.map((stage) => ({ href: stageHref(stage), title: stage.title, description: stage.summary + " " + stage.goal })),
+  { href: "/money", title: "理財全流程", description: "從財務盤點到財富自由的八個階段。" },
   ...notes.map((note) => ({ href: noteHref(note), title: note.title, description: note.summary })),
   { href: "/about", title: "關於 Beck", description: "BiBeck 的學習、整理與實踐。" },
   { href: "/money-os", title: "Money OS｜財務紀錄、分析、等級與主線任務", description: "了解 BiBeck Money OS 的核心循環、等級、財務階段、六大能力與任務系統。" },

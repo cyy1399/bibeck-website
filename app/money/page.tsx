@@ -1,18 +1,8 @@
-import { notes, noteHref } from "@/config/notes";
-import { ContentIndex } from "@/components/ContentIndex";
+import Link from "next/link";
+import { SiteShell } from "@/components/SiteShell";
+import { moneyStages, stageHref } from "@/config/money-roadmap";
 import { createPageMetadata } from "@/config/seo";
-
-export const metadata = createPageMetadata({ title: "理財", description: "從現金流、負債與預備金開始，整理理財知識、金錢系統與配置工具。", path: "/money" });
-
+export const metadata = createPageMetadata({ title: "理財流程", description: "從財務盤點、收支與預算，到安全、資產累積與財富自由的八個階段。", path: "/money" });
 export default function MoneyPage() {
-  return <ContentIndex title="理財" copy="先看懂自己的錢，再決定如何安排生活與未來。" groups={[
-    { title: "最新筆記", items: notes.filter((note) => note.category === "理財").map((note) => ({ title: note.title, copy: note.summary, href: noteHref(note) })) },
-    { title: "知識", items: [
-      { title: "理財基礎", copy: "現金流、續航力、緊急預備金、負債與人生資本。", href: "/learn/money" },
-    ] },
-    { title: "系統與工具", items: [
-      { title: "Money OS", copy: "將財務紀錄轉成狀態、分析與下一步行動，查看目前的設計方向。", href: "/money-os", status: "建置中" },
-      { title: "人生資本配置", copy: "整理金錢、時間與精力的分配。", href: "/tools/life-allocation" },
-    ] },
-  ]} />;
+  return <SiteShell><section className="px-5 pb-20 pt-32 sm:px-8 sm:pt-40"><div className="mx-auto max-w-5xl"><p className="eyebrow">從開始理財，到財富自由</p><h1 className="mt-6 text-4xl font-semibold text-white sm:text-6xl">理財，一步一步來。</h1><p className="mt-6 max-w-2xl text-base leading-8 text-secondary">先知道自己的錢，再安排生活，逐步累積選擇。點選階段，查看要做什麼、做到什麼程度。</p><p className="mt-4 text-sm leading-7 text-white/45">這是 BiBeck 的行動路徑。依現況選擇起點；債務與預備金可並行，紀錄與檢視需持續。</p><ol className="mt-12 border-t border-white/12">{moneyStages.map((stage, index) => <li key={stage.slug}><Link href={stageHref(stage)} className="focus-ring group grid grid-cols-[2rem_1fr_auto] items-center gap-4 border-b border-white/12 py-6 hover:bg-white/[0.025] sm:grid-cols-[3rem_1fr_auto] sm:px-4"><span className="text-sm text-gold">{String(index + 1).padStart(2, "0")}</span><div><h2 className="text-xl font-medium text-white group-hover:text-gold">{stage.title}</h2><p className="mt-2 text-sm leading-7 text-secondary">{stage.summary}</p></div><span aria-hidden="true" className="text-gold">→</span></Link></li>)}</ol><p className="mt-8 text-sm leading-7 text-white/45">階段是行動與檢查清單，不是收入、身價或人生的排名。</p></div></section></SiteShell>;
 }
