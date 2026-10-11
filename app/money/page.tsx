@@ -1,3 +1,4 @@
+import { notes, noteHref } from "@/config/notes";
 import { ContentIndex } from "@/components/ContentIndex";
 import { createPageMetadata } from "@/config/seo";
 
@@ -5,6 +6,7 @@ export const metadata = createPageMetadata({ title: "理財", description: "從�
 
 export default function MoneyPage() {
   return <ContentIndex title="理財" copy="先看懂自己的錢，再決定如何安排生活與未來。" groups={[
+    { title: "最新筆記", items: notes.filter((note) => note.category === "理財").map((note) => ({ title: note.title, copy: note.summary, href: noteHref(note) })) },
     { title: "知識", items: [
       { title: "理財基礎", copy: "現金流、續航力、緊急預備金、負債與人生資本。", href: "/learn/money" },
     ] },

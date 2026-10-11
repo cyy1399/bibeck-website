@@ -1,3 +1,4 @@
+import { notes, noteHref } from "@/config/notes";
 import { ContentIndex } from "@/components/ContentIndex";
 import { createPageMetadata } from "@/config/seo";
 
@@ -5,6 +6,7 @@ export const metadata = createPageMetadata({ title: "投資", description: "整�
 
 export default function InvestingPage() {
   return <ContentIndex title="投資" copy="理解資產、風險與成本，再做自己的判斷。" groups={[
+    { title: "最新筆記", items: notes.filter((note) => note.category === "投資").map((note) => ({ title: note.title, copy: note.summary, href: noteHref(note) })) },
     { title: "知識", items: [
       { title: "投資基礎", copy: "風險與報酬、複利、分散與資金使用時間。", href: "/learn/investing" },
       { title: "加密資產", copy: "Bitcoin、Ethereum、穩定幣與保管風險。", href: "/learn/crypto" },

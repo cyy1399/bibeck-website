@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { currencies, type CurrencyCode } from "@/config/currencies";
 import { useCurrency } from "@/components/PreferencesProvider";
 
-export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
+export function SettingsMenu({ mobile = false, compact = false }: { mobile?: boolean; compact?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -52,8 +52,8 @@ export function SettingsMenu({ mobile = false }: { mobile?: boolean }) {
 
   return (
     <div className="relative">
-      <button ref={triggerRef} type="button" className="nav-link whitespace-nowrap" aria-label="開啟貨幣設定" aria-expanded={isOpen} aria-haspopup="dialog" aria-controls="desktop-currency-menu" onClick={() => setIsOpen((value) => !value)}>
-        設定
+      <button ref={triggerRef} type="button" className={compact ? "focus-ring grid h-11 w-11 place-items-center text-white/60 hover:text-gold" : "nav-link whitespace-nowrap"} aria-label="開啟貨幣設定" aria-expanded={isOpen} aria-haspopup="dialog" aria-controls="desktop-currency-menu" onClick={() => setIsOpen((value) => !value)}>
+        {compact ? <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m9 3-.5 2-2 1.2-2-.5-2 3.5 1.5 1.5v2.6L2.5 15l2 3.5 2-.5 2 1.2.5 2h4l.5-2 2-1.2 2 .5 2-3.5-1.5-1.7v-2.6L20 9.2l-2-3.5-2 .5-2-1.2-.5-2Z" /><circle cx="11" cy="12" r="3" /></svg> : "設定"}
       </button>
       {isOpen ? (
         <div ref={panelRef} id="desktop-currency-menu" role="dialog" aria-label="貨幣設定" className="absolute right-0 top-[calc(100%+12px)] z-[60] w-[22rem] max-w-[calc(100vw-2rem)] border border-white/12 bg-[#101010] p-3 shadow-2xl">

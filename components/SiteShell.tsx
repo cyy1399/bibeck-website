@@ -7,9 +7,10 @@ import { usePreferences } from "@/components/PreferencesProvider";
 import { localizePath } from "@/config/locales";
 
 const navigation = [
-  { href: "/", label: "首頁" },
   { href: "/money", label: "理財" },
   { href: "/investing", label: "投資" },
+  { href: "/about", label: "關於 Beck" },
+  { href: "/search", label: "搜尋" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -30,7 +31,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             {navigation.map((item) => (
               <Link key={item.href} href={localized(item.href)} className="nav-link">{item.label}</Link>
             ))}
-            <SettingsMenu />
+            <SettingsMenu compact />
           </nav>
 
           <details className="mobile-nav relative ml-3 lg:hidden">
