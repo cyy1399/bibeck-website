@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { brandConfig } from "@/config/brand";
 
 const publicRoutes = [
-  "", "/money-os", "/learn", "/learn/money", "/learn/investing", "/learn/crypto", "/learn/trading",
+  "", "/money", "/investing", "/money-os", "/learn", "/learn/money", "/learn/investing", "/learn/crypto", "/learn/trading",
   "/learn/trading/funding-rate", "/tools", "/tools/life-allocation", "/bybit",
   "/platforms", "/calculator", "/rebate", "/apply/bybit", "/partners", "/faq", "/contact", "/philosophy",
   "/platform/bybit", "/privacy", "/terms", "/affiliate-disclosure", "/personal-data-notice",

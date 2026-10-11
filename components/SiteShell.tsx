@@ -4,50 +4,13 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { usePreferences } from "@/components/PreferencesProvider";
-import { brandConfig, contactMailto, supportMailto } from "@/config/brand";
-import { LINE_OFFICIAL_URL, REBATE_BACKOFFICE_URL } from "@/config/links";
 import { localizePath } from "@/config/locales";
 
-type NavItem = { href: string; label: string; external?: boolean };
-
 const navigation = [
-  {
-    label: "學習",
-    items: [
-      { href: "/learn", label: "學習總覽" },
-      { href: "/learn/money", label: "金錢系統" },
-      { href: "/learn/investing", label: "投資" },
-      { href: "/learn/crypto", label: "加密資產" },
-      { href: "/learn/trading", label: "交易" },
-    ],
-  },
-  {
-    label: "工具",
-    items: [
-      { href: "/tools", label: "工具總覽" },
-      { href: "/tools/life-allocation", label: "人生資本配置" },
-      { href: "/calculator", label: "交易成本計算器" },
-    ],
-  },
-  {
-    label: "Bybit",
-    items: [
-      { href: "/bybit", label: "Bybit 專區" },
-      { href: "/rebate", label: "返傭說明" },
-      { href: "/platform/bybit", label: "費率與資格" },
-      { href: "/apply/bybit", label: "申請返傭" },
-      { href: REBATE_BACKOFFICE_URL, label: "返傭後台", external: true },
-    ],
-  },
-  {
-    label: "關於",
-    items: [
-      { href: "/philosophy", label: "品牌理念" },
-      { href: "/faq", label: "常見問題" },
-      { href: "/contact", label: "聯絡我們" },
-    ],
-  },
-] satisfies { label: string; items: NavItem[] }[];
+  { href: "/", label: "首頁" },
+  { href: "/money", label: "理財" },
+  { href: "/investing", label: "投資" },
+] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const { locale } = usePreferences();
@@ -64,19 +27,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
 
           <nav aria-label="主要導覽" className="hidden items-center gap-5 lg:flex">
-            <Link href={localized("/")} className="nav-link">首頁</Link>
-            <Link href={localized("/money-os")} className="nav-link text-gold">Money OS</Link>
-            {navigation.map((group) => (
-              <details key={group.label} className="nav-group">
-                <summary className="nav-link focus-ring">{group.label}</summary>
-                <div className="nav-group-panel">
-                  {group.items.map((item) => item.external ? (
-                    <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="nav-group-link">{item.label}<span aria-hidden="true">↗</span></a>
-                  ) : (
-                    <Link key={item.href} href={localized(item.href)} className="nav-group-link">{item.label}</Link>
-                  ))}
-                </div>
-              </details>
+            {navigation.map((item) => (
+              <Link key={item.href} href={localized(item.href)} className="nav-link">{item.label}</Link>
             ))}
             <SettingsMenu />
           </nav>
@@ -86,17 +38,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="menu-icon" aria-hidden="true"><i /><i /><i /></span>
             </summary>
             <nav aria-label="行動版導覽" className="absolute right-0 top-14 max-h-[calc(100vh-5.5rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border border-white/12 bg-[#101010] p-3 shadow-2xl">
-              <Link href={localized("/")} className="mobile-nav-link">首頁</Link>
-              <Link href={localized("/money-os")} className="mobile-nav-link text-gold">Money OS</Link>
-              {navigation.map((group) => (
-                <details key={group.label} className="mobile-nav-group">
-                  <summary>{group.label}</summary>
-                  {group.items.map((item) => item.external ? (
-                    <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="mobile-nav-link">{item.label}<span aria-hidden="true">↗</span></a>
-                  ) : (
-                    <Link key={item.href} href={localized(item.href)} className="mobile-nav-link">{item.label}</Link>
-                  ))}
-                </details>
+              {navigation.map((item) => (
+                <Link key={item.href} href={localized(item.href)} className="mobile-nav-link">{item.label}</Link>
               ))}
               <SettingsMenu mobile />
             </nav>
@@ -107,40 +50,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1}>{children}</main>
 
       <footer className="border-t border-white/10 bg-[#080808]">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.1fr_0.7fr_0.9fr_1.5fr] lg:gap-12">
-          <div>
-            <div className="flex items-center gap-4"><BrandMark size="large" /><div className="brand-wordmark text-xl font-semibold text-white">BiBeck</div></div>
-            <p className="mt-4 max-w-sm text-sm leading-7 text-white/58">理解金錢，建立系統，持續升級。</p>
-          </div>
-          <nav aria-label="頁尾導覽">
-            <p className="eyebrow">導覽</p>
-            <div className="mt-5 grid gap-3 text-sm text-white/54">
-              <Link href={localized("/money-os")} className="hover:text-gold">Money OS</Link>
-              <Link href={localized("/learn")} className="hover:text-gold">學習</Link>
-              <Link href={localized("/tools")} className="hover:text-gold">工具</Link>
-              <Link href={localized("/bybit")} className="hover:text-gold">Bybit</Link>
-              <Link href={localized("/philosophy")} className="hover:text-gold">關於 BiBeck</Link>
-            </div>
-          </nav>
-          <div>
-            <p className="eyebrow">聯絡</p>
-            <address className="mt-5 grid gap-3 not-italic text-sm text-white/54">
-              <a href={LINE_OFFICIAL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-gold">LINE 官方帳號</a>
-              <a href={contactMailto} className="break-all hover:text-gold">聯絡：{brandConfig.publicEmails.contact}</a>
-              <a href={supportMailto} className="break-all hover:text-gold">支援：{brandConfig.publicEmails.support}</a>
-            </address>
-          </div>
-          <div>
-            <p className="eyebrow">法律與風險</p>
-            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/45">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-7 text-xs leading-6 text-white/45 sm:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <span>© 2026 BiBeck</span>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <Link href={localized("/contact")} className="hover:text-gold">聯絡</Link>
+              <Link href={localized("/faq")} className="hover:text-gold">常見問題</Link>
               <Link href="/privacy" className="hover:text-gold">隱私權政策</Link>
               <Link href="/terms" className="hover:text-gold">使用條款</Link>
-              <Link href="/affiliate-disclosure" className="hover:text-gold">合作連結與佣金揭露</Link>
-              <Link href="/personal-data-notice" className="hover:text-gold">個人資料蒐集告知</Link>
-            </div>
-            <div className="mt-6 max-w-3xl text-xs leading-6 text-white/42">
-              <p className="text-white/62">BiBeck 提供金錢、投資、加密資產與交易成本知識及工具，內容僅供資訊與教育用途，不構成投資建議、報酬保證或交易訊號。</p>
-              <p className="mt-3">BiBeck 為獨立第三方平台，不保管資產，也非任何交易所官方。部分連結可能為合作夥伴連結；詳情請參閱揭露與服務條款。© 2026 BiBeck.</p>
+              <Link href="/affiliate-disclosure" className="hover:text-gold">合作揭露</Link>
+              <Link href="/personal-data-notice" className="hover:text-gold">個資告知</Link>
             </div>
           </div>
         </div>
