@@ -23,7 +23,7 @@ export function parseMoney(value: string): number | null {
   return Number.isSafeInteger(cents) ? cents : null;
 }
 export function summarizeInventory(groups: InventoryGroup[]) {
-  let assets = 0, liabilities = 0, available = 0, reserved = 0;
+  let assets = 0, liabilities = 0, available = 0, assetsRecorded = 0, liabilitiesRecorded = 0;
   const issues: string[] = [];
   for (const group of groups) {
     if (group.status === "unknown") { issues.push(`${group.title}：尚未確認有沒有`); continue; }
@@ -37,18 +37,16 @@ export function summarizeInventory(groups: InventoryGroup[]) {
       names.add(label);
       const value = parseMoney(entry.amount);
       if (value === null) { issues.push(`${label}：請填有效金額（最多兩位小數）`); continue; }
-      if (group.debt) liabilities += value;
-      else assets += value;
+      if (group.debt) { liabilities += value; liabilitiesRecorded++; }
+      else { assets += value; assetsRecorded++; }
       if (entry.verification !== "confirmed") issues.push(`${label}：${entry.verification === "estimated" ? "目前為估計值" : "尚未核對"}`);
-      if (!group.debt && entry.available) {
-        available += value;
-        const allocated = entry.reserved.trim() === "" ? 0 : parseMoney(entry.reserved);
-        if (allocated === null || allocated > value) issues.push(`${label}：已安排用途金額須介於 0 與餘額之間`);
-        else reserved += allocated;
-      }
+      if (!group.debt && entry.available) available += value;
     }
   }
-  return { assets, liabilities, net: assets - liabilities, available, reserved, unallocated: available - reserved, issues };
+  // Keep legacy reservation fields in backups, but allocation is outside inventory scope.
+  const assetsKnown = assetsRecorded > 0 || groups.filter((g) => !g.debt).every((g) => g.status === "no");
+  const liabilitiesKnown = liabilitiesRecorded > 0 || groups.filter((g) => g.debt).every((g) => g.status === "no");
+  return { assets, liabilities, net: assets - liabilities, available, assetsKnown, liabilitiesKnown, issues };
 }
 export function encodeInventory(groups: InventoryGroup[]) { return JSON.stringify({ version: 1, groups }, null, 2); }
 export function decodeInventory(raw: string): InventoryGroup[] {
