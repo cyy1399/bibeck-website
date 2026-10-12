@@ -1,19 +1,4 @@
-import type { MetadataRoute } from "next";
-import { moneyStages, stageHref } from "@/config/money-roadmap";
-import { notes, noteHref } from "@/config/notes";
-import { brandConfig } from "@/config/brand";
-
-const publicRoutes = [
-  "", ...moneyStages.map(stageHref), "/about", ...notes.map(noteHref), "/money", "/investing", "/money-os", "/learn", "/learn/money", "/learn/investing", "/learn/crypto", "/learn/trading",
-  "/learn/trading/funding-rate", "/tools", "/tools/life-allocation", "/bybit",
-  "/platforms", "/calculator", "/rebate", "/apply/bybit", "/partners", "/faq", "/contact", "/philosophy",
-  "/platform/bybit", "/privacy", "/terms", "/affiliate-disclosure", "/personal-data-notice",
-];
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  return publicRoutes.map((route, index) => ({
-    url: `${brandConfig.websiteUrl}${route}`,
-    changeFrequency: index === 0 || route === "/money-os" ? "weekly" : "monthly",
-    priority: index === 0 ? 1 : route === "/money-os" ? 0.9 : route === "/calculator" || route === "/platform/bybit" ? 0.8 : 0.6,
-  }));
-}
+import type {MetadataRoute} from "next";
+import {brandConfig} from "@/config/brand";
+import {lessons} from "@/config/trader-content";
+export default function sitemap():MetadataRoute.Sitemap{return ['','/market','/tools','/tools/position','/tools/journal','/research','/learn',...lessons.map(l=>`/learn/${l.slug}`),'/exchanges','/community','/roadmap','/about','/calculator','/platform/bybit','/rebate/activate','/faq','/contact','/privacy','/terms','/affiliate-disclosure','/personal-data-notice'].map((p,i)=>({url:brandConfig.websiteUrl+p,changeFrequency:p==='/market'?'daily':'monthly',priority:i===0?1:.7}));}

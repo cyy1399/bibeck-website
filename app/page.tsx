@@ -1,28 +1,7 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/SiteShell";
-import { createPageMetadata, siteTitle } from "@/config/seo";
-
-export const metadata: Metadata = createPageMetadata({ title: siteTitle, description: "理解金錢，逐步掌握自己的生活。BiBeck 整理理財、投資與實踐的方法。", path: "/", absoluteTitle: true });
-
-export default function Home() {
-  return <SiteShell>
-    <section className="px-5 pb-20 pt-32 sm:px-8 sm:pt-40" aria-labelledby="home-title">
-      <div className="mx-auto flex min-h-[calc(100svh-16rem)] max-w-7xl items-center">
-        <div className="max-w-4xl border-l border-gold/40 pl-6 sm:pl-10">
-          <p className="eyebrow">BiBeck 理念</p>
-          <h1 id="home-title" className="mt-6 text-balance text-4xl font-semibold leading-[1.35] tracking-tight text-white sm:text-6xl lg:text-7xl">理解金錢，<br />逐步掌握自己的生活。</h1>
-          <div className="mt-8 max-w-2xl space-y-4 text-base leading-8 text-secondary sm:text-lg sm:leading-9">
-            <p>BiBeck 是我持續學習與實踐的累積。我把學到的內容、思考的方法，以及目前能提供的資源，整理在這裡。</p>
-            <p>從管理自己的錢，到理解投資與風險，把複雜的問題拆開，找到下一步能做的事。</p>
-            <p>讓知識成為行動，讓生活多一些選擇。</p>
-          </div>
-          <div className="mt-9 flex flex-wrap gap-8">
-            <Link href="/money" className="focus-ring inline-flex items-center gap-4 border-b border-gold/50 pb-2 text-sm text-gold hover:text-white">理財 <span aria-hidden="true">↗</span></Link>
-            <Link href="/investing" className="focus-ring inline-flex items-center gap-4 border-b border-white/20 pb-2 text-sm text-white/70 hover:text-gold">投資 <span aria-hidden="true">↗</span></Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  </SiteShell>;
-}
+import { FeatureCard } from "@/components/TraderUI";
+import { createPageMetadata } from "@/config/seo";
+import { traderModules } from "@/config/trader-content";
+export const metadata=createPageMetadata({title:"BiBeck｜合約交易者的工作平台",description:"規劃風險，算清成本，檢討績效。從一筆交易到自己的交易流程。",path:"/",absoluteTitle:true});
+export default function Home(){return <SiteShell><section className="trader-home"><div className="trader-home-grid"><div><p className="eyebrow">CRYPTO FUTURES · TRADER WORKSPACE</p><h1>看懂風險，<br/>算清成本。<br/><em>建立你的交易優勢。</em></h1><p className="trader-home-copy">從一筆交易計畫，到完整紀錄與績效檢討。讓每個決定都有依據，每個結果都能核對。</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/tools/position" className="button-primary focus-ring">規劃一筆交易 ↗</Link><Link href="/tools/journal" className="button-secondary focus-ring">匯入交易紀錄</Link></div><p className="mt-5 trader-muted">免登入即可試用 · 計畫由你決定 · 不自動下單</p></div><div className="trader-terminal" aria-label="交易計畫展示，全部為虛構範例"><div className="trader-terminal-head"><span>交易計畫 / 線性 USDT 合約</span><span className="text-gold">虛構範例</span></div><div className="trader-terminal-body"><div className="flex justify-between items-end"><div><p className="trader-muted">先決定能承擔多少</p><p className="mt-3 text-3xl">100 <span className="text-sm text-secondary">USDT</span></p></div><span className="trader-badge">帳戶風險 1%</span></div><div className="trader-terminal-row"><span>帳戶權益</span><strong>10,000 USDT</strong></div><div className="trader-terminal-row"><span>進場 / 停損 / 停利</span><strong>100 / 95 / 110</strong></div><div className="trader-terminal-row"><span>忽略費用時的數量</span><strong>20 單位</strong></div><div className="trader-terminal-row"><span>加入成本後</span><strong className="text-gold">數量需向下調整</strong></div><p className="mt-5 trader-muted">進出場費用、滑價與數量步進都會改變結果。資金費率與強平條件需另外核對。</p><Link className="mt-5 inline-block text-sm text-gold focus-ring" href="/tools/position?demo=1">用這組數字試算 →</Link></div></div></div><div className="trader-section border-t border-white/10 pt-10"><div className="trader-flow">{[["01","交易前","把想法變成有損失預算的計畫。"],["02","持倉中","核對價格、保證金與事件；持倉同步規劃中。"],["03","交易後","整理已實現結果、費用與偏差。"],["04","長期檢討","用證據確認策略，而不是只看勝率。"]].map(([n,t,c])=><article key={n}><p className="eyebrow">{n}</p><h3>{t}</h3><p>{c}</p></article>)}</div></div></section><section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8"><div className="mb-8 flex flex-wrap justify-between gap-4"><h2 className="text-2xl">從你的下一個任務開始</h2><Link href="/roadmap" className="text-sm text-gold focus-ring">查看功能進度 ↗</Link></div><div className="trader-grid">{traderModules.slice(0,6).map((m,i)=><FeatureCard key={m.href} number={`0${i+1}`} title={m.title} copy={m.description} href={m.href} status={m.status}/>)}</div><div className="mt-10 border-t border-white/10 pt-8 flex flex-wrap items-center justify-between gap-5"><p className="max-w-2xl text-secondary leading-8">BiBeck 不替你預測必漲必跌。計算有方法、資料有來源、結果有範圍，讓你能追查與修正。</p><Link href="/about" className="text-gold focus-ring">我們如何建立這個平台 →</Link></div></section></SiteShell>}

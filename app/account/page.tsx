@@ -1,0 +1,4 @@
+import Link from "next/link";
+import {TraderPage,Notice} from "@/components/TraderUI";
+export const metadata={title:"資料與設定",robots:{index:false,follow:true}};
+export default function Page(){return <TraderPage kicker="DATA & SETTINGS" title="你的資料，知道存在哪裡。" copy="本版使用此裝置保存，會員與雲端同步尚未開放。"><div className="trader-grid"><article className="trader-panel"><h2>計畫資料</h2><p>按下「保存至此裝置」才保存。可以在工作區逐筆移除；換瀏覽器或清除網站資料後可能無法找回。</p><Link className="inline-block mt-5 text-gold" href="/workspace">管理交易計畫 ↗</Link></article><article className="trader-panel"><h2>交易紀錄</h2><p>預設不保存；勾選裝置保存後才保留。CSV 匯出與清除功能在日誌工具內。</p><Link className="inline-block mt-5 text-gold" href="/tools/journal">管理交易紀錄 ↗</Link></article><article className="trader-panel"><h2>會員登入</h2><p>Google / Email 登入、跨裝置同步、授權管理與多因素驗證列入後續建置。目前不收集會員密碼或交易所 API 金鑰。</p><Link className="inline-block mt-5 text-gold" href="/roadmap">查看建置進度 ↗</Link></article></div><Notice>本機資料不會因網站改版自動搬移至雲端。原本理財工具保存的資料也沒有被本次更新刪除或當成交易資金。</Notice></TraderPage>}

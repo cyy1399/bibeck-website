@@ -6,6 +6,7 @@ export const metadata: Metadata = createPageMetadata({ title: "隱私權政策",
 
 export default function PrivacyPage() {
   return <LegalPage eyebrow="法律與隱私" title="隱私權政策" description="本政策說明 BiBeck 在網站、返傭申請、客服與人工審核流程中如何處理資料。" sections={[
+    { heading: "交易工具與裝置保存", paragraphs: ["交易規劃與 BiBeck 標準 CSV 分析目前在瀏覽器內處理。按下保存或勾選裝置保存才寫入此瀏覽器，不上傳私人交易資料，也不跨裝置同步。日誌可匯出、清除；計畫可在工作區移除。清除網站資料後可能無法恢復。公開市場快照會由網站讀取 Bybit 公開來源，不涉及私人帳戶串接。會員登入與交易所 API 金鑰串接尚未開放。"] },
     { heading: "一、政策適用範圍", paragraphs: ["本政策適用於 BiBeck 官網、Bybit 返傭申請、受保護的案件管理後台、Email 通知及 LINE 客服聯絡。交易所網站與外部返傭後台有各自的隱私規則。"] },
     { heading: "二、可能蒐集的資料", paragraphs: ["BiBeck 可能蒐集名稱或稱呼、Email、Bybit UID、最近 30 日交易量區間、使用者主動填寫的補充說明，以及提交時間、來源、IP、瀏覽器或裝置資訊與必要的系統紀錄。", "BiBeck 不會透過返傭申請要求交易密碼、2FA 驗證碼、API Key、API Secret、私鑰、助記詞、身分證影本、KYC 文件、資產餘額或不必要的完整交易紀錄。"] },
     { heading: "三、資料使用目的", paragraphs: [], items: ["受理返傭申請及核對推薦關係與帳戶資格", "進行人工審核、返傭開通、案件狀態管理與 Email 通知", "提供客服、處理爭議及回應高交易量或商務需求", "防止重複提交、濫用與維護網站及服務安全"] },

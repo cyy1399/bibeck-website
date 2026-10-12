@@ -1,5 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function FeesPage() {
-  redirect("/platform/bybit");
-}
+export default function Page(){redirect("/exchanges");}

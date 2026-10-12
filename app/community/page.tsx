@@ -1,0 +1,5 @@
+import Link from "next/link";
+import {TraderPage,Notice} from "@/components/TraderUI";
+import {createPageMetadata} from "@/config/seo";
+export const metadata=createPageMetadata({title:"研究交流",description:"用可重現的研究與交易檢討交流，清楚區分實盤、模擬與回測。",path:"/community"});
+export default function Page(){return <TraderPage kicker="RESEARCH COMMUNITY" title="分享證據，不只分享獲利。" copy="好的交流讓別人可以檢查方法、理解限制，並重現你的研究。"><div className="trader-grid">{[['研究筆記','假設、資料範圍、規則、成本與版本，讓研究可以重現。'],['交易檢討','事前計畫、實際成交、偏差與下一步，不以一筆盈虧判定能力。'],['績效證據','實盤、模擬、回測分開；附期間、回撤、資金流與驗證範圍。']].map(([title,copy])=><article className="trader-panel" key={title}><h2>{title}</h2><p>{copy}</p></article>)}</div><section className="trader-section trader-prose"><h2>交流規則</h2><ul className="list-disc pl-5 space-y-3"><li>不公布 API 金鑰、帳戶憑證或未經同意的私人資料。</li><li>商業合作、策略販售與利益關係必須揭露。</li><li>不以最高槓桿或短期報酬率作為能力認證。</li><li>資料串接只能證明指定帳戶與期間，不證明沒有其他虧損帳戶。</li></ul></section><Notice>目前是交流指南，尚未開放貼文、私訊、公開績效驗證或策略市場。沒有虛構的會員、討論或排行榜。</Notice><div className="trader-tabs"><Link href="/contact">提供使用回饋 ↗</Link><Link href="/research">建立研究框架</Link><Link href="/roadmap">社群功能進度</Link></div></TraderPage>}

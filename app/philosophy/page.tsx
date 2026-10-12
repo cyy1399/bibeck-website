@@ -1,5 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function PhilosophyPage() {
-  redirect("/");
-}
+export default function Page(){redirect("/about");}

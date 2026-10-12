@@ -1,24 +1,4 @@
-import type { Metadata } from "next";
-import { PageHero } from "@/components/Sections";
-import { SiteShell } from "@/components/SiteShell";
-import { ToolCard } from "@/components/Editorial";
-import { createPageMetadata } from "@/config/seo";
-
-export const metadata: Metadata = createPageMetadata({
-  title: "工具｜Money OS、人生資本與交易成本",
-  description: "使用 BiBeck 的 Money OS 藍圖、人生資本配置與交易成本工具，把抽象的金錢問題轉成可理解的資訊。",
-  path: "/tools",
-});
-
-export default function ToolsPage() {
-  return <SiteShell>
-    <PageHero eyebrow="工具" title="把問題拆成可以理解的輸入、結果與下一步。" copy="工具不是替你做決定，而是把事實、計算結果、模型假設與個人選擇分開。" />
-    <section className="px-5 py-20 sm:px-8">
-      <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <ToolCard title="Money OS" copy="財務紀錄、分析、等級、階段與主線任務的核心產品藍圖。" href="/money-os" status="建置中"/>
-        <ToolCard title="人生資本配置" copy="先整理現金流、安全、負債與風險能力，理解資金的優先順序。" href="/tools/life-allocation" status="預覽"/>
-        <ToolCard title="交易成本計算器" copy="比較一般費率、Bybit VIP 與 35% 返傭後的實際成本。" href="/calculator" status="可使用"/>
-      </div>
-    </section>
-  </SiteShell>;
-}
+import {TraderPage,FeatureCard,Notice} from "@/components/TraderUI";
+import {createPageMetadata} from "@/config/seo";
+export const metadata=createPageMetadata({title:"交易工具",description:"倉位與風險、淨成本、交易紀錄與績效工具。",path:"/tools"});
+export default function Tools(){return <TraderPage kicker="TRADING TOOLS" title="把數字變成可核對的計畫。" copy="先設定風險，再計算倉位；先核對成本，再檢討績效。"><div className="trader-grid"><FeatureCard number="01" title="倉位與風險規劃" copy="線性 USDT 合約，計入雙邊費用、滑價與數量步進。支援四則運算。" href="/tools/position" status="可使用"/><FeatureCard number="02" title="交易日誌與績效" copy="匯入 BiBeck 標準 CSV，拆解毛盈虧、費用、資金費率與返傭。" href="/tools/journal" status="可使用"/><FeatureCard number="03" title="交易成本比較" copy="比較一般費率、VIP 與合作返傭條件；實際費率以帳戶為準。" href="/calculator" status="可使用"/></div><Notice>本次計算與 CSV 分析在瀏覽器內進行。只有明確保存的計畫與紀錄會留在此裝置；目前沒有會員雲端同步或下單權限。</Notice></TraderPage>}

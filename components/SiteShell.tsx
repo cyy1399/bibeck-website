@@ -2,19 +2,23 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SettingsMenu } from "@/components/SettingsMenu";
+import { usePathname } from "next/navigation";
 import { usePreferences } from "@/components/PreferencesProvider";
 import { localizePath } from "@/config/locales";
 
 const navigation = [
-  { href: "/money", label: "理財" },
-  { href: "/investing", label: "投資" },
-  { href: "/about", label: "關於 Beck" },
-  { href: "/search", label: "搜尋" },
+  { href: "/market", label: "市場" },
+  { href: "/tools", label: "工具" },
+  { href: "/workspace", label: "我的交易" },
+  { href: "/research", label: "研究" },
+  { href: "/learn", label: "學習" },
+  { href: "/exchanges", label: "交易所與成本" },
+  { href: "/community", label: "交流" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const { locale } = usePreferences();
+  const pathname = usePathname();
   const localized = (href: string) => localizePath(href, locale);
 
   return (
@@ -29,9 +33,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
           <nav aria-label="主要導覽" className="hidden items-center gap-5 lg:flex">
             {navigation.map((item) => (
-              <Link key={item.href} href={localized(item.href)} className="nav-link">{item.label}</Link>
+              <Link key={item.href} href={localized(item.href)} className="nav-link" aria-current={pathname === item.href ? "page" : undefined}>{item.label}</Link>
             ))}
-            <SettingsMenu compact />
+            <Link href="/account" className="trader-account focus-ring">資料與設定</Link>
           </nav>
 
           <details className="mobile-nav relative ml-3 lg:hidden">
@@ -42,7 +46,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               {navigation.map((item) => (
                 <Link key={item.href} href={localized(item.href)} className="mobile-nav-link">{item.label}</Link>
               ))}
-              <SettingsMenu mobile />
+              <Link href="/account" className="mobile-nav-link">資料與設定</Link>
             </nav>
           </details>
         </header>
@@ -52,9 +56,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       <footer className="border-t border-white/10 bg-[#080808]">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-7 text-xs leading-6 text-white/45 sm:px-8">
+          <p>計畫、紀錄與分析協助你核對風險與成本。本站不保管資產，也不自動執行交易。</p>
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <span>© 2026 BiBeck</span>
+            <span>© 2026 BiBeck · 合約交易者的工作平台</span>
             <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <Link href="/roadmap" className="hover:text-gold">產品進度</Link>
+              <Link href={localized("/about")} className="hover:text-gold">關於</Link>
               <Link href={localized("/contact")} className="hover:text-gold">聯絡</Link>
               <Link href={localized("/faq")} className="hover:text-gold">常見問題</Link>
               <Link href="/privacy" className="hover:text-gold">隱私權政策</Link>

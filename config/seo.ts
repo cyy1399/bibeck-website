@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { brandConfig } from "@/config/brand";
 
 export const siteTitle = "BiBeck";
-export const siteDescription = "BiBeck 整理持續學習與實踐累積的理財、投資知識，以及可使用的工具與資源，讓理解成為行動。";
+export const siteDescription = "BiBeck 是加密貨幣合約交易者的工作平台。規劃風險與成本、整理交易紀錄、檢討績效，建立可驗證的交易流程。";
 export const socialImage = {
   url: "/og-seo.png",
   width: 1200,
